@@ -1,24 +1,25 @@
-# git_test
+# 우당탕탕 운동 SNS
 
 
 
-## Getting started
+## 개발 배경
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- 내 운동 기록을 친구들과 공유하고 싶어!
+- 매번 PT 쌤에게 카톡으로 보고하기 귀찮은데...
+- 나만의 챌린지를 만들어서 친구들과 함께 도전하고 싶어!
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### @@여기로 오시면 됩니다!!@@
 
-## Add your files
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
-```
-cd existing_repo
-git remote add origin https://lab.ssafy.com/final_pjt1/git_test.git
-git branch -M master
-git push -uf origin master
-```
+## 실행 화면 예시
+
+- 로그인 화면
+
+- 회원가입 화면
+
+- ...
+
 
 ## Integrate with your tools
 

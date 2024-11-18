@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workout.model.dao.WorkoutDao">
+
+    <!-- Workout 등록 -->
+    <insert id="insertWorkout" parameterType="com.workout.model.dto.Workout">
+        INSERT INTO workout (text, image)
+        VALUES (#{text}, #{image})
+    </insert>
+
+    <!-- Workout 수정 -->
+    <update id="updateWorkout" parameterType="com.workout.model.dto.Workout">
+        UPDATE workout
+        SET text = #{text}, image = #{image}
+        WHERE workout_id = #{workoutId}
+    </update>
+
+    <!-- Workout 삭제 -->
+    <delete id="deleteWorkout" parameterType="Long">
+        DELETE FROM workout WHERE workout_id = #{workoutId}
+    </delete>
+
+</mapper>

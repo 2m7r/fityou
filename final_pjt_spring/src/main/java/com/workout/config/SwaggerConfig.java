@@ -16,8 +16,8 @@ public class SwaggerConfig {
 	}
 
 	private Info apiInfo() {
-		return new Info().title("SSAFY 문서 API") // API 제목을 설정합니다.
-				.description("<h3>RestAPI 문서 내용을 다음과 같이 제공합니다.</h3>") // API 설명을 설정합니다.
+		return new Info().title("금지 가롱의 관통 프로젝트") // API 제목을 설정합니다.
+				.description("<h3>우당탕탕 관통일기</h3>") // API 설명을 설정합니다.
 				.version("1.0.0"); // API 버전을 설정합니다.
 	}
 

@@ -6,7 +6,6 @@ public class Challenge {
     private Long creatorUserId; // 생성자 ID
     private String description;
     private int participantCount;
-    private int rank; // 랭킹
     private String durationStart; // 시작 날짜 (YYYY-MM-DD)
     private String durationEnd; // 종료 날짜 (YYYY-MM-DD)
     private String exerciseType;
@@ -41,12 +40,6 @@ public class Challenge {
 	}
 	public void setParticipantCount(int participantCount) {
 		this.participantCount = participantCount;
-	}
-	public int getRank() {
-		return rank;
-	}
-	public void setRank(int rank) {
-		this.rank = rank;
 	}
 	public String getDurationStart() {
 		return durationStart;

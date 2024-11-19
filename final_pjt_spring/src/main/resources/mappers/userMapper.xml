@@ -12,7 +12,7 @@
     
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="User">
-        INSERT INTO users (name, age, gender, email, username, password, role)
-        VALUES (#{name}, #{age}, #{gender}, #{email}, #{username}, #{password}, #{role})
+        INSERT INTO users (name, age, gender, email, username, password, role, profile_image_url)
+        VALUES (#{name}, #{age}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{profile})
     </insert>
 </mapper>

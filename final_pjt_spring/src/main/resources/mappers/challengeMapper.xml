@@ -3,5 +3,40 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.workout.model.dao.ChallengeDao">
+	<!-- 챌린지 등록 -->
+	<insert id="insertChallenge" parameterType="Challenge">
+		INSERT INTO challenges (name, creator_user_id, description, duration_start, duration_end, exercise_type)
+		values (#{name}, #{creatorUserId}, #{description}, #{durationStart}, #{durationEnd}, #{exerciseType})
+	</insert>
+
+	<!-- 챌린지 상세 조회 -->
+	<select id="selectChallengeById" parameterType="Long" resultType="Challenge">
+		SELECT * FROM challenges
+		WHERE challenge_id = #{challengeId}
+	</select>
+	
+	<!-- 챌린지 수정 -->
+	<update id="modifyChallenge" parameterType="Challenge">
+		UPDATE challenges
+		SET name = #{name},
+		description = #{description},
+		duration_start = #{durationStart},
+		duration_end = #{durationEnd},
+		exercise_type = #{exerciseType}
+		WHERE challenge_id = #{challengeId}
+	</update>
+	
+	<!-- 챌린지 삭제 -->
+	<delete id="deleteChallenge" parameterType="Long">
+		DELETE FROM challenges
+		WHERE challenge_id = #{challengeId}
+	</delete>
+	
+	<!-- 챌린지 참여 -->
+	<update id="intoChallenge" parameterType="Long">
+		UPDATE challenges
+		SET 
+		WHERE challenge_id = #{challengeId}
+	</update>
 	
 </mapper>

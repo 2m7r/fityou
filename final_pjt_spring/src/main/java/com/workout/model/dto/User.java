@@ -15,8 +15,15 @@ public class User {
     private List<String> awards; // 수상 경력 리스트
     private List<String> preferredExercises; // 선호 운동 리스트
     private boolean isPrivateAccount; // 공개/비공개 계정 여부
+    private String profile;
     
     
+	public String getProfile() {
+		return profile;
+	}
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
 	public Long getUserId() {
 		return userId;
 	}

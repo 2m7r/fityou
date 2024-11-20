@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/workout")
+@RequestMapping("/api-workout")
 @Tag(name = "운동일기 관리 API", description = "운동일기 CRUD 기능을 제공합니다.")
 public class WorkoutRestController {
 
@@ -126,4 +126,19 @@ public class WorkoutRestController {
 		}
 	}
 
+	// 특정 유저의 운동일기 목록 조회
+	@GetMapping("/feed/{userId}")
+	@Operation(summary = "특정 유저의 운동일기 목록 조회", description = "특정 유저에 대한 모든 운동일기 목록을 조회합니다.")
+	public ResponseEntity<List<Workout>> getDietsByUserId(@PathVariable Long userId) {
+		List<Workout> workouts = workoutService.getWorkoutsById(userId);
+		return ResponseEntity.ok(workouts);
+	}
+
+	// 팔로우한 유저들의 운동일기 목록 조회
+	@GetMapping("/follow/{userId}")
+	@Operation(summary = "팔로우한 유저들의 식단일기 목록 조회", description = "팔로우한 유저에 대한 모든 식단일기 목록을 조회합니다.")
+	public ResponseEntity<List<Workout>> getFollowingDietsByUserId(@PathVariable Long userId) {
+		List<Workout> workouts = workoutService.getFollowingWorkoutsByUserId(userId);
+		return ResponseEntity.ok(workouts);
+	}
 }

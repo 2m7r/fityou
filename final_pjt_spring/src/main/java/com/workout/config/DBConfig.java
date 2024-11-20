@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @MapperScan("com.workout.model.dao")
-public class MybatisConfig {
+public class DBConfig {
 	
 }

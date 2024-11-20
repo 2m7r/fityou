@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/follow")
+@RequestMapping("/api-follow")
 @Tag(name = "팔로우 관리 API", description = "회원의 팔로우 관리 기능을 제공합니다.")
 public class FollowRestController {
 

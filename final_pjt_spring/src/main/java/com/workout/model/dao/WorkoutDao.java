@@ -39,4 +39,10 @@ public interface WorkoutDao {
     // 운동일기 삭제
 	int deleteWorkout(long workoutId);
 
+	// 특정 유저의 운동일기 목록 조회
+	List<Workout> selectWorkoutsById(long userId);
+
+	// 팔로우한 유저들의 운동일기 목록 조회
+	List<Workout> selectFolloingWordoutsByUserId(long userId);
+
 }

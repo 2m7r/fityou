@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/trainer")
+@RequestMapping("/api-trainer")
 @Tag(name = "트레이너 회원 관리 API", description = "트레이너 회원관리 기능을 제공합니다.")
 public class TrainerClientRestController {
 	

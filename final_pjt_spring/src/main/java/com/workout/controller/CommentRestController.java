@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/ccomment")
+@RequestMapping("/api-comment")
 @Tag(name = "댓글 관리 API", description = "댓글 CRUD 기능을 제공합니다.")
 public class CommentRestController {
 

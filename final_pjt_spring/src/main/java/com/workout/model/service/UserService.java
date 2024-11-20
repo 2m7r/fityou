@@ -6,6 +6,6 @@ public interface UserService {
 	
 	int registUser(User user);
 	
-	User authenticateUser(String userId, String password);
+	User login(String username, String password);
 
 }

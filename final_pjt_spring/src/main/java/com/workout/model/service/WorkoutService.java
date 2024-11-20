@@ -1,5 +1,7 @@
 package com.workout.model.service;
 
+import java.util.List;
+
 import com.workout.model.dto.Workout;
 
 public interface WorkoutService {
@@ -15,5 +17,11 @@ public interface WorkoutService {
 	
 	// 운동일기 삭제
 	int removeWorkout(long workoutId);
+
+	// 특정 유저의 운동일기 목록 조회
+	List<Workout> getWorkoutsById(long userId);
+
+	// 팔로우한 유저들의 운동일기 목록 조회
+	List<Workout> getFollowingWorkoutsByUserId(long userId);
 
 }

@@ -18,8 +18,11 @@ CREATE TABLE users (
 );
 
 INSERT INTO users (name, age, gender, email, username, password, role)
-VALUES ('김싸피', 25, 'M', 'ssafy@ssafy.com', 'ssafy1', 'ssafy1', 'USER');
+VALUES ('지피티', 30, 'F', 'pt@pt.com', 'trainer', 'trainer', 'TRAINER');
+--     ('김싸피', 25, 'M', 'ssafy@ssafy.com', 'ssafy1', 'ssafy1', 'USER');
 -- 	   ('임가현', 26, 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER');
+
+SELECT * FROM users;
 
 
 -- ------------------------- 식단일기 -----------------------------------
@@ -184,7 +187,7 @@ SELECT * from workout_exercises;
 
 -- ------------------------- 댓글 -----------------------------------
 drop table IF EXISTS comments;
--- 8. 댓글 기록
+-- 10. 댓글 기록
 CREATE TABLE comments (
     comment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     target_id BIGINT NOT NULL, -- 댓글이 속한 대상의 ID
@@ -200,7 +203,29 @@ values (4, 'workout', 1, '트레이너임?');
 SELECT * from comments;
 
 
+-- ------------------------- 트레이너-회원관계 -----------------------------------
+drop table IF EXISTS trainer_clients;
+-- 11. 트레이너와 회원의 관계를 저장
+CREATE TABLE trainer_clients (
+    trainer_id BIGINT NOT NULL, -- 트레이너의 user_id
+    client_id BIGINT NOT NULL, -- PT 회원의 user_id
+    comment TEXT, -- 특이사항
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (trainer_id, client_id),
+    FOREIGN KEY (trainer_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (client_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+INSERT INTO trainer_clients (trainer_id, client_id, comment)
+VALUES (5, 1, '고수임');
+
+SELECT * from trainer_clients;
+
 -- -------------------------  -----------------------------------
+
+
+
+
+
 
 drop table IF EXISTS awards;
 -- 수상경력
@@ -225,36 +250,6 @@ CREATE TABLE preferred_exercises (
 
 
 
-
--- 6. 기록 정보를 저장
--- DROP TABLE IF EXISTS records;
--- CREATE TABLE records (
---     record_id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- 기록 ID
---     user_id BIGINT NOT NULL,  -- 기록 작성자 ID
---     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
---     content TEXT NOT NULL,  -- 기록 내용 (운동 내용 등)
---     is_shared_with_trainer BOOLEAN DEFAULT TRUE,  -- 트레이너와의 공유 여부
---     like_count INT DEFAULT 0,  -- 좋아요 수
---     comment_count INT DEFAULT 0,  -- 댓글 수
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 생성 시간
---     diet_id BIGINT,  -- 연결된 식단 정보
---     workout_id BIGINT,  -- 연결된 운동 정보
---     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,  -- 사용자 ID
---     FOREIGN KEY (diet_id) REFERENCES diet(diet_id) ON DELETE CASCADE,  -- 식단 정보
---     FOREIGN KEY (workout_id) REFERENCES workout(workout_id) ON DELETE CASCADE  -- 운동 정보
--- );
-
-
-drop table IF EXISTS trainer_clients;
--- 11. 트레이너와 회원의 관계를 저장
-CREATE TABLE trainer_clients (
-    trainer_id BIGINT NOT NULL, -- 트레이너의 user_id
-    client_id BIGINT NOT NULL, -- PT 회원의 user_id
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (trainer_id, client_id),
-    FOREIGN KEY (trainer_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (client_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
 
 
 select * from trainer_clients;

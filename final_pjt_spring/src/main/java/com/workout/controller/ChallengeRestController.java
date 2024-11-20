@@ -40,7 +40,6 @@ public class ChallengeRestController {
 	public ResponseEntity<?> registChallenge(@RequestBody Challenge challenge){
 		int result = challengeService.registChallenge(challenge);
 		if(result > 0) {
-			
 			return ResponseEntity.status(HttpStatus.CREATED).body("챌린지 등록 성공");
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("챌린지 등록 실패");

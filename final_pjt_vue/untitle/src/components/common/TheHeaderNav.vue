@@ -84,8 +84,8 @@ const setActive = (tab) => {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 300px; /* 그라데이션의 높이를 조정 */
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1),rgba(255, 255, 255, 0));
+  height: 150px; /* 그라데이션의 높이를 조정 */
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1),rgba(255, 255, 255, 0.7),rgba(255, 255, 255, 0));
   z-index: -1; /* 네비게이션 바 뒤에 배경을 설정 */
 >>>>>>> vue
 }

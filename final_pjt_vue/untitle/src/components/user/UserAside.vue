@@ -31,7 +31,11 @@
     <div class="my-3"></div>
 
     <!-- 캘린더 -->
+<<<<<<< HEAD
     <UserCalender />
+=======
+    <UserCalender class="calender"/>
+>>>>>>> vue
   </div>
 </template>
 
@@ -81,10 +85,45 @@ const goToExerciseLog = () => {
 
 <style scoped>
 .user-aside {
+  position: relative; /* 고정된 위치를 제거하고 흐름에 맞게 배치 */
+  top: 20px; /* 위치를 상단으로 미세 조정 */
+  left: 0;
+  width: 350px; /* 기본 너비는 350px */
+  height: calc(100vh - 100px); /* height를 조정하여 화면에 맞게 고정 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+<<<<<<< HEAD
+  z-index: 100;
+  margin-left: 3%; /* 왼쪽 여백을 더 추가 */
+=======
+  overflow-x: hidden;
+  z-index: 100;
+  margin-left: 3%; /* 왼쪽 여백을 더 추가 */
+  margin-top: 120px;
+  margin-bottom: 500px;
+>>>>>>> vue
+}
+
+/* 화면 크기가 992px 이하일 때, 사이드바의 너비를 100%로 변경 */
+@media (max-width: 992px) {
+  .user-aside {
+    position: relative; /* 고정된 위치가 아니라 흐름에 따라 위치 */
+    width: 100%; /* 너비를 100%로 설정 */
+    margin-left: 0; /* 왼쪽 여백 없앰 */
+    top: 0; /* 화면 상단에 고정 */
+  }
+}
+/* .user-aside {
   position: fixed;
   top: 150px;
   left: 0;
-  width: 350px; /* 기본 너비는 350px */
+  width: 350px; // 기본 너비는 350px
   height: calc(100vh - 200px);
   display: flex;
   flex-direction: column;
@@ -97,18 +136,18 @@ const goToExerciseLog = () => {
   z-index: 100;
   max-height: 100vh;
   overflow: hidden;
-  margin-left: 3%; /* 왼쪽 여백을 더 추가 */
-}
+  margin-left: 3%; //왼쪽 여백을 더 추가 
+} */
 
-/* 화면 크기가 992px 이하일 때, 사이드바의 너비를 100%로 변경 */
+/* 화면 크기가 992px 이하일 때, 사이드바의 너비를 100%로 변경
 @media (max-width: 992px) {
   .user-aside {
-    position: relative; /* 고정된 위치가 아니라 흐름에 따라 위치 */
-    width: 100%; /* 너비를 100%로 설정 */
-    margin-left: 0; /* 왼쪽 여백 없앰 */
-    top: 0; /* 화면 상단에 고정 */
+    position: relative; //고정된 위치가 아니라 흐름에 따라 위치 *
+    width: 100%; // 너비를 100%로 설정 *
+    margin-left: 0; // 왼쪽 여백 없앰 *
+    top: 0; // 화면 상단에 고정 *
   }
-}
+} */
 
 /* 프로필 사진 확대 */
 .profile-img {
@@ -188,4 +227,8 @@ const goToExerciseLog = () => {
 .my-3 {
   margin-top: 20px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> vue
 </style>

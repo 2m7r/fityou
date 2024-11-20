@@ -109,16 +109,17 @@ onMounted(() => {
 <style scoped>
 /* 내가 참여한 챌린지 배경색 */
 .challenges-scroll-container {
-  background-color: #f7f7f7; /* 연한 회색 배경 */
-  overflow-x: hidden; /* 기본 스크롤바 숨기기 */
-  white-space: nowrap; /* 카드들이 한 줄로 배치되도록 */
-  padding-bottom: 20px; /* 아래 여백 */
-  padding-top: 20px; /* 상단 여백 */
-  border-radius: 10px; /* 전체 컨테이너 모서리 둥글게 */
-  position: relative;
+  background-color: #f7f7f7;
+  overflow-x: hidden;
+  white-space: nowrap;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  border-radius: 10px;
   width: 100%;
-  padding-left: 20px; /* 왼쪽 여백 */
-  padding-right: 20px; /* 오른쪽 여백 */
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  justify-content: flex-start; /* 카드들을 왼쪽 정렬 */
 }
 
 .row {
@@ -128,7 +129,7 @@ onMounted(() => {
 }
 
 .card-container {
-  display: inline-block; /* 인라인 블록으로 카드 표시 */
+  display: inline-block;
   width: 360px; /* 카드 크기 고정 */
   margin-right: 20px; /* 카드 간 간격 */
   flex-shrink: 0; /* 카드가 줄어들지 않도록 설정 */

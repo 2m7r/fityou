@@ -63,7 +63,7 @@ const setActive = (tab) => {
   right: 0;
   z-index: 1050;
   width: 100%;
-  background-color: transparent;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)); /* 흰색 그라데이션 추가 */
   box-shadow: none;
   gap: 20px; /* 로고와 탭들 사이에 공간을 줍니다 */
 }

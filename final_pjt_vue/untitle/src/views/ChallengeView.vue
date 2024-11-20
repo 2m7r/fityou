@@ -28,6 +28,9 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
 
 /* 오른쪽 영역을 가득 채우도록 수정 */
 .right {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0; /* 여백을 없앰 */
+  width: 100%; /* 오른쪽 영역 가로 크기 설정 */
 }
 </style>

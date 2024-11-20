@@ -89,4 +89,14 @@ public class WorkoutServiceImpl implements WorkoutService{
 		return dao.deleteWorkout(workoutId);
 	}
 
+	@Override
+	public List<Workout> getWorkoutsById(long userId) {
+		return dao.selectWorkoutsById(userId);
+	}
+
+	@Override
+	public List<Workout> getFollowingWorkoutsByUserId(long userId) {
+		return dao.selectFolloingWordoutsByUserId(userId);
+	}
+
 }

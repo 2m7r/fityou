@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,23 +19,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.workout.jwt.JwtUtil;
 import com.workout.model.dto.User;
+import com.workout.model.service.TokenBlacklistService;
 import com.workout.model.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/user")
+@RequestMapping("/api-user")
 @Tag(name = "사용자 관리 API", description = "회원가입, 로그인, 로그아웃 기능을 제공합니다.")
 public class UserRestController {
 
 	private final UserService us;
+	private final JwtUtil jwtUtil;
+	
+	@Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
-	public UserRestController(UserService us) {
+	public UserRestController(UserService us, JwtUtil jwtUtil) {
 		this.us = us;
+		this.jwtUtil = jwtUtil;
 	}
 
 	// 사용자 회원가입
@@ -83,26 +92,32 @@ public class UserRestController {
 	// 로그인
 	@PostMapping("/login")
 	@Operation(summary = "로그인", description = "사용자가 로그인하여 세션에 사용자 정보를 저장합니다.")
-	public ResponseEntity<?> login(@RequestBody User user, HttpSession session) {
-		try {
-			User loggedInUser = us.authenticateUser(user.getUsername(), user.getPassword());
-			if (loggedInUser != null) {
-				session.setAttribute("user", loggedInUser); // 세션에 사용자 정보 저장
-				return ResponseEntity.ok("로그인 성공");
-			} else {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패: 아이디 또는 비밀번호가 틀렸습니다.");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그인 실패: " + e.getMessage());
-		}
+	public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+	    Map<String, Object> result = new HashMap<>();
+	    HttpStatus status;
+
+	    User loginUser = us.login(user.getUsername(), user.getPassword());
+	    if (loginUser != null) {
+	        result.put("message", "로그인 성공");
+	        result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
+	        status = HttpStatus.OK; // 200 상태 코드
+	        System.out.println("result : " + result);
+	    } else {
+	        result.put("message", "로그인 실패: 잘못된 자격 증명");
+	        status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
+	    }
+	    return new ResponseEntity<>(result, status);
 	}
 
-	// 로그아웃
-	@GetMapping("/logout")
-	@Operation(summary = "로그아웃", description = "로그아웃하여 세션을 무효화합니다.")
-	public ResponseEntity<?> logout(HttpSession session) {
-		session.invalidate(); // 세션 무효화
-		return ResponseEntity.ok("로그아웃 성공");
-	}
-
+	@PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "사용자의 JWT 토큰을 무효화합니다.")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        String token = request.getHeader("access-token");
+        if (token != null) {
+            tokenBlacklistService.addToBlacklist(token); // 블랙리스트에 추가
+            return ResponseEntity.ok("로그아웃 성공");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰이 제공되지 않았습니다.");
+        }
+    }
 }

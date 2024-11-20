@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/diet")
+@RequestMapping("/api-diet")
 @Tag(name = "식단일기 관리 API", description = "식단일기 관리 기능을 제공합니다.")
 public class DietRestController {
 

@@ -3,22 +3,29 @@ package com.workout.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
-	@Bean // 스프링 빈으로 등록합니다.
-	public OpenAPI openAPI() {
-		return new OpenAPI().components(new Components()) // API 구성 요소를 설정합니다.
-				.info(apiInfo()); // API 정보를 설정합니다.
-	}
-
-	private Info apiInfo() {
-		return new Info().title("금지 가롱의 관통 프로젝트") // API 제목을 설정합니다.
-				.description("<h3>우당탕탕 관통일기</h3>") // API 설명을 설정합니다.
-				.version("1.0.0"); // API 버전을 설정합니다.
-	}
+	
+	@Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("우당탕탕 마지막 관통프로젝트")
+                .version("1.0.0")
+                .description("금지와 가롱의 관통 프로젝트"))
+            .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+            .components(new io.swagger.v3.oas.models.Components()
+                .addSecuritySchemes("bearerAuth", new SecurityScheme()
+                    .name("Authorization")
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("bearer")
+                    .bearerFormat("JWT")
+                ));
+    }
 
 }

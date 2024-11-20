@@ -20,9 +20,9 @@
 		WHERE d.user_id IN (
 		SELECT following_id
 		FROM follows
-		WHERE user_id = #{userId} -- 현재 사용자가 팔로우한 유저들의 following_id를 찾음
+		WHERE user_id = #{userId}
 		)
-		ORDER BY d.record_date DESC -- 최신 기록을 먼저 보여줌
+		ORDER BY d.record_date DESC
 	</select>
 
 	<!-- 식단일기 상세조회 -->

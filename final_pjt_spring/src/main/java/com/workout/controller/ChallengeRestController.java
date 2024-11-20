@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/challenge")
+@RequestMapping("/api-challenge")
 @Tag(name = "챌린지 관리 API", description = "챌린지 CRUD 기능을 제공합니다.")
 public class ChallengeRestController {
 	

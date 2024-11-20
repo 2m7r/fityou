@@ -31,7 +31,11 @@
     <div class="my-3"></div>
 
     <!-- 캘린더 -->
+<<<<<<< HEAD
     <UserCalender />
+=======
+    <UserCalender class="calender"/>
+>>>>>>> vue
   </div>
 </template>
 
@@ -94,8 +98,16 @@ const goToExerciseLog = () => {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+<<<<<<< HEAD
   z-index: 100;
   margin-left: 3%; /* 왼쪽 여백을 더 추가 */
+=======
+  overflow-x: hidden;
+  z-index: 100;
+  margin-left: 3%; /* 왼쪽 여백을 더 추가 */
+  margin-top: 120px;
+  margin-bottom: 500px;
+>>>>>>> vue
 }
 
 /* 화면 크기가 992px 이하일 때, 사이드바의 너비를 100%로 변경 */
@@ -215,4 +227,8 @@ const goToExerciseLog = () => {
 .my-3 {
   margin-top: 20px;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> vue
 </style>

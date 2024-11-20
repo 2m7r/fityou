@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workout.model.dao.WorkoutDao">
+
+	<insert id="insertWorkout" useGeneratedKeys="true" keyProperty="workoutId">
+		INSERT INTO workouts (user_id, description)
+		VALUES
+		(#{userId}, #{description})
+	</insert>
+
+	<insert id="insertWorkoutPhoto">
+		INSERT INTO workout_photos (workout_id, photo_url)
+		VALUES (#{workoutId}, #{photoUrl})
+	</insert>
+
+	<insert id="insertWorkoutExercise">
+		INSERT INTO workout_exercises (workout_id, exercise_id, weight, reps, sets)
+		VALUES (#{workoutId}, #{exerciseId}, #{weight}, #{reps}, #{sets})
+	</insert>
+
+	<!-- workouts 테이블에서 운동일기 기본 정보 조회 -->
+	<select id="selectWorkoutById" resultType="Workout">
+		SELECT workout_id, user_id, description, created_at
+		FROM workouts
+		WHERE workout_id = #{workoutId}
+	</select>
+
+	<!-- workout_photos 테이블에서 사진 경로 조회 -->
+	<select id="selectWorkoutPhotos" resultType="String">
+		SELECT photo_url
+		FROM workout_photos
+		WHERE workout_id = #{workoutId}
+	</select>
+
+	<!-- workout_exercises 테이블에서 운동 세부정보 조회 -->
+	<select id="selectWorkoutExercises" resultType="WorkoutExercise">
+		SELECT id,
+		workout_id, exercise_id, weight, reps, sets
+		FROM workout_exercises
+		WHERE workout_id = #{workoutId}
+	</select>
+
+	<!-- 운동일기 업데이트 -->
+	<update id="updateWorkout">
+		UPDATE workouts
+		<set>
+        	<if test="description != null">description = #{description},</if>
+    	</set>
+		WHERE workout_id = #{workoutId}
+	</update>
+
+	<!-- 운동 세부 정보 삭제 -->
+	<delete id="deleteWorkoutExercises">
+		DELETE FROM workout_exercises WHERE workout_id = #{workoutId}
+	</delete>
+
+	<!-- 운동 세부 정보 등록 -->
+	<insert id="insertWorkoutExercises">
+		INSERT INTO workout_exercises (workout_id, exercise_id, weight, reps, sets)
+		VALUES
+		<foreach item="exercise" collection="exercises" separator=",">
+			(#{workoutId}, #{exercise.exerciseId}, #{exercise.weight}, #{exercise.reps}, #{exercise.sets})
+		</foreach>
+	</insert>
+	
+	<!-- 운동일기 삭제 -->
+	<delete id="deleteWorkout">
+    	DELETE FROM workouts WHERE workout_id = #{workoutId}
+	</delete>
+
+
+</mapper>

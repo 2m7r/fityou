@@ -1,6 +1,9 @@
 package com.workout.model.dao;
 
+import java.util.List;
+
 import com.workout.model.dto.Challenge;
+import com.workout.model.dto.User;
 
 public interface ChallengeDao {
 
@@ -12,6 +15,11 @@ public interface ChallengeDao {
 
 	int deleteChallenge(Long challengeId);
 
-	int intoChallenge(Long challengeId, Long userId);
+	int countUp(Long challengeId);
 
+	int intoChallenge(Long userId, Long challengeId);
+	
+	List<User> selectChallengeUsers(Long challengeId);
+
+	List<Challenge> selectAllChallenges();
 }

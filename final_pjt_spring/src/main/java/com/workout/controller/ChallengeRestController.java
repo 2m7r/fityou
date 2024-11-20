@@ -1,5 +1,7 @@
 package com.workout.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.model.dto.Challenge;
+import com.workout.model.dto.User;
 import com.workout.model.service.ChallengeService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +40,7 @@ public class ChallengeRestController {
 	public ResponseEntity<?> registChallenge(@RequestBody Challenge challenge){
 		int result = challengeService.registChallenge(challenge);
 		if(result > 0) {
+			
 			return ResponseEntity.status(HttpStatus.CREATED).body("챌린지 등록 성공");
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("챌린지 등록 실패");
@@ -89,6 +93,25 @@ public class ChallengeRestController {
             return ResponseEntity.ok("챌린지 참여 성공");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("챌린지 참여 실패");
+	}
+	
+	// 챌린지 참여자 목록 조회
+	@GetMapping("/people/{challengeId}")
+	@Operation(summary = "특정 챌린지 참여자 목록 조회", description = "특정 챌린지의 참여자 목록을 조회합니다.")
+	public ResponseEntity<?> selectChallengeUsers(@PathVariable Long challengeId){
+		List<User> users = challengeService.getChallengeUsers(challengeId);
+		if(users != null && !users.isEmpty()) {
+			return ResponseEntity.ok(users);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 챌린지의 유저를 찾을 수 없습니다.");
+	}
+	
+	// 전체 챌린지 목록 조회
+	@GetMapping
+	@Operation(summary = "전체 챌린지 목록 조회", description = "모든 챌린지 목록을 조회합니다.")
+	public ResponseEntity<List<Challenge>> getChallengeList(){
+		List<Challenge> challenges = challengeService.getAllChallenges();
+		return ResponseEntity.ok(challenges);
 	}
 
 }

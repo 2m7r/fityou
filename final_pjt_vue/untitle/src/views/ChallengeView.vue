@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="container-fluid py-4">
     <div class="row">
       <!-- 왼쪽: UserAside (fixed 위치) -->
@@ -33,7 +33,6 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
   overflow-x: hidden; /* 수평 스크롤 방지 */
 }
 
-
 .row {
   display: flex;
   margin: 0;
@@ -53,9 +52,9 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
   left: 0;
   width: 350px; /* 고정 너비 */
   height: 100vh; /* 전체 화면 높이 */
-  background-color: #f8f9fa;
+  /* background-color: #f8f9fa; 배경 색상 적용 */
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 그림자 적용 */
   z-index: 100;
 }
 
@@ -88,5 +87,4 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
     top: 0;
   }
 }
-
 </style>

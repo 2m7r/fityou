@@ -1,29 +1,38 @@
 package com.workout.model.dto;
 
+import java.time.LocalDateTime;
+
 public class Comment {
-	private Long commentId; // 댓글 ID
-    private Long recordId; // 댓글이 달린 기록 ID
-    private Long userId; // 댓글 작성자 ID
+	private long commentId; // 댓글 ID
+    private long targetId; // 댓글이 속한 대상 ID (운동일기나 식단일기 ID)
+    private String targetType; // 댓글이 속한 유형 ('diet' 또는 'workout')
+    private long userId; // 댓글 작성자 ID
     private String content; // 댓글 내용
-    private String createdAt; // 댓글 작성 시간
+    private LocalDateTime createdAt; // 댓글 작성일시
     
     
-	public Long getCommentId() {
+	public long getCommentId() {
 		return commentId;
 	}
-	public void setCommentId(Long commentId) {
+	public void setCommentId(long commentId) {
 		this.commentId = commentId;
 	}
-	public Long getRecordId() {
-		return recordId;
+	public long getTargetId() {
+		return targetId;
 	}
-	public void setRecordId(Long recordId) {
-		this.recordId = recordId;
+	public void setTargetId(long targetId) {
+		this.targetId = targetId;
 	}
-	public Long getUserId() {
+	public String getTargetType() {
+		return targetType;
+	}
+	public void setTargetType(String targetType) {
+		this.targetType = targetType;
+	}
+	public long getUserId() {
 		return userId;
 	}
-	public void setUserId(Long userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 	public String getContent() {
@@ -32,12 +41,11 @@ public class Comment {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-    
     
 }

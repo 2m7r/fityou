@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.workout.model.dao.CommentDao">
+
+    <!-- 댓글 등록 -->
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO comments (target_id, target_type, user_id, content)
+        VALUES (#{targetId}, #{targetType}, #{userId}, #{content})
+    </insert>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteComment">
+        DELETE FROM comments WHERE comment_id = #{commentId}
+    </delete>
+
+    <!-- 특정 대상(운동일기 또는 식단일기)에 달린 댓글 조회 -->
+    <select id="selectCommentsByTarget" resultType="com.workout.model.dto.Comment">
+        SELECT comment_id, target_id, target_type, user_id, content, created_at
+        FROM comments
+        WHERE target_id = #{targetId} AND target_type = #{targetType}
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 댓글 수정 -->
+    <update id="updateComment">
+        UPDATE comments
+        SET content = #{content}
+        WHERE comment_id = #{commentId}
+    </update>
+
+</mapper>

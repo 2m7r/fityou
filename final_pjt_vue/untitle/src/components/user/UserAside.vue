@@ -42,8 +42,19 @@ import UserCalender from "@/components/user/UserCalender.vue";
 const router = useRouter();
 
 const logout = () => {
+<<<<<<< HEAD
   sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+=======
+  // 로그아웃 처리
+  localStorage.removeItem("isLoggedIn"); // localStorage에서 로그인 상태 삭제
+
+  // 2. 세션 또는 인증 토큰이 있다면 제거 (필요시)
+  localStorage.removeItem("token"); // 예: JWT 토큰 제거
+
+  // 3. 로그아웃 후 로그인 페이지로 리디렉션
+  router.push("/user/login");
+>>>>>>> vue
 };
 
 
@@ -65,9 +76,9 @@ const goToDietLog = () => {
 //   }
 // }
 
-const goToExerciseLog = () => {
-  router.push("/workout/create");
-};
+sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
+  router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+
 </script>
 
 <style scoped>

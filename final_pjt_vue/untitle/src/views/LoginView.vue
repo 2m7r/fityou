@@ -157,4 +157,8 @@ button:hover {
 .link:hover {
   text-decoration: underline;
 }
+<<<<<<< HEAD
 </style>
+=======
+</style>
+>>>>>>> vue

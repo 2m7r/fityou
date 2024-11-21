@@ -9,12 +9,12 @@ export const store = createStore({
   mutations: {
     setAuth(state, token) {
       state.isAuthenticated = true;
-      localStorage.setItem('authToken', token); // JWT를 로컬 스토리지에 저장
+      sessionStorage.setItem('access-token', token); // JWT를 로컬 스토리지에 저장
     },
     logout(state) {
       state.isAuthenticated = false;
       state.user = null;
-      localStorage.removeItem('authToken'); // JWT 삭제
+      sessionStorage.removeItem('access-token'); // JWT 삭제
     },
   },
   actions: {

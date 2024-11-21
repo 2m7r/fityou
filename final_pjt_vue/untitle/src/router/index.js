@@ -66,10 +66,9 @@ const router = createRouter({
   ],
 })
 
-
 // 라우터 가드: 인증이 필요한 페이지에 대해 토큰이 없으면 로그인 페이지로 리디렉션
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('authToken');
+  const token = sessionStorage.getItem('access-token');
   if (to.meta.requiresAuth && !token) {
     next({ name: 'login' });
   } else {

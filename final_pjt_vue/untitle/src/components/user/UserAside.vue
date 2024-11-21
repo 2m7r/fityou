@@ -49,7 +49,7 @@ const logout = () => {
   localStorage.removeItem("token"); // 예: JWT 토큰 제거
 
   // 3. 로그아웃 후 로그인 페이지로 리디렉션
-  router.push("/login");
+  router.push("/user/login");
 };
 
 
@@ -74,9 +74,9 @@ const goToDietLog = () => {
 //   }
 // }
 
-const goToExerciseLog = () => {
-  router.push("/workout/create");
-};
+sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
+  router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+
 </script>
 
 <style scoped>

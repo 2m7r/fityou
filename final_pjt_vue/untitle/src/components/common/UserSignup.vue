@@ -32,11 +32,24 @@
         <input type="date" id="birthDate" v-model="birthDate" required />
       </div>
 
-
       <!-- 이메일 입력 -->
       <div class="input-group">
         <label for="email">이메일</label>
         <input type="email" id="email" v-model="email" required placeholder="이메일을 입력하세요" />
+      </div>
+
+      <!-- 전화번호 입력 -->
+      <div class="input-group">
+        <label for="phoneNum">전화번호</label>
+        <input
+          type="text"
+          id="phoneNum"
+          v-model="phoneNum"
+          required
+          placeholder="전화번호를 입력하세요"
+          maxlength="13"
+          @input="formatPhoneNumber"
+        />
       </div>
 
       <!-- 역할 선택 -->
@@ -52,6 +65,29 @@
       <div v-if="role === 'TRAINER'" class="input-group">
         <label for="gymName">체육관 이름</label>
         <input type="text" id="gymName" v-model="gymName" placeholder="체육관 이름을 입력하세요" />
+      </div>
+
+      <!-- 보안 질문 선택 -->
+      <div class="input-group">
+        <label for="securityQuestion">보안 질문</label>
+        <select id="securityQuestion" v-model="securityQuestion" required>
+          <option value="" disabled>보안 질문을 선택하세요</option>
+          <option value="어렸을 때 가장 좋아한 과일은?">어렸을 때 가장 좋아한 과일은?</option>
+          <option value="첫 번째 애완동물의 이름은?">첫 번째 애완동물의 이름은?</option>
+          <option value="어릴 적 가장 기억에 남는 여행지는?">어릴 적 가장 기억에 남는 여행지는?</option>
+        </select>
+      </div>
+
+      <!-- 보안 질문 답변 입력 -->
+      <div class="input-group">
+        <label for="securityAnswer">보안 답변</label>
+        <input
+          type="text"
+          id="securityAnswer"
+          v-model="securityAnswer"
+          required
+          placeholder="보안 질문에 대한 답을 입력하세요"
+        />
       </div>
 
       <!-- 회원가입 버튼 -->
@@ -74,8 +110,11 @@ export default {
       birthDate: '',
       gender: 'M', 
       email: '',
-      role: 'USER', 
-      gymName: '', 
+      phoneNum: '',
+      role: 'USER',
+      gymName: '',
+      securityQuestion: '',  // 보안 질문
+      securityAnswer: '',    // 보안 질문 답변
     };
   },
   methods: {
@@ -92,7 +131,10 @@ export default {
       formData.append('birthDate', this.birthDate);
       formData.append('gender', this.gender);
       formData.append('email', this.email);
+      formData.append('phoneNum', this.phoneNum);
       formData.append('role', this.role);
+      formData.append('securityQuestion', this.securityQuestion);  // 보안 질문 추가
+      formData.append('securityAnswer', this.securityAnswer);      // 보안 답변 추가
       if (this.role === 'TRAINER') {
         formData.append('gymName', this.gymName);
       }
@@ -111,8 +153,15 @@ export default {
       }
     },
 
-    handleFileChange(event) {
-      this.profileImage = event.target.files[0];
+    formatPhoneNumber() {
+      let formattedPhoneNumber = this.phoneNum.replace(/\D/g, '');
+      if (formattedPhoneNumber.length <= 3) {
+        this.phoneNum = formattedPhoneNumber;
+      } else if (formattedPhoneNumber.length <= 6) {
+        this.phoneNum = formattedPhoneNumber.replace(/(\d{3})(\d{0,4})/, '$1-$2');
+      } else {
+        this.phoneNum = formattedPhoneNumber.replace(/(\d{3})(\d{4})(\d{0,4})/, '$1-$2-$3');
+      }
     },
 
     goToLogin() {

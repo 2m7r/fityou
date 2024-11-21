@@ -1,5 +1,6 @@
 package com.workout.model.service;
 
+import com.workout.model.dto.FindIdRequest;
 import com.workout.model.dto.User;
 
 public interface UserService {
@@ -8,4 +9,7 @@ public interface UserService {
 	
 	User login(String username, String password);
 
+	String findUsername(FindIdRequest request);
+
+	User findByEmail(String email);
 }

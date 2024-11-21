@@ -7,11 +7,11 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.workout.exception.InvalidAnswerException;
+import com.workout.exception.UserNotFoundException;
 import com.workout.jwt.JwtUtil;
+import com.workout.model.dto.FindIdRequest;
 import com.workout.model.dto.User;
 import com.workout.model.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @CrossOrigin("*")
@@ -97,6 +99,7 @@ public class UserRestController {
 	    if (loginUser != null) {
 	        result.put("message", "로그인 성공");
 	        result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
+	        result.put("loginUser", loginUser);
 	        status = HttpStatus.OK; // 200 상태 코드
 	        System.out.println("result : " + result);
 	    } else {
@@ -106,6 +109,7 @@ public class UserRestController {
 	    return new ResponseEntity<>(result, status);
 	}
 
+	// 로그아웃
 	@PostMapping("/logout")
 	@Operation(summary = "로그아웃", description = "사용자의 세션 토큰을 클라이언트에서 삭제합니다.")
 	public ResponseEntity<String> logout() {
@@ -113,6 +117,40 @@ public class UserRestController {
 	    return ResponseEntity.ok("로그아웃 성공");
 	}
 	
-	// 수정
+	// 아이디 찾기
+	@PostMapping("/find-id")
+    public ResponseEntity<String> findId(@RequestBody FindIdRequest request) {
+        try {
+            String username = us.findUsername(request);
+            System.out.println("들어옴");
+            System.out.println(username);
+            return ResponseEntity.ok("귀하의 아이디는: " + username);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
+        } catch (InvalidAnswerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("답변이 틀렸습니다.");
+        }
+    }
+	
+	// 이메일을 기준으로 보안 질문을 반환하는 API
+    @GetMapping("/get-security-question")
+    public ResponseEntity<Map<String, String>> getSecurityQuestion(@RequestParam String email) {
+        // 이메일로 사용자를 찾음
+        User user = us.findByEmail(email);
+        
+        if (user != null) {
+            // 사용자가 존재하면 보안 질문 반환
+            Map<String, String> response = new HashMap<>();
+            response.put("securityQuestion", user.getSecurityQuestion());
+            return ResponseEntity.ok(response);
+        } else {
+            // 사용자가 없으면 404 Not Found 반환
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+	
+    // 사용자 정보 불러오기
+    @GetMapping("/")
+	
 	
 }

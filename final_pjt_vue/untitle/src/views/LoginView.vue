@@ -22,7 +22,10 @@
 
       <!-- 계정 찾기, 회원가입 버튼 -->
       <div class="footer-links">
-        <span class="link" @click="goToFindAccount">계정 찾기</span>
+        <div>
+          <span class="link" @click="goToFindId">아이디</span> / 
+          <span class="link" @click="goToFindPW">비밀번호 찾기</span>
+        </div>
         <span class="link" @click="goToSignup">회원가입</span>
       </div>
     </form>
@@ -32,14 +35,16 @@
 <script>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'; // Pinia 스토어 불러오기
 import apiClient from '@/components/api/apiClient' // axios 클라이언트를 임포트
 
 export default {
   name: 'UserLogin',
   setup() {
+    const userStore = useUserStore(); // 스토어 사용
+    const router = useRouter();
     const id = ref('');
     const password = ref('');
-    const router = useRouter();
 
     // 로그인 처리 함수
     const handleLogin = async () => {
@@ -50,9 +55,13 @@ export default {
           password: password.value
         })
 
-        // 서버에서 반환한 JWT 토큰을 sessionStorage 저장
-        const token = response.data.token // 서버에서 JWT 반환
+        const result = response.data; // 서버에서 반환된 데이터
+        const token = result['access-token'];
+        const loginUser = result['loginUser'];
+
         sessionStorage.setItem('access-token', token); // 세션 스토리지에 토큰 저장
+
+        userStore.setUser(loginUser); // 사용자 정보 스토어에 저장
 
         // 로그인 성공 후, 대시보드 페이지로 리디렉션
         router.push({ name: 'home' }) // 리디렉션 후 대시보드로 이동
@@ -64,9 +73,14 @@ export default {
       }
     }
 
-    // 계정 찾기 페이지로 이동
-    const goToFindAccount = () => {
-      router.push({ name: 'findAccount' })
+    // 아이디 찾기 페이지로 이동
+    const goToFindId = () => {
+      router.push({ name: 'find-id' })
+    }
+
+    // 비번 찾기 페이지로 이동
+    const goToFindPW = () => {
+      router.push({ name: 'find-pw' })
     }
 
     // 회원가입 페이지로 이동
@@ -74,7 +88,7 @@ export default {
       router.push({ name: 'signup' })
     }
 
-    return { id, password, handleLogin, goToFindAccount, goToSignup }
+    return { id, password, handleLogin, goToFindId, goToFindPW, goToSignup }
   }
 }
 </script>
@@ -157,8 +171,4 @@ button:hover {
 .link:hover {
   text-decoration: underline;
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> vue

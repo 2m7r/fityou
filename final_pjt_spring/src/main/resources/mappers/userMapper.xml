@@ -12,7 +12,19 @@
     
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="User">
-        INSERT INTO users (name, birthDate, gender, email, username, password, role, profile_image_url)
-        VALUES (#{name}, #{birthDate}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{profile})
+        INSERT INTO users (name, birthDate, phoneNum, gender, email, username, password, role, security_question, security_answer)
+        VALUES (#{name}, #{birthDate}, #{phoneNum}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{securityQuestion}, #{securityAnswer})
     </insert>
+    
+    <!-- 아이디 찾기 -->
+    <select id="findByEmailAndName" resultType="User">
+    	SELECT username, security_question, security_answer FROM users
+    	WHERE email = #{email} AND name = #{name}
+    </select>
+    
+    <select id="selectByEmail" resultType="User">
+    	SELECT * FROM users
+    	WHERE email = #{email}
+    </select>
+    
 </mapper>

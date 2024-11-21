@@ -20,11 +20,20 @@ CREATE TABLE users (
     profile_image_url VARCHAR(255) -- 프로필 이미지 경로
 );
 
-INSERT INTO users (name, birthDate, gender, email, username, password, role)
+INSERT INTO users (name, birthDate, gender, email, username, password, role, gym_name, is_private_account)
 VALUES
-('지피티', '1990-01-01', 'F', 'pt@pt.com', 'trainer', 'trainer', 'TRAINER'),
-('김싸피', '2024-11-11', 'M', 'ssafy@ssafy.com', 'ssafy', 'ssafy', 'USER'),
-('임가현', '1999-10-01', 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER');
+('지피티', '1990-01-01', 'F', 'pt@pt.com', 'trainer', 'trainer', 'TRAINER', '핏니스 센터', FALSE),
+('김싸피', '2024-11-11', 'M', 'ssafy@ssafy.com', 'ssafy', 'ssafy', 'USER', NULL, FALSE),
+('임가현', '1999-10-01', 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER', NULL, TRUE),
+('홍길동', '1985-05-20', 'M', 'hong@example.com', 'hong123', 'password123', 'USER', NULL, FALSE),
+('박지현', '1992-07-15', 'F', 'park@example.com', 'jihan92', 'mypassword', 'USER', NULL, TRUE),
+('김민수', '1987-03-30', 'M', 'minsu@example.com', 'minsu88', 'minsu123', 'USER', NULL, FALSE),
+('이하늘', '1989-08-10', 'F', 'haneul@example.com', 'haneul1989', 'mypassword', 'TRAINER', '하늘의 체육관', FALSE),
+('정우성', '1995-12-25', 'M', 'woosung@example.com', 'woosung95', 'woosungpass', 'USER', NULL, FALSE),
+('소지섭', '1991-02-11', 'M', 'soji@example.com', 'soji1991', 'soji123', 'TRAINER', '소의 피트니스', FALSE),
+('유진', '1993-04-17', 'F', 'yujin@example.com', 'yujin93', 'yujinpass', 'USER', NULL, TRUE),
+('이태웃씌', '1997-03-05', 'O', 'xodn@xodn.com', 'xodn97', 'xodn', 'USER', NULL, TRUE);
+
 
 SELECT * FROM users;
 
@@ -62,6 +71,21 @@ CREATE TABLE follows (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (following_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+INSERT INTO follows (user_id, following_id)
+VALUES
+(1, 2),  -- '지피티'가 '김싸피'를 팔로우
+(1, 3),  -- '지피티'가 '임가현'을 팔로우
+(2, 3),  -- '김싸피'가 '임가현'을 팔로우
+(2, 4),  -- '김싸피'가 '홍길동'을 팔로우
+(3, 1),  -- '임가현'이 '지피티'를 팔로우
+(3, 5),  -- '임가현'이 '박지현'을 팔로우
+(4, 5),  -- '홍길동'이 '박지현'을 팔로우
+(4, 6),  -- '홍길동'이 '김민수'를 팔로우
+(5, 7),  -- '박지현'이 '이하늘'을 팔로우
+(6, 1),  -- '김민수'가 '지피티'를 팔로우
+(1, 11), (2, 11), (3, 11), (4, 11), (5, 11), (6, 11), (7, 11), (8, 11), (9, 11);
+
 SELECT * FROM follows;
 
 
@@ -219,8 +243,17 @@ CREATE TABLE trainer_clients (
     FOREIGN KEY (trainer_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
-INSERT INTO trainer_clients (trainer_id, client_id, comment)
-VALUES (5, 1, '고수임');
+
+INSERT INTO trainer_clients (trainer_id, client_id, comment, created_at)
+VALUES
+(1, 2, '초보자이며 체력 향상이 필요', '2024-11-01 09:00:00'), 
+(1, 3, '유연성 향상을 위한 운동 집중', '2024-11-01 09:30:00'), 
+(1, 4, '중급자 수준, 체중 감량 목표', '2024-11-02 10:00:00'), 
+(7, 5, '근력 훈련 강화가 필요', '2024-11-02 10:30:00'), 
+(7, 6, '체중 증가와 근육량 증가 목표', '2024-11-03 11:00:00'), 
+(9, 8, '스포츠 재활 치료 중', '2024-11-04 12:00:00'), 
+(9, 10, '체력 유지 및 유산소 운동 강화', '2024-11-05 13:00:00');
+
 
 SELECT * from trainer_clients;
 

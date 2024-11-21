@@ -1,15 +1,6 @@
 <template>
-  <div class="container-fluid py-4">
+  <div class="container py-4">
     <div class="row">
-<<<<<<< HEAD
-      <!-- 왼쪽: UserAside (0.5/12) -->
-      <div class="col-md-3">
-        <UserAside />
-      </div>
-
-      <!-- 오른쪽: UserFeed (8.5/12) -->
-      <div class="col-md-9 right">
-=======
       <!-- 왼쪽: UserAside (fixed 위치) -->
       <div class="user-aside">
         <UserAside />
@@ -17,7 +8,6 @@
 
       <!-- 오른쪽: ChallengesMy와 ChallengesRecommended -->
       <div class="right">
->>>>>>> vue
         <ChallengesMy />
         <ChallengesRecommended />
       </div>
@@ -32,79 +22,38 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-<<<<<<< HEAD
-.row {
-  margin-left: 0; /* 오른쪽 영역을 꽉 채우도록 여백을 없앰 */
-}
-
-/* 오른쪽 영역을 가득 채우도록 수정 */
-.right {
-  display: flex;
-  flex-direction: column;
-  margin-top: 0; /* 여백을 없앰 */
-  width: 100%; /* 오른쪽 영역 가로 크기 설정 */
-=======
 /* 전체 화면에서 UserAside 고정 위치 설정 */
-=======
-/* 전체 레이아웃에 box-sizing: border-box 적용 */
-* {
-  box-sizing: border-box;
-}
-
-/* container-fluid에 max-width 적용 */
-.container-fluid {
-  max-width: 93%; /* 페이지가 화면을 벗어나지 않도록 */
-  overflow-x: hidden; /* 수평 스크롤 방지 */
-}
-
-
-.row {
-  display: flex;
-  margin: 0;
-  height: 100vh;
-  overflow: hidden; /* row에서 스크롤 막기 */
-  width: 100%;
-}
-
-.row > * {
-  max-width: 100%; /* 자식 요소가 부모의 너비를 넘지 않도록 제한 */
-}
-
-/* 왼쪽 UserAside 고정 영역 */
->>>>>>> vue
 .user-aside {
   position: fixed;
-  top: 0;
+  top: 20px;
   left: 0;
-  width: 350px; /* 고정 너비 */
-  height: 100vh; /* 전체 화면 높이 */
+  width: 350px; /* UserAside 고정 너비 */
+  height: calc(100vh - 20px); /* 화면 높이에서 여백만큼 빼기 */
   background-color: #f8f9fa;
   padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 100;
 }
 
-/* 오른쪽 영역: 화면 크기에 맞춰 확장 */
+/* 오른쪽 콘텐츠 영역: UserAside의 너비를 제외하고 나머지 화면 차지 */
 .right {
-  margin-left: 350px; /* UserAside 너비만큼 여백 */
-  padding: 20px;
+  margin-left: 350px; /* UserAside 너비만큼 왼쪽 여백 */
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-x: auto;
   box-sizing: border-box;
-  overflow-x: hidden; /* 가로 스크롤 방지 */
+  width: calc(100vw - 350px); /* 화면 너비에서 UserAside 영역 너비를 제외한 값 */
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow-y: auto; /* 세로 스크롤 필요시 */
-  width: 100%;
-  max-width: 84%; /* 부모를 벗어나지 않도록 */
 }
-
 
 /* 작은 화면에서 레이아웃 조정 */
 @media (max-width: 992px) {
   .right {
     margin-left: 0;
-    width: 100%; /* 화면 크기 전체를 사용 */
+    width: 100%; /* 화면 크기가 작아지면 100%로 설정 */
   }
 
   .user-aside {
@@ -113,7 +62,5 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
     margin-left: 0;
     top: 0;
   }
->>>>>>> vue
 }
-
 </style>

@@ -54,26 +54,15 @@ const setActive = (tab) => {
 /* 네비게이션 바 전체 스타일 */
 .custom-navbar {
   display: flex;
-<<<<<<< HEAD
-  justify-content: center; /* 네비게이션 바 중앙 정렬 */
-  align-items: center;
-  padding: 10px 2%; /* 네비게이션 바 안쪽 여백 */
-=======
   justify-content: center;
   align-items: center;
   padding: 10px 2%;
->>>>>>> vue
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1050;
   width: 100%;
-<<<<<<< HEAD
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)); /* 흰색 그라데이션 추가 */
-  box-shadow: none;
-  gap: 20px; /* 로고와 탭들 사이에 공간을 줍니다 */
-=======
   background-color: transparent;
   box-shadow: none;
   gap: 20px;
@@ -87,7 +76,6 @@ const setActive = (tab) => {
   height: 300px; /* 그라데이션의 높이를 조정 */
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1),rgba(255, 255, 255, 0));
   z-index: -1; /* 네비게이션 바 뒤에 배경을 설정 */
->>>>>>> vue
 }
 
 /* 로고 컨테이너 */

@@ -132,8 +132,4 @@ onMounted(() => {
   padding: 5px;
   text-align: center;
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> vue
 </style>

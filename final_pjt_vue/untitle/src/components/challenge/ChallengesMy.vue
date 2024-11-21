@@ -238,13 +238,4 @@ h2 {
   background-color: rgba(0, 0, 0, 0.3); /* 호버 시 반투명한 검은색 배경 */
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* 호버 시 주변에 그림자 효과 */
 }
-<<<<<<< HEAD
 </style>
-=======
-<<<<<<< HEAD
->>>>>>> vue
-</style>
-=======
-</style>
->>>>>>> vue
->>>>>>> e25b799800bba5e65348a45c0eb2a566ac760567

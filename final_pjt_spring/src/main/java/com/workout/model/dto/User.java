@@ -5,7 +5,7 @@ import java.util.List;
 public class User {
 	private Long userId; // 고유 사용자 ID
     private String name; // 사용자 이름
-    private int age; // 나이
+    private String birthDate; // 생년월일
     private String gender; // 성별 (M, F, O)
     private String email; // 이메일
     private String username; // 사용자 이름 (아이디)
@@ -36,11 +36,11 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getAge() {
-		return age;
+	public String getBirthDate() {
+		return birthDate;
 	}
-	public void setAge(int age) {
-		this.age = age;
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
 	}
 	public String getGender() {
 		return gender;
@@ -97,12 +97,5 @@ public class User {
 		this.isPrivateAccount = isPrivateAccount;
 	}
 	
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", name=" + name + ", age=" + age + ", gender=" + gender + ", email=" + email
-				+ ", username=" + username + ", password=" + password + ", role=" + role + ", gymName=" + gymName
-				+ ", awards=" + awards + ", preferredExercises=" + preferredExercises + ", isPrivateAccount="
-				+ isPrivateAccount + "]";
-	}
     
 }

@@ -5,14 +5,14 @@
 <mapper namespace="com.workout.model.dao.UserDao">
 	<!-- 사용자 조회 (비밀번호 제외) -->
     <select id="selectOne" parameterType="Map" resultType="User"> 
-        SELECT user_id, name, age, gender, email, username, role
+        SELECT user_id, name, birthDate, gender, email, username, role
         FROM users
         WHERE username = #{username} AND password = #{password}
     </select>
     
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="User">
-        INSERT INTO users (name, age, gender, email, username, password, role, profile_image_url)
-        VALUES (#{name}, #{age}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{profile})
+        INSERT INTO users (name, birthDate, gender, email, username, password, role, profile_image_url)
+        VALUES (#{name}, #{birthDate}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{profile})
     </insert>
 </mapper>

@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.workout.jwt.JwtUtil;
 import com.workout.model.dto.User;
-import com.workout.model.service.TokenBlacklistService;
 import com.workout.model.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,10 +36,7 @@ public class UserRestController {
 	private final UserService us;
 	private final JwtUtil jwtUtil;
 	
-	@Autowired
-    private TokenBlacklistService tokenBlacklistService;
-
-	public UserRestController(UserService us, JwtUtil jwtUtil) {
+		public UserRestController(UserService us, JwtUtil jwtUtil) {
 		this.us = us;
 		this.jwtUtil = jwtUtil;
 	}
@@ -67,6 +63,7 @@ public class UserRestController {
 			user.setProfile(profileImagePath);
 
 		int result = us.registUser(user);
+		System.out.println("들어옴");
 		if (result > 0) {
 			return ResponseEntity.status(HttpStatus.CREATED).body("유저 등록 성공");
 		}
@@ -110,14 +107,12 @@ public class UserRestController {
 	}
 
 	@PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "사용자의 JWT 토큰을 무효화합니다.")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        String token = request.getHeader("access-token");
-        if (token != null) {
-            tokenBlacklistService.addToBlacklist(token); // 블랙리스트에 추가
-            return ResponseEntity.ok("로그아웃 성공");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰이 제공되지 않았습니다.");
-        }
-    }
+	@Operation(summary = "로그아웃", description = "사용자의 세션 토큰을 클라이언트에서 삭제합니다.")
+	public ResponseEntity<String> logout() {
+	    // 서버에서는 아무 작업도 하지 않고, 클라이언트에서만 처리
+	    return ResponseEntity.ok("로그아웃 성공");
+	}
+	
+	// 수정
+	
 }

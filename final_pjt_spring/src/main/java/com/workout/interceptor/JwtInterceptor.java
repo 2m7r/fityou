@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.workout.jwt.JwtUtil;
-import com.workout.model.service.TokenBlacklistService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,9 +15,6 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private JwtUtil jwtUtil;
-	
-	@Autowired
-    private TokenBlacklistService tokenBlacklistService;
 
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -30,9 +26,6 @@ public class JwtInterceptor implements HandlerInterceptor {
         String token = request.getHeader(HEADER_AUTH);
         if (token != null) {
             // 블랙리스트에 포함된 토큰인지 확인
-            if (tokenBlacklistService.isBlacklisted(token)) {
-                throw new IllegalAccessException("로그아웃된 토큰입니다.");
-            }
             jwtUtil.validate(token); // 토큰 유효성 검증
             return true;
         }

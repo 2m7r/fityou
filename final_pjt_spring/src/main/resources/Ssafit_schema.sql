@@ -1,3 +1,6 @@
+drop database IF EXISTS final_pjt;
+
+create database final_pjt;
 use final_pjt;
 
 drop TABLE IF EXISTS users;
@@ -5,7 +8,7 @@ drop TABLE IF EXISTS users;
 CREATE TABLE users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별 ID
     name VARCHAR(100) NOT NULL, -- 이름
-    age INT NOT NULL, -- 나이
+    birthDate DATE NOT NULL, -- 생년월일 (DATE로 변경)
     gender ENUM('M', 'F', 'O') NOT NULL, -- 성별
     email VARCHAR(255) UNIQUE NOT NULL, -- 이메일
     username VARCHAR(50) UNIQUE NOT NULL, -- 로그인 아이디
@@ -17,10 +20,11 @@ CREATE TABLE users (
     profile_image_url VARCHAR(255) -- 프로필 이미지 경로
 );
 
-INSERT INTO users (name, age, gender, email, username, password, role)
-VALUES ('지피티', 30, 'F', 'pt@pt.com', 'trainer', 'trainer', 'TRAINER');
---     ('김싸피', 25, 'M', 'ssafy@ssafy.com', 'ssafy1', 'ssafy1', 'USER');
--- 	   ('임가현', 26, 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER');
+INSERT INTO users (name, birthDate, gender, email, username, password, role)
+VALUES
+('지피티', '1990-01-01', 'F', 'pt@pt.com', 'trainer', 'trainer', 'TRAINER'),
+('김싸피', '2024-11-11', 'M', 'ssafy@ssafy.com', 'ssafy', 'ssafy', 'USER'),
+('임가현', '1999-10-01', 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER');
 
 SELECT * FROM users;
 

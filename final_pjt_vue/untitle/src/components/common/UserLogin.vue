@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="login-form">
       <h2>로그인</h2>
       <form @submit.prevent="login">
@@ -86,4 +86,4 @@
     text-decoration: underline;
   }
   </style>
-   -->
+  

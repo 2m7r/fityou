@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="signup-form">
       <h2>회원가입</h2>
       <form @submit.prevent="signup">
@@ -95,4 +95,4 @@
     text-decoration: underline;
   }
   </style>
-   -->
+  

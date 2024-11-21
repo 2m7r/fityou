@@ -36,14 +36,14 @@
         </div>
       </div>
 
-      <!-- 스크롤 버튼 (스크롤 컨테이너 내에서 고정) -->
-      <button class="scroll-button left" @click="scrollLeft">
-        <i class="bi bi-arrow-left"></i> <!-- 왼쪽 화살표 아이콘 -->
-      </button>
-      <button class="scroll-button right" @click="scrollRight">
-        <i class="bi bi-arrow-right"></i> <!-- 오른쪽 화살표 아이콘 -->
-      </button>
     </div>
+    <!-- 스크롤 버튼 -->
+    <button class="scroll-button left" @click="scrollLeft">
+      <i class="bi bi-arrow-left"></i> <!-- 왼쪽 화살표 아이콘 -->
+    </button>
+    <button class="scroll-button right" @click="scrollRight">
+      <i class="bi bi-arrow-right"></i> <!-- 오른쪽 화살표 아이콘 -->
+    </button>
   </div>
 </template>
 
@@ -92,7 +92,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ChallengesMy 컨테이너 */
 .challenges-my-container {
   padding: 20px;
   display: flex;
@@ -103,7 +102,7 @@ onMounted(() => {
 
 /* 챌린지 제목 */
 h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
   margin-bottom: 20px; /* 제목과 카드들 간격 추가 */
 }
@@ -114,17 +113,19 @@ h2 {
   padding-bottom: 20px;
   padding-top: 20px;
   border-radius: 10px;
-  width: 100%;
-  box-sizing: border-box;
+  width: 100%; /* 화면 너비에 맞게 조정 */
+  box-sizing: border-box; /* padding을 포함한 너비로 계산 */
   overflow-x: scroll; /* 수평 스크롤 허용 */
   white-space: nowrap;
-  position: relative; /* 버튼을 스크롤 컨테이너 내부에서 위치시키기 위해 상대적인 위치 설정 */
+  position: relative; /* 스크롤 버튼 위치의 기준이 되는 위치 */
+  margin-bottom: 50px; /* 아래쪽 여백을 추가해 스크롤 버튼 공간 확보 */
 }
 
 /* 스크롤바 숨기기 */
 .challenges-scroll-container::-webkit-scrollbar {
   display: none; /* 웹킷 기반 브라우저에서 스크롤바 숨기기 */
 }
+
 
 .card-wrapper {
   padding-left: 1.2%;
@@ -137,7 +138,7 @@ h2 {
 
 /* 카드 크기 */
 .card-container {
-  width: 360px;
+  width: 360px; /* 화면 크기에 맞게 카드의 너비를 조정 (좌우 여백을 제외) */
   flex-shrink: 0;
 }
 
@@ -198,21 +199,18 @@ h2 {
   align-items: center;
   transition: background-color 0.3s ease;
   z-index: 2; /* 버튼이 카드들 위에 표시되도록 */
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-/* 왼쪽 버튼 */
-.scroll-button.left {
-  left: 10px; /* 스크롤 컨테이너의 왼쪽에 고정 */
+
+
+/* 카드 컨테이너 내에서 스크롤 버튼 가로 중앙에 배치 */
+.scroll-button {
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
 }
 
-/* 오른쪽 버튼 */
-.scroll-button.right {
-  right: 10px; /* 스크롤 컨테이너의 오른쪽에 고정 */
-}
-
-.scroll-button:hover {
-  background-color: rgba(0, 0, 0, 0.4);
-}
 
 /* X 버튼 */
 .btn-close {
@@ -238,4 +236,5 @@ h2 {
   background-color: rgba(0, 0, 0, 0.3); /* 호버 시 반투명한 검은색 배경 */
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* 호버 시 주변에 그림자 효과 */
 }
+
 </style>

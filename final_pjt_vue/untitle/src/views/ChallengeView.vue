@@ -22,17 +22,14 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
 </script>
 
 <style scoped>
+.row {
+  width: calc(94vw);
+}
+
+
 /* 전체 화면에서 UserAside 고정 위치 설정 */
 .user-aside {
   position: fixed;
-  top: 20px;
-  left: 0;
-  width: 350px; /* UserAside 고정 너비 */
-  height: calc(100vh - 20px); /* 화면 높이에서 여백만큼 빼기 */
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 100;
 }
 
@@ -44,9 +41,9 @@ import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
   padding-right: 20px;
   overflow-x: auto;
   box-sizing: border-box;
-  width: calc(100vw - 350px); /* 화면 너비에서 UserAside 영역 너비를 제외한 값 */
   display: flex;
   flex-direction: column;
+  width: calc(100% - 350px);
 }
 
 /* 작은 화면에서 레이아웃 조정 */

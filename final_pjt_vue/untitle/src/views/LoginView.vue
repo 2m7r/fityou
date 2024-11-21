@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="login-page">
       <h1>로그인</h1>
       <form @submit.prevent="handleLogin">
@@ -24,7 +24,7 @@
   <script>
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import apiClient from '@/api/apiClient' // axios 클라이언트를 임포트
+  import apiClient from '@/components/api/apiClient' // axios 클라이언트를 임포트
   
   export default {
     name: 'UserLogin',
@@ -120,4 +120,4 @@
     border-radius: 5px;
   }
   </style>
-   -->
+  

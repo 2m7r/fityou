@@ -37,8 +37,6 @@ VALUES
 ('유진', '1993-04-17', 'F', 'yujin@example.com', 'yujin93', 'yujinpasshash', 'USER', NULL, TRUE, '010-1111-3333', '가장 좋아하는 계절은 무엇인가요?', '봄'),
 ('이태웃씌', '1997-03-05', 'O', 'xodn@xodn.com', 'xodn', 'xodn', 'USER', NULL, TRUE, '010-2222-4444', '어린 시절 가장 좋아했던 TV 프로그램은 무엇인가요?', '딩동댕');
 
-
-
 SELECT * FROM users;
 
 

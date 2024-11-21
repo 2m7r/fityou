@@ -5,7 +5,7 @@
 <mapper namespace="com.workout.model.dao.UserDao">
 	<!-- 사용자 조회 (비밀번호 제외) -->
     <select id="selectOne" parameterType="Map" resultType="User"> 
-        SELECT user_id, name, birthDate, gender, email, username, role
+        SELECT user_id, name, phoneNum, gender, email, username, role, gym_name
         FROM users
         WHERE username = #{username} AND password = #{password}
     </select>
@@ -25,6 +25,12 @@
     <select id="selectByEmail" resultType="User">
     	SELECT * FROM users
     	WHERE email = #{email}
+    </select>
+    
+    <!-- 비밀번호 찾기 -->
+    <select id="findByEmailAndNameAndId" resultType="User">
+    	SELECT username, password, security_question, security_answer FROM users
+    	WHERE email = #{email} AND name = #{name} AND username = #{username}
     </select>
     
 </mapper>

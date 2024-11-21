@@ -54,4 +54,21 @@ public class UserServiceImpl implements UserService{
 		return dao.selectByEmail(email);
 	}
 
+	@Override
+	public String findPassword(FindIdRequest request) {
+		User user = dao.findByEmailAndNameAndId(request.getEmail(), request.getName(), request.getUsername());
+		
+		// 없으면
+        if(user == null) {
+        	throw new UserNotFoundException("해당하는 유저가 없습니다.");
+        }
+        
+        // 본인 확인 질문과 답변 비교
+        if (!user.getSecurityAnswer().equals(request.getSecurityAnswer())) {
+            throw new InvalidAnswerException("답변이 틀렸습니다.");
+        }
+        
+        return user.getPassword();
+    }
+
 }

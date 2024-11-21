@@ -13,4 +13,6 @@ public interface UserDao {
 	User findByEmailAndName(String email, String name);
 
 	User selectByEmail(String email);
+
+	User findByEmailAndNameAndId(String email, String name, String username);
 }

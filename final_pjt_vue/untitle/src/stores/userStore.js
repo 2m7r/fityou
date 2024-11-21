@@ -4,8 +4,8 @@ import api from '@/components/api/apiClient';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null, // 유저 정보 (사용자 데이터 전체)
-    token: null, // JWT 토큰
+    user: null,
+    token: sessionStorage.getItem('access-token') || null, // sessionStorage에서 토큰 로드
   }),
   getters: {
     // 사용자 이름을 반환
@@ -18,7 +18,6 @@ export const useUserStore = defineStore('user', {
     userEmail: (state) => state.user?.email || '',
     userPhone: (state) => state.user?.phoneNum || '',
     userGender: (state) => state.user?.gender || 'M',
-    userPrivacy: (state) => state.user?.privacy || 'PUBLIC',
   },
   actions: {
     // 사용자 정보 설정
@@ -35,6 +34,7 @@ export const useUserStore = defineStore('user', {
     clearUser() {
       this.user = null; // 사용자 정보 초기화
       this.token = null; // JWT 토큰 초기화
+      sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
     },
 
     // 사용자 정보 업데이트
@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', {
         }
 
         // 서버에 사용자 정보 업데이트 요청
-        const response = await api.post('/api-user/update-user-info', formData);
+        const response = await api.put('/api-user/update', formData);
 
         // 요청이 성공하면, 사용자 정보를 업데이트
         this.setUser(response.data);

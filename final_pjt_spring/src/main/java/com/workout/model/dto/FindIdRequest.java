@@ -3,10 +3,17 @@ package com.workout.model.dto;
 public class FindIdRequest {
 	private String email;
     private String name;
+    private String username;
     private String securityQuestion;
     private String securityAnswer;  // 본인 확인 질문에 대한 답변
     
     
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	public String getEmail() {
 		return email;
 	}
@@ -31,5 +38,14 @@ public class FindIdRequest {
 	public void setSecurityAnswer(String securityAnswer) {
 		this.securityAnswer = securityAnswer;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "FindIdRequest [email=" + email + ", name=" + name + ", username=" + username + ", securityQuestion="
+				+ securityQuestion + ", securityAnswer=" + securityAnswer + "]";
+	}
+	
+	
     
 }

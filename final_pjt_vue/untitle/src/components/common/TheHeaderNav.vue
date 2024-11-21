@@ -68,6 +68,7 @@ const setActive = (tab) => {
   gap: 20px;
 }
 
+/* 그라데이션 배경 */
 .custom-navbar::before {
   content: '';
   position: absolute;
@@ -76,7 +77,9 @@ const setActive = (tab) => {
   height: 300px; /* 그라데이션의 높이를 조정 */
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1),rgba(255, 255, 255, 0));
   z-index: -1; /* 네비게이션 바 뒤에 배경을 설정 */
+  pointer-events: none; /* 그라데이션 영역에서 마우스 이벤트를 비활성화 */
 }
+
 
 /* 로고 컨테이너 */
 .logo-container {

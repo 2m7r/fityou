@@ -1,13 +1,13 @@
 <template>
   <div class="container py-4">
     <div class="row">
-      <!-- 왼쪽: UserAside (0.5/12) -->
-      <div class="col-md-3">
+      <!-- 왼쪽: UserAside (fixed 위치) -->
+      <div class="user-aside">
         <UserAside />
       </div>
 
-      <!-- 오른쪽: UserFeed (8.5/12) -->
-      <div class="col-md-9 right">
+      <!-- 오른쪽: ChallengesMy와 ChallengesRecommended -->
+      <div class="right">
         <UserFeed/>
       </div>
     </div>
@@ -20,26 +20,42 @@ import UserFeed from '@/components/user/UserFeed.vue';
 </script>
 
 <style scoped>
-/* 오른쪽 영역을 꽉 채우도록 수정 */
-.right {
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;  /* 위쪽 여백 */
-  margin-left: 380px; /* UserAside 너비만큼 왼쪽 여백을 추가 */
-  width: calc(100%); /* 오른쪽 영역의 크기 설정 */
+.row {
+  width: calc(94vw);
 }
 
-/* UserAside의 고정 위치 스타일 */
+
+/* 전체 화면에서 UserAside 고정 위치 설정 */
 .user-aside {
-  position: fixed; /* 화면에서 고정 위치 */
-  top: 20px;
-  left: 0;
-  width: 380px; /* UserAside의 너비 */
-  height: calc(100vh - 20px); /* 화면 전체 높이에서 상단 여백을 빼고 높이 설정 */
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
   z-index: 100;
+}
+
+/* 오른쪽 콘텐츠 영역: UserAside의 너비를 제외하고 나머지 화면 차지 */
+.right {
+  margin-left: 350px; /* UserAside 너비만큼 왼쪽 여백 */
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-x: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 350px);
+}
+
+/* 작은 화면에서 레이아웃 조정 */
+@media (max-width: 992px) {
+  .right {
+    margin-left: 0;
+    width: 100%; /* 화면 크기가 작아지면 100%로 설정 */
+  }
+
+  .user-aside {
+    position: relative;
+    width: 100%;
+    margin-left: 0;
+    top: 0;
+  }
 }
 </style>

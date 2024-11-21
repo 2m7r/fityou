@@ -18,8 +18,8 @@
           <div class="card" @click="viewChallengeDetail(challenge)">
             <img :src="challenge.image || 'https://via.placeholder.com/150'" class="card-img-top" alt="Challenge Image" />
             <div class="card-body">
-              <h5 class="card-title">{{ challenge.title }} 챌린지이름</h5>
-              <p class="card-text">{{ challenge.description }} 챌린지설명~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+              <h5 class="card-title">{{ challenge.title }}</h5>
+              <p class="card-text">{{ challenge.description }}</p>
 
               <div class="button-container">
                 <!-- 참여자 수와 불모양 아이콘을 flexbox로 정렬 -->
@@ -55,26 +55,23 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-const challenges = ref([]);
+const challenges = ref([]);  // 내가 참여한 챌린지 목록
 const scrollContainer = ref(null);
 
-const getCardWidth = () => {
-  const firstCard = scrollContainer.value?.querySelector('.card-container');
-  return firstCard ? firstCard.offsetWidth + 20 : 0;
-};
-
+// 스크롤 버튼 클릭 시 동작
 const scrollLeft = () => {
   if (scrollContainer.value) {
-      scrollContainer.value.scrollLeft -= 700;
+    scrollContainer.value.scrollLeft -= 700;
   }
 };
 
 const scrollRight = () => {
   if (scrollContainer.value) {
-      scrollContainer.value.scrollLeft += 700;
+    scrollContainer.value.scrollLeft += 700;
   }
 };
 
+// 내가 참여한 챌린지 데이터를 가져오는 함수
 const fetchChallenges = async () => {
   try {
     const response = await axios.get('/api/user/challenges');
@@ -84,8 +81,18 @@ const fetchChallenges = async () => {
   }
 };
 
+// 참여한 챌린지를 떠나는 함수 (X 버튼)
+const leaveChallenge = async (challengeId) => {
+  try {
+    await axios.post('/api/leave/challenge', { challenge_id: challengeId });
+    challenges.value = challenges.value.filter(challenge => challenge.challenge_id !== challengeId);
+  } catch (error) {
+    console.error('챌린지를 떠나지 못했습니다.', error);
+  }
+};
+
 onMounted(() => {
-  fetchChallenges();
+  fetchChallenges(); // 나의 챌린지 목록 가져오기
 });
 </script>
 
@@ -198,35 +205,20 @@ h2 {
   z-index: 2;
 }
 
-.scroll-button.left {
-  left: 50%;
-  transform: translateX(-50%) translateY(0);
-}
-
-.scroll-button.right {
-  left: 50%;
-  transform: translateX(-50%) translateY(0);
-}
-
-.scroll-button {
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-}
-
 .participant-count {
   font-size: 0.9rem;
   color: #555;
-  margin-right: 5px; /* 오른쪽으로 밀어서 텍스트와 아이콘 간의 간격을 추가 */
+  margin-right: 5px;
 }
 
 .participant-icon {
-  font-size: 1.2rem; /* 불 아이콘 크기 */
-  color: #ff5733; /* 불 아이콘 색상 */
+  font-size: 1.2rem;
+  color: #ff5733;
 }
 
 .button-container {
   display: flex;
-  justify-content: flex-end; /* 오른쪽 끝으로 정렬 */
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -245,7 +237,6 @@ h2 {
   align-items: center;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .btn-close:hover {

@@ -1,6 +1,6 @@
 <template>
   <!-- 로그인 페이지가 아닌 경우에만 네비게이션 바를 렌더링 -->
-  <TheHeaderNav v-if="!isLoginPage && !isSignupPage" />
+  <TheHeaderNav v-if="!isLoginPage && !isSignupPage && !ispreferredExercise" />
   <RouterView class="main-content" />
 </template>
 
@@ -15,6 +15,7 @@ const route = useRoute()
 // 로그인 페이지 여부를 계산된 속성으로 처리
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
+const ispreferredExercise = computed(() => route.name === 'preferredExercise')
 
 </script>
 

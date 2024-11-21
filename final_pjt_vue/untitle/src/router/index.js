@@ -8,6 +8,7 @@ import FeedView from '../views/FeedView.vue'
 import LoginView from '../views/LoginView.vue'
 import ChallengeView from '../views/ChallengeView.vue'
 import ManagementView from '../views/ManagementView.vue'
+import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
 
 
@@ -45,6 +46,12 @@ const router = createRouter({
           path: 'my-page',
           name: 'my-page',
           component: UserPage,
+          meta: { requiresAuth: true }, // 인증 필요
+        },
+        {
+          path: 'preferredExercise',
+          name: 'preferredExercise',
+          component: SignupPreferredExerciseView,
           meta: { requiresAuth: true }, // 인증 필요
         },
       ]

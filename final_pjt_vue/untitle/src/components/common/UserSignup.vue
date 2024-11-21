@@ -85,6 +85,8 @@ export default {
         return;
       }
 
+
+      // 회원가입 폼 데이터 구성
       const formData = new FormData();
       formData.append('username', this.username);
       formData.append('password', this.password);
@@ -98,13 +100,16 @@ export default {
       }
 
       try {
+        // 서버에 회원가입 요청
         const response = await apiClient.post('/api-user/signup', formData, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
         alert('회원가입 성공');
-        this.$router.push({ name: 'login' });
+        console.log('리디렉숀!!!!!!!!!!!!!!')
+        // 회원가입 후 선호 운동 선택 페이지로 리디렉션
+        this.$router.replace({ name: 'login' });
       } catch (error) {
         console.error('회원가입 실패', error);
         alert('회원가입 실패');

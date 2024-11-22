@@ -30,6 +30,33 @@ export const useUserStore = defineStore('user', {
       this.token = token; // JWT 토큰을 상태에 저장
     },
 
+    async login(credentials) {
+      try {
+        const response = await api.post('/auth/login', credentials); // 로그인 API 호출
+        
+        // 로그인 응답 데이터를 로그로 확인
+        console.log('로그인 응답 데이터:', response.data);
+        
+        // 응답 데이터에서 'userId'가 포함되어 있는지 확인
+        if (response.data.user && response.data.user.userId) {
+          console.log('userId:', response.data.user.userId);
+        } else {
+          console.error('userId가 응답 데이터에 없습니다!');
+        }
+        
+        // 'token'과 'user'를 상태에 저장
+        if (response.data.token) {
+          this.setToken(response.data.token);
+        }
+        if (response.data.user) {
+          this.setUser(response.data.user);
+        }
+    
+      } catch (error) {
+        console.error('로그인 실패', error);
+      }
+    },
+
     // 사용자 정보 초기화 (로그아웃 시)
     clearUser() {
       this.user = null; // 사용자 정보 초기화

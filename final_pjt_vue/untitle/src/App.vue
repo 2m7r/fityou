@@ -1,10 +1,6 @@
 <template>
   <!-- 로그인 페이지가 아닌 경우에만 네비게이션 바를 렌더링 -->
-<<<<<<< HEAD
-  <TheHeaderNav v-if="!isLoginPage && !isSignupPage && !ispreferredExercise" />
-=======
-  <TheHeaderNav v-if="!isLoginPage && !isSignupPage &&!isFindIdPage && !isFindPwPage" />
->>>>>>> eunji
+  <TheHeaderNav v-if="!isLoginPage && !isSignupPage && !ispreferredExercise && !isFindIdPage && !isFindPwPage" />
   <RouterView class="main-content" />
 </template>
 
@@ -19,12 +15,9 @@ const route = useRoute()
 // 로그인 페이지 여부를 계산된 속성으로 처리
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
-<<<<<<< HEAD
 const ispreferredExercise = computed(() => route.name === 'preferredExercise')
-=======
 const isFindIdPage = computed(() => route.name === 'find-id')
 const isFindPwPage = computed(() => route.name === 'find-pw')
->>>>>>> eunji
 
 </script>
 

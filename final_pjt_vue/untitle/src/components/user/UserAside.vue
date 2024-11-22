@@ -14,7 +14,7 @@
     <!-- 식단일기 작성 버튼 -->
     <button
       class="btn btn-lg btn-diet my-2 d-flex align-items-center rounded-full"
-      @click="goToDietLog"
+      @click="openDietLogModal"
     >
       <i class="bi bi-pencil-square me-2"></i>식단일기 작성
     </button>
@@ -22,7 +22,7 @@
     <!-- 운동일기 작성 버튼 -->
     <button
       class="btn btn-lg btn-exercise d-flex align-items-center rounded-full"
-      @click="goToExerciseLog"
+      @click="openWorkoutLogModal"
     >
       <i class="bi bi-bicycle me-2"></i>운동일기 작성
     </button>
@@ -39,9 +39,26 @@
 import { useRouter } from "vue-router";
 import UserCalender from "@/components/user/UserCalender.vue";
 import { useUserStore } from '@/stores/userStore';
+import apiClient from "../api/apiClient";
+import { onMounted } from 'vue';
 
 const userStore = useUserStore();
 const router = useRouter();
+
+onMounted(() => {
+      console.log('userId:', userStore.userId); // userId가 정상적으로 출력되는지 확인
+      if (userStore.userId) {
+        apiClient.get(`/api-diet/feed/${userStore.userId}`)
+          .then(response => {
+            console.log('식단일기 응답:', response.data);
+          })
+          .catch(error => {
+            console.error('식단일기 확인 실패:', error);
+          });
+      } else {
+        console.error('userId가 없습니다!');
+      }
+    });
 
 const logout = () => {
   sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
@@ -49,31 +66,35 @@ const logout = () => {
   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
 };
 
+const openDietLogModal = async () => {
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0]; // 예: '2024-11-22'
 
-const goToDietLog = () => {
-  //만약 값이 없으면 등록
-  router.push("/diet/create");
-  //값이 있으면 수정
-  // router.push(`/diet/${    }`)
+  try {
+    const response = await apiClient.get(`/api-diet/feed/${userStore.userId}`);
+    console.log("API 응답 데이터:", response.data);  // 응답 데이터 구조 확인
+
+    if (Array.isArray(response.data)) {
+      const todayDiet = response.data.find(diet => diet.recordDate === formattedDate);
+      if (todayDiet) {
+        router.push(`/diet/edit/${todayDiet.dietId}`);
+      } else {
+        router.push(`/diet/create/${formattedDate}`);
+      }
+    } else if (response.data && Array.isArray(response.data.diets)) {
+      const todayDiet = response.data.diets.find(diet => diet.recordDate === formattedDate);
+      if (todayDiet) {
+        router.push(`/diet/edit/${todayDiet.dietId}`);
+      } else {
+        router.push(`/diet/create/${formattedDate}`);
+      }
+    } else {
+      console.error("응답 데이터 구조가 예상과 다릅니다.");
+    }
+  } catch (error) {
+    console.error("식단일기 확인 실패:", error);
+  }
 };
-
-// const goToDietLog = (userId) => {
-//   // 예시로, 유저가 오늘 날짜에 등록한 식단 값이 없으면 등록하는 로직
-//   const dietExist = checkIfDietExistsToday(userId); // 이 함수는 유저가 오늘 등록한 식단이 있는지 확인하는 함수라고 가정
-
-//   if (!dietExist) {
-//     router.push('/diet/create'); // 값이 없으면 등록 페이지로 이동
-//   } else {
-//     router.push(`/diet/${userId}`); // 값이 있으면 수정 페이지로 이동
-//   }
-// }
-
-<<<<<<< HEAD
-
-=======
-// sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
-//   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
->>>>>>> eunji
 
 </script>
 
@@ -148,7 +169,7 @@ const goToDietLog = () => {
 
 .router-link i {
   font-size: 18px;
-}
+}s
 
 /* 버튼 크기 고정 */
 .my-2 {

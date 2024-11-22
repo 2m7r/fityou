@@ -37,6 +37,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'; // Pinia 스토어 불러오기
 import apiClient from '@/components/api/apiClient' // axios 클라이언트를 임포트
+import FeedView from './FeedView.vue';
 
 export default {
   name: 'UserLogin',
@@ -61,26 +62,16 @@ export default {
 
         sessionStorage.setItem('access-token', token); // 세션 스토리지에 토큰 저장
 
-         // 유저 정보 가져오기 (선호운동 여부 확인)
-         const userResponse = await apiClient.get('/api-user/${id}', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // 선호운동이 설정되어 있으면 홈으로, 없으면 선호 운동 선택 페이지로 이동
-        if (userResponse.data.preferredExercise) {
-          router.push({ name: 'home' });
-        } else {
-          router.push({ name: 'preferredExercise' });
-        }
-
-
-
         userStore.setUser(loginUser); // 사용자 정보 스토어에 저장
 
-        // 로그인 성공 후, 대시보드 페이지로 리디렉션
-        router.push({ name: 'home' }) // 리디렉션 후 대시보드로 이동
+
+        // preferredExercises가 존재하는지 확인하고 처리
+        if (loginUser && loginUser.preferredExercises) {
+          router.push({ name: 'home' });
+        } else {
+          // router.push({ name: 'preferredExercise' });
+          router.push ({name: 'home'})
+        }
 
         console.log('로그인 성공')
       } catch (error) {

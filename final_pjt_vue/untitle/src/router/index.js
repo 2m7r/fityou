@@ -12,6 +12,8 @@ import ChallengeView from '../views/ChallengeView.vue'
 import ManagementView from '../views/ManagementView.vue'
 import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
+import DietModal from '@/views/DietModal.vue'
+
 
 
 const router = createRouter({
@@ -51,12 +53,12 @@ const router = createRouter({
           meta: { requiresAuth: true }, // 인증 필요
         },
         {
-<<<<<<< HEAD
           path: 'preferredExercise',
           name: 'preferredExercise',
           component: SignupPreferredExerciseView,
           meta: { requiresAuth: true }, // 인증 필요
-=======
+        },
+        {
           path: 'find-id',
           name: 'find-id',
           component: UserFindId,
@@ -69,7 +71,6 @@ const router = createRouter({
           component: UserFindPw,
           meta: { requiresAuth: false }, // 인증 노필요
     
->>>>>>> eunji
         },
       ]
     },
@@ -84,6 +85,12 @@ const router = createRouter({
       path: '/management',
       name: 'management',
       component: ManagementView,
+      meta: { requiresAuth: true }, // 인증 필요
+    },
+    {
+      path: '/diet/create/:date',
+      name: 'diet-create',
+      component: DietModal,
       meta: { requiresAuth: true }, // 인증 필요
     },
   ],

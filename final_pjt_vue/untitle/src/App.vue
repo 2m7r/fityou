@@ -1,6 +1,5 @@
 <template>
   <!-- 로그인 페이지가 아닌 경우에만 네비게이션 바를 렌더링 -->
-<<<<<<< HEAD
   <TheHeaderNav v-if="!isLoginPage && !isSignupPage && !ispreferredExercise && !isFindIdPage && !isFindPwPage" />
   
   
@@ -9,10 +8,6 @@
  
  
   <RouterView :showOverlay="showOverlay" class="main-content" />
-=======
-  <TheHeaderNav v-if="!isLoginPage && !isSignupPage &&!isFindIdPage && !ispreferredExercise && !isFindPwPage" />
-  <RouterView class="main-content" />
->>>>>>> master
 </template>
 
 <script setup>
@@ -30,7 +25,6 @@ const ispreferredExercise = computed(() => route.name === 'preferredExercise')
 const isFindIdPage = computed(() => route.name === 'find-id')
 const isFindPwPage = computed(() => route.name === 'find-pw')
 
-<<<<<<< HEAD
 // 오버레이 상태 관리
 const isOverlayVisible = ref(false)
 
@@ -43,8 +37,6 @@ const closeOverlay = () => {
 const showOverlay = (isVisible) => {
   isOverlayVisible.value = isVisible
 }
-=======
->>>>>>> master
 
 </script>
 

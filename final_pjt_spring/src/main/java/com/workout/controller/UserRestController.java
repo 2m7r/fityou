@@ -99,7 +99,6 @@ public class UserRestController {
         Map<String, Object> result = new HashMap<>();
         HttpStatus status;
 
-<<<<<<< HEAD
         User loginUser = us.login(user.getUsername(), user.getPassword());
         List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
         
@@ -116,24 +115,7 @@ public class UserRestController {
         }
         return new ResponseEntity<>(result, status);
     }
-=======
-		User loginUser = us.login(user.getUsername(), user.getPassword());
-		List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
-		
-		if (loginUser != null) {
-			loginUser.setPreferredExercises(preferredExcercises);
-			result.put("message", "로그인 성공");
-			result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
-			result.put("loginUser", loginUser);
-			status = HttpStatus.OK; // 200 상태 코드
-			System.out.println("result : " + result);
-		} else {
-			result.put("message", "로그인 실패: 잘못된 자격 증명");
-			status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
-		}
-		return new ResponseEntity<>(result, status);
-	}
->>>>>>> master
+
 
 	// 로그아웃
 	@PostMapping("/logout")

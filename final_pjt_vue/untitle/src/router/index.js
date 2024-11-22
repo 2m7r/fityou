@@ -30,6 +30,14 @@ const router = createRouter({
       name: 'feed',
       component: FeedView,
       meta: { requiresAuth: true }, // 인증 필요
+      children: [
+        {
+          path: '${id}',
+          name: 'my-feed',
+          component: FeedView,
+          meta: { requiresAuth: false }, // 인증 노필요
+        },
+      ]
     },
     {
       path: '/user',
@@ -58,11 +66,7 @@ const router = createRouter({
           component: SignupPreferredExerciseView,
           meta: { requiresAuth: true }, // 인증 필요
         },
-<<<<<<< HEAD
-        {
-=======
         {  
->>>>>>> master
           path: 'find-id',
           name: 'find-id',
           component: UserFindId,

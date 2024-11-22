@@ -51,12 +51,12 @@ const router = createRouter({
           meta: { requiresAuth: true }, // 인증 필요
         },
         {
-<<<<<<< HEAD
           path: 'preferredExercise',
           name: 'preferredExercise',
           component: SignupPreferredExerciseView,
           meta: { requiresAuth: true }, // 인증 필요
-=======
+        },
+        {  
           path: 'find-id',
           name: 'find-id',
           component: UserFindId,
@@ -69,7 +69,6 @@ const router = createRouter({
           component: UserFindPw,
           meta: { requiresAuth: false }, // 인증 노필요
     
->>>>>>> eunji
         },
       ]
     },

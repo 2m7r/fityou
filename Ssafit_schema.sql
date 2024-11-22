@@ -40,6 +40,48 @@ VALUES
 SELECT * FROM users;
 
 
+drop table IF EXISTS preferred_exercises;
+-- 선호 운동
+CREATE TABLE preferred_exercises (
+    exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL, -- 사용자 ID
+    exercise_name VARCHAR(100) NOT NULL, -- 운동 이름
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- '김싸피' 사용자에 대한 선호 운동 추가
+INSERT INTO preferred_exercises (user_id, exercise_name)
+VALUES
+    ((SELECT user_id FROM users WHERE username = 'ssafy'), '헬스'),
+    ((SELECT user_id FROM users WHERE username = 'ssafy'), '요가');
+
+-- '임가현' 사용자에 대한 선호 운동 추가
+INSERT INTO preferred_exercises (user_id, exercise_name)
+VALUES
+    ((SELECT user_id FROM users WHERE username = 'rkgus'), '수영'),
+    ((SELECT user_id FROM users WHERE username = 'rkgus'), '크로스핏');
+
+-- '홍길동' 사용자에 대한 선호 운동 추가
+INSERT INTO preferred_exercises (user_id, exercise_name)
+VALUES
+    ((SELECT user_id FROM users WHERE username = 'hong123'), '복싱'),
+    ((SELECT user_id FROM users WHERE username = 'hong123'), '테니스');
+
+-- '박지현' 사용자에 대한 선호 운동 추가
+INSERT INTO preferred_exercises (user_id, exercise_name)
+VALUES
+    ((SELECT user_id FROM users WHERE username = 'jihan92'), '배구'),
+    ((SELECT user_id FROM users WHERE username = 'jihan92'), '헬스');
+    
+-- '김민수' 사용자에 대한 선호 운동 추가
+INSERT INTO preferred_exercises (user_id, exercise_name)
+VALUES
+    ((SELECT user_id FROM users WHERE username = 'minsu88'), '농구'),
+    ((SELECT user_id FROM users WHERE username = 'minsu88'), '축구');
+
+
+select * from preferred_exercises;
 
 -- ------------------------- 식단일기 -----------------------------------
 DROP TABLE IF EXISTS diet;
@@ -278,15 +320,7 @@ CREATE TABLE awards (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-drop table IF EXISTS preferred_exercises;
--- 선호 운동
-CREATE TABLE preferred_exercises (
-    exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT NOT NULL, -- 사용자 ID
-    exercise_name VARCHAR(100) NOT NULL, -- 운동 이름
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+
 
 
 

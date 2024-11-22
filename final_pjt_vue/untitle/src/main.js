@@ -9,7 +9,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const app = createApp(App);
 const pinia = createPinia();
-
-app.use(router)
-app.use(pinia)
+app.use(pinia);
+app.use(router);
 app.mount('#app')

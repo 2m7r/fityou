@@ -4,13 +4,15 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.workout.model.dao.UserDao">
 	<select id="selectOne" parameterType="Map" resultType="User">
-		SELECT u.user_id, u.name, u.phoneNum, u.gender, u.email, u.username, u.role,
-		u.gym_name,
-		GROUP_CONCAT(pe.exercise_name) AS preferred_exercises
-		FROM users u
-		LEFT JOIN preferred_exercises pe ON u.user_id = pe.user_id
-		WHERE u.username = #{username} AND u.password = #{password}
-		GROUP BY u.user_id
+		SELECT user_id, name, phoneNum, gender, email, username, role, gym_name, is_private_account
+		FROM users
+		WHERE username = #{username} AND password = #{password}
+	</select>
+	
+	<select id="getprefereedExcercise">
+		SELECT exercise_name
+		FROM preferred_exercises
+		WHERE user_id = (SELECT user_id FROM users WHERE username = #{username})
 	</select>
 
 	<!-- 회원가입 -->
@@ -52,5 +54,11 @@
 		is_private_account = #{isPrivateAccount}
 		WHERE user_id = #{userId}
 	</update>
+	
+	<!-- 선호운동 삽입 -->
+	<insert id="insertPreferredExercises">
+		INSERT INTO preferred_exercises (user_id, exercise_name)
+		VALUES (#{userId}, #{exercise})
+	</insert>
 
 </mapper>

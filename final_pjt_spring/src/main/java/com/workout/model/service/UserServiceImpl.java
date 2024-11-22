@@ -1,10 +1,12 @@
 package com.workout.model.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.workout.exception.InvalidAnswerException;
 import com.workout.exception.UserNotFoundException;
@@ -19,6 +21,7 @@ public class UserServiceImpl implements UserService{
 	private UserDao dao;
 
 	@Override
+	@Transactional
 	public int registUser(User user) {
 		return dao.insertUser(user);
 	}
@@ -74,6 +77,19 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public int modifyUser(User user) {
 		return dao.updateUser(user);
+	}
+
+	@Override
+	@Transactional
+	public void savePreferredExercises(Long userId, List<String> exercises) {
+		for (String exercise : exercises) {
+			dao.insertPreferredExercises(userId, exercise);
+		}
+	}
+
+	@Override
+	public List<String> getprefereedExcercise(String username) {
+		return dao.getprefereedExcercise(username);
 	}
 
 }

@@ -59,13 +59,15 @@ export default {
         const token = result['access-token'];
         const loginUser = result['loginUser'];
 
-        sessionStorage.setItem('access-token', token); // 세션 스토리지에 토큰 저장
+        // 세션 스토리지에 토큰 및 사용자 정보 저장
+        sessionStorage.setItem('access-token', token);
+        sessionStorage.setItem('user', JSON.stringify(loginUser));
 
         userStore.setUser(loginUser); // 사용자 정보 스토어에 저장
-
+        userStore.setToken(token);
 
         // preferredExercises가 존재하는지 확인하고 처리
-        if (loginUser && loginUser.preferredExercises) {
+        if (loginUser && loginUser.preferredExercises.length > 0) {
           router.push({ name: 'home' });
         } else {
           router.push({ name: 'preferredExercise' });

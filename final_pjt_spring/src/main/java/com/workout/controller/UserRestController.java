@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -162,9 +163,16 @@ public class UserRestController {
 	}
 
 	// 사용자 정보 수정
-    @PutMapping("/update")
-    public ResponseEntity<?> modifyUser(@RequestBody User user){
-    	return null;
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestBody User user){
+    	user.setUserId(userId);
+    	
+    	int result = us.modifyUser(user);
+    	
+    	if (result > 0) {
+	        return ResponseEntity.ok("유저 수정 성공");
+	    }
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");
     }
 
 }

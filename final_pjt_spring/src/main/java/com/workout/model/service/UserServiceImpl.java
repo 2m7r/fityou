@@ -71,4 +71,9 @@ public class UserServiceImpl implements UserService{
         return user.getPassword();
     }
 
+	@Override
+	public int modifyUser(User user) {
+		return dao.updateUser(user);
+	}
+
 }

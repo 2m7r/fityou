@@ -52,8 +52,8 @@
 
       <!-- 프로필 사진 입력 -->
       <div class="input-group">
-        <label for="profileImage">프로필 사진</label>
-        <input type="file" id="profileImage" @change="handleProfileImage" />
+        <label for="profile">프로필 사진</label>
+        <input type="file" id="profile" @change="handleProfileImage" />
       </div>
 
       <!-- 트레이너일 경우 체육관 이름 입력 -->
@@ -99,7 +99,7 @@ export default {
       email: "",
       phoneNum: "",
       gender: "M", // 기본값은 남성
-      profileImage: null,
+      profile: null,
       role: "USER", // 기본값은 USER
       gymName: "",
       isPrivateAccount: "false", // 기본값은 공개로 설정
@@ -129,7 +129,7 @@ export default {
         phoneNum: this.phoneNum,
         gender: this.gender,
         isPrivateAccount: this.isPrivateAccount === "true", // 문자열을 Boolean으로 변환
-        profileImage: this.profileImage,
+        profile: this.profile,
         gymName: this.gymName,
       };
 

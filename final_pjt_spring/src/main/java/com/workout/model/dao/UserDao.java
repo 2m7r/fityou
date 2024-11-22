@@ -15,4 +15,6 @@ public interface UserDao {
 	User selectByEmail(String email);
 
 	User findByEmailAndNameAndId(String email, String name, String username);
+
+	int updateUser(User user);
 }

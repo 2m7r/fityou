@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', {
         formData.append('email', updatedData.email);
         formData.append('phoneNum', updatedData.phoneNum);
         formData.append('gender', updatedData.gender);
-        formData.append('privacy', updatedData.privacy);
+        formData.append('isPrivateAccount', updatedData.isPrivateAccount);
 
         if (updatedData.profileImage) {
           formData.append('profileImage', updatedData.profileImage);
@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', {
         }
 
         // 서버에 사용자 정보 업데이트 요청
-        const response = await api.put('/api-user/update', formData);
+        const response = await api.put('/api-user/update/${updatedData.id}', formData);
 
         // 요청이 성공하면, 사용자 정보를 업데이트
         this.setUser(response.data);

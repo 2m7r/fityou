@@ -33,4 +33,17 @@
     	WHERE email = #{email} AND name = #{name} AND username = #{username}
     </select>
     
+    <!-- 유저 수정 -->
+    <update id="updateUser">
+    	UPDATE users
+    	SET name = #{name},
+		email = #{email},
+		phoneNum = #{phoneNum},
+		gender = #{gender},
+		profile_image_url = #{profile},
+		gym_name = {gymName},
+		is_private_account = #{isPrivateAccount}
+		WHERE user_id = #{userId}
+    </update>
+    
 </mapper>

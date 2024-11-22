@@ -61,9 +61,8 @@ export default {
 
         sessionStorage.setItem('access-token', token); // 세션 스토리지에 토큰 저장
 
-<<<<<<< HEAD
          // 유저 정보 가져오기 (선호운동 여부 확인)
-         const userResponse = await apiClient.get('/api-user/me', {
+         const userResponse = await apiClient.get('/api-user/${id}', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -78,12 +77,10 @@ export default {
 
 
 
-=======
         userStore.setUser(loginUser); // 사용자 정보 스토어에 저장
 
         // 로그인 성공 후, 대시보드 페이지로 리디렉션
         router.push({ name: 'home' }) // 리디렉션 후 대시보드로 이동
->>>>>>> eunji
 
         console.log('로그인 성공')
       } catch (error) {

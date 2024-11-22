@@ -49,11 +49,13 @@ import UserCalender from "@/components/user/UserCalender.vue";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
 
-// 부모 컴포넌트(App.vue)에서 넘어오는 showOverlay 함수 받기
+
+// 'showOverlay'는 App.vue에서 props로 받습니다.
 const props = defineProps({
   showOverlay: Function,
 });
 
+// 이벤트 정의: 'showOverlay' 이벤트를 App.vue로 전달
 const emit = defineEmits();
 
 // 사용자 상태
@@ -65,7 +67,7 @@ const isDietLogModalOpen = ref(false);
 
 // 식단일기 작성 모달 열기
 const openDietLogModal = () => {
-  isDietLogModalOpen.value = true; // 모달 열기
+  isDietLogModalOpen.value = true;
   if (typeof props.showOverlay === "function") {
     props.showOverlay(true); // App.vue에 오버레이 표시 요청
   }
@@ -73,18 +75,29 @@ const openDietLogModal = () => {
 
 // 식단일기 작성 모달 닫기
 const closeDietLogModal = () => {
-  isDietLogModalOpen.value = false; // 모달 닫기
+  isDietLogModalOpen.value = false;
   if (typeof props.showOverlay === "function") {
     props.showOverlay(false); // App.vue에 오버레이 숨기기 요청
   }
 };
 
+// 운동일기 작성 페이지로 이동
+const goToExerciseLog = () => {
+  router.push("/exercise/create");
+};
+
+
 // 로그아웃 처리
 const logout = () => {
-  sessionStorage.removeItem("access-token");
-  userStore.clearUser();
-  router.push({ name: "login" });
+  sessionStorage.removeItem("access-token"); // 세션 스토리지에서 토큰 삭제
+  userStore.clearUser(); // 사용자 정보 초기화
+  router.push({ name: "login" }); // 로그인 페이지로 리디렉션
 };
+
+// sessionStorage에서 userId 가져오기
+const user = JSON.parse(sessionStorage.getItem("user"));
+const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
+
 </script>
 
 <style scoped>

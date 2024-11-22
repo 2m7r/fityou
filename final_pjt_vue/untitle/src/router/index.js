@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import UserPage from '../components/user/UserPage.vue'
+import UserFindId from '../components/user/UserFindId.vue'
+import UserFindPw from '@/components/user/UserFindPw.vue'
 import UserSignup from '../components/common/UserSignup.vue'
 
 import HomeView from '../views/HomeView.vue'
@@ -34,13 +36,13 @@ const router = createRouter({
           path: 'signup',
           name: 'signup',
           component: UserSignup,
-          meta: { requiresAuth: false }, // 인증 필요
+          meta: { requiresAuth: false }, // 인증 노필요
         },
         {
           path: 'login',
           name: 'login',
           component: LoginView,
-          meta: { requiresAuth: false }, // 인증 필요
+          meta: { requiresAuth: false }, // 인증 노필요
         },
         {
           path: 'my-page',
@@ -49,10 +51,25 @@ const router = createRouter({
           meta: { requiresAuth: true }, // 인증 필요
         },
         {
+<<<<<<< HEAD
           path: 'preferredExercise',
           name: 'preferredExercise',
           component: SignupPreferredExerciseView,
           meta: { requiresAuth: true }, // 인증 필요
+=======
+          path: 'find-id',
+          name: 'find-id',
+          component: UserFindId,
+          meta: { requiresAuth: false }, // 인증 노필요
+    
+        },
+        {
+          path: 'find-pw',
+          name: 'find-pw',
+          component: UserFindPw,
+          meta: { requiresAuth: false }, // 인증 노필요
+    
+>>>>>>> eunji
         },
       ]
     },
@@ -68,7 +85,6 @@ const router = createRouter({
       name: 'management',
       component: ManagementView,
       meta: { requiresAuth: true }, // 인증 필요
-
     },
   ],
 })

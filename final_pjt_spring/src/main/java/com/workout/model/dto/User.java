@@ -16,8 +16,31 @@ public class User {
     private List<String> preferredExercises; // 선호 운동 리스트
     private boolean isPrivateAccount; // 공개/비공개 계정 여부
     private String profile;
+    private String phoneNum;
     
+    // 본인 확인 질문과 답변
+    private String securityQuestion;  // 본인 확인 질문
+	private String securityAnswer;  // 본인 확인 답변
     
+	public String getSecurityQuestion() {
+		return securityQuestion;
+	}
+	public void setSecurityQuestion(String securityQuestion) {
+		this.securityQuestion = securityQuestion;
+	}
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
+	}
+    
+	public String getPhoneNum() {
+		return phoneNum;
+	}
+	public void setPhoneNum(String phoneNum) {
+		this.phoneNum = phoneNum;
+	}
 	public String getProfile() {
 		return profile;
 	}
@@ -97,5 +120,13 @@ public class User {
 		this.isPrivateAccount = isPrivateAccount;
 	}
 	
-    
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", name=" + name + ", birthDate=" + birthDate + ", gender=" + gender
+				+ ", email=" + email + ", username=" + username + ", password=" + password + ", role=" + role
+				+ ", gymName=" + gymName + ", awards=" + awards + ", preferredExercises=" + preferredExercises
+				+ ", isPrivateAccount=" + isPrivateAccount + ", profile=" + profile + ", phoneNum=" + phoneNum
+				+ ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + "]";
+	}
+	
 }

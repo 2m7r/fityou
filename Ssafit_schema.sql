@@ -8,34 +8,37 @@ drop TABLE IF EXISTS users;
 CREATE TABLE users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별 ID
     name VARCHAR(100) NOT NULL, -- 이름
-    birthDate DATE NOT NULL, -- 생년월일 (DATE로 변경)
+    birthDate DATE NOT NULL, -- 생년월일
+    phoneNum VARCHAR(20), -- 전화번호
     gender ENUM('M', 'F', 'O') NOT NULL, -- 성별
     email VARCHAR(255) UNIQUE NOT NULL, -- 이메일
     username VARCHAR(50) UNIQUE NOT NULL, -- 로그인 아이디
     password VARCHAR(255) NOT NULL, -- 로그인 PW
     role ENUM('USER', 'TRAINER') NOT NULL, -- 일반유저 / 트레이너
-    gym_name VARCHAR(255), -- 트레이너만 사용 
+    gym_name VARCHAR(255), -- 트레이너만 사용
     is_private_account BOOLEAN DEFAULT FALSE, -- 공개 / 비공개 계정
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    profile_image_url VARCHAR(255) -- 프로필 이미지 경로
+    profile_image_url VARCHAR(255), -- 프로필 이미지 경로
+    security_question VARCHAR(255) NOT NULL, -- 본인 확인 질문
+    security_answer VARCHAR(255) NOT NULL -- 본인 확인 답변
 );
 
-INSERT INTO users (name, birthDate, gender, email, username, password, role, gym_name, is_private_account)
+INSERT INTO users (name, birthDate, gender, email, username, password, role, gym_name, is_private_account, phoneNum, security_question, security_answer)
 VALUES
-('지피티', '1990-01-01', 'F', 'pt@pt.com', 'trainer', 'trainer', 'TRAINER', '핏니스 센터', FALSE),
-('김싸피', '2024-11-11', 'M', 'ssafy@ssafy.com', 'ssafy', 'ssafy', 'USER', NULL, FALSE),
-('임가현', '1999-10-01', 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER', NULL, TRUE),
-('홍길동', '1985-05-20', 'M', 'hong@example.com', 'hong123', 'password123', 'USER', NULL, FALSE),
-('박지현', '1992-07-15', 'F', 'park@example.com', 'jihan92', 'mypassword', 'USER', NULL, TRUE),
-('김민수', '1987-03-30', 'M', 'minsu@example.com', 'minsu88', 'minsu123', 'USER', NULL, FALSE),
-('이하늘', '1989-08-10', 'F', 'haneul@example.com', 'haneul1989', 'mypassword', 'TRAINER', '하늘의 체육관', FALSE),
-('정우성', '1995-12-25', 'M', 'woosung@example.com', 'woosung95', 'woosungpass', 'USER', NULL, FALSE),
-('소지섭', '1991-02-11', 'M', 'soji@example.com', 'soji1991', 'soji123', 'TRAINER', '소의 피트니스', FALSE),
-('유진', '1993-04-17', 'F', 'yujin@example.com', 'yujin93', 'yujinpass', 'USER', NULL, TRUE),
-('이태웃씌', '1997-03-05', 'O', 'xodn@xodn.com', 'xodn97', 'xodn', 'USER', NULL, TRUE);
-
+('지피티', '1990-01-01', 'F', 'pt@pt.com', 'trainer', 'trainerpassword', 'TRAINER', '핏니스 센터', FALSE, '010-1111-2222', '당신의 첫 번째 강아지 이름은 무엇인가요?', '바둑이'),
+('김싸피', '2024-11-11', 'M', 'ssafy@ssafy.com', 'ssafy', 'ssafy', 'USER', NULL, FALSE, '010-3333-4444', '어린 시절 즐겨먹었던 음식은 무엇인가요?', '떡볶이'),
+('임가현', '1999-10-01', 'F', '2m7r.sw@gmail.com', 'rkgus', 'rkgus', 'USER', NULL, TRUE, '010-5555-6666', '당신의 어릴 적 친구의 이름은 무엇인가요?', '정은지'),
+('홍길동', '1985-05-20', 'M', 'hong@example.com', 'hong123', 'password123hash', 'USER', NULL, FALSE, '010-7777-8888', '당신의 첫 번째 학교는 어디였나요?', '서울초등학교'),
+('박지현', '1992-07-15', 'F', 'park@example.com', 'jihan92', 'mypasswordhash', 'USER', NULL, TRUE, '010-9999-0000', '가장 기억에 남는 여행지는 어디인가요?', '강릉'),
+('김민수', '1987-03-30', 'M', 'minsu@example.com', 'minsu88', 'minsu123hash', 'USER', NULL, FALSE, '010-2222-3333', '어릴 적 가장 좋아했던 책은 무엇인가요?', '어린왕자'),
+('이하늘', '1989-08-10', 'F', 'haneul@example.com', 'haneul1989', 'mypasswordhash', 'TRAINER', '하늘의 체육관', FALSE, '010-4444-5555', '당신의 첫 번째 애완동물 이름은 무엇인가요?', '치치'),
+('정우성', '1995-12-25', 'M', 'woosung@example.com', 'woosung95', 'woosungpasshash', 'USER', NULL, FALSE, '010-6666-7777', '가장 좋아하는 영화는 무엇인가요?', '어벤져스'),
+('소지섭', '1991-02-11', 'M', 'soji@example.com', 'soji1991', 'soji123hash', 'TRAINER', '소의 피트니스', FALSE, '010-8888-9999', '어린 시절 기억에 남는 선생님의 이름은 무엇인가요?', '김선생'),
+('유진', '1993-04-17', 'F', 'yujin@example.com', 'yujin93', 'yujinpasshash', 'USER', NULL, TRUE, '010-1111-3333', '가장 좋아하는 계절은 무엇인가요?', '봄'),
+('이태웃씌', '1997-03-05', 'O', 'xodn@xodn.com', 'xodn', 'xodn', 'USER', NULL, TRUE, '010-2222-4444', '어린 시절 가장 좋아했던 TV 프로그램은 무엇인가요?', '딩동댕');
 
 SELECT * FROM users;
+
 
 
 -- ------------------------- 식단일기 -----------------------------------

@@ -9,7 +9,7 @@ export const store = createStore({
   mutations: {
     setAuth(state, token) {
       state.isAuthenticated = true;
-      sessionStorage.setItem('access-token', token); // JWT를 로컬 스토리지에 저장
+      sessionStorage.setItem('access-token', token);
     },
     logout(state) {
       state.isAuthenticated = false;

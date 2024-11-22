@@ -5,14 +5,45 @@
 <mapper namespace="com.workout.model.dao.UserDao">
 	<!-- 사용자 조회 (비밀번호 제외) -->
     <select id="selectOne" parameterType="Map" resultType="User"> 
-        SELECT user_id, name, birthDate, gender, email, username, role
+        SELECT user_id, name, phoneNum, gender, email, username, role, gym_name
         FROM users
         WHERE username = #{username} AND password = #{password}
     </select>
     
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="User">
-        INSERT INTO users (name, birthDate, gender, email, username, password, role, profile_image_url)
-        VALUES (#{name}, #{birthDate}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{profile})
+        INSERT INTO users (name, birthDate, phoneNum, gender, email, username, password, role, security_question, security_answer)
+        VALUES (#{name}, #{birthDate}, #{phoneNum}, #{gender}, #{email}, #{username}, #{password}, #{role}, #{securityQuestion}, #{securityAnswer})
     </insert>
+    
+    <!-- 아이디 찾기 -->
+    <select id="findByEmailAndName" resultType="User">
+    	SELECT username, security_question, security_answer FROM users
+    	WHERE email = #{email} AND name = #{name}
+    </select>
+    
+    <select id="selectByEmail" resultType="User">
+    	SELECT * FROM users
+    	WHERE email = #{email}
+    </select>
+    
+    <!-- 비밀번호 찾기 -->
+    <select id="findByEmailAndNameAndId" resultType="User">
+    	SELECT username, password, security_question, security_answer FROM users
+    	WHERE email = #{email} AND name = #{name} AND username = #{username}
+    </select>
+    
+    <!-- 유저 수정 -->
+    <update id="updateUser">
+    	UPDATE users
+    	SET name = #{name},
+		email = #{email},
+		phoneNum = #{phoneNum},
+		gender = #{gender},
+		profile_image_url = #{profile},
+		gym_name = {gymName},
+		is_private_account = #{isPrivateAccount}
+		WHERE user_id = #{userId}
+    </update>
+    
 </mapper>

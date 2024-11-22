@@ -6,7 +6,7 @@
     </div>
 
     <!-- 사용자 이름 -->
-    <h4 class="user-name">홍길동</h4>
+    <h4 class="user-name">{{ userStore.userName }}님, FITYOU!</h4>
 
     <!-- 로그아웃 버튼 -->
     <button class="btn btn-link logout-btn" @click="logout">로그아웃</button>
@@ -38,11 +38,14 @@
 <script setup>
 import { useRouter } from "vue-router";
 import UserCalender from "@/components/user/UserCalender.vue";
+import { useUserStore } from '@/stores/userStore';
 
+const userStore = useUserStore();
 const router = useRouter();
 
 const logout = () => {
   sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
+  userStore.clearUser(); // 사용자 정보 초기화
   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
 };
 
@@ -65,7 +68,12 @@ const goToDietLog = () => {
 //   }
 // }
 
+<<<<<<< HEAD
 
+=======
+// sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
+//   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+>>>>>>> eunji
 
 </script>
 

@@ -12,7 +12,7 @@
       <div class="card-wrapper">
         <div
           v-for="challenge in allChallenges"
-          :key="challenge.challenge_id"
+          :key="challenge.challengeId"
           class="card-container"
         >
           <div class="card" @click="viewChallengeDetail(challenge)">
@@ -95,28 +95,42 @@ const fetchAllChallenges = async () => {
 // 챌린지 참여하기 버튼 클릭 시
 const joinChallenge = async (challenge) => {
   const user = JSON.parse(sessionStorage.getItem('user'));
-  const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
-  const challenge_id = challenge.challenge_id;
+  const userId = user.userId  // userId가 없으면 null을 반환
+  const challenge_id = challenge.challengeId;
   
+  console.log('userId:', userId); // userId 확인
+  console.log('challenge_id:', challenge_id); // challenge_id 확인
+
   try {
     // 서버에 참여 요청
-    const response = await apiClient.put('/api-challenge/join', null, {
-      params: { challengeId: challenge_id, userId }
+    const response = await apiClient.post(`/api-challenge/join/${challenge_id}`, null, {
+      params: { userId }
     });
 
-    // 성공 시 처리: 서버에서 상태 응답 받음
-    if (response.status === 200) {
-      // 모든 챌린지 목록에서 해당 챌린지 제거
-      allChallenges.value = allChallenges.value.filter(c => c.challenge_id !== challenge.challenge_id);
+    // 네트워크 응답 상태 확인
+    console.log('API 응답:', response);
 
-      // 내가 참여한 챌린지 목록에 해당 챌린지 추가
+    // 네트워크 응답 상태 확인
+    if (response.status === 200) {
+      // 참여가 성공하면
+      // 1. allChallenges에서 해당 챌린지 제거
+      const index = allChallenges.value.findIndex(c => c.challengeId === challenge.challengeId);
+      if (index !== -1) {
+        allChallenges.value.splice(index, 1); // 해당 항목 삭제
+      }
+
+      // 2. challenges에 참여한 챌린지 추가
       challenges.value.push(challenge);
 
-      // 참여자 수 업데이트
+      // 3. 참여자 수 업데이트
       challenge.participantCount += 1;
     }
   } catch (error) {
-    console.error('챌린지 참여에 실패했습니다.', error);
+    if (error.response) {
+      console.error('서버 에러 메시지:', error.response.data); // 서버에서 반환한 오류 메시지 확인
+    } else {
+      console.error('네트워크 에러 또는 기타 오류:', error);
+    }
   }
 };
 

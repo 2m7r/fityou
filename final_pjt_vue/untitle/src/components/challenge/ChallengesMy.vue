@@ -10,9 +10,8 @@
 
       <!-- 카드들 -->
       <div class="card-wrapper">
-        <div
-          v-for="challenge in challenges"
-          :key="challenge.challenge_id"
+        <div v-for="challenge in challenges"
+        :key="challenge.challengeId"
           class="card-container"
         >
           <div class="card" @click="viewChallengeDetail(challenge)">
@@ -75,11 +74,7 @@ const scrollRight = () => {
 // 내가 참여한 챌린지 데이터를 가져오는 함수
 const fetchChallenges = async () => {
   const user = JSON.parse(sessionStorage.getItem('user'));
-  const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
-  if (!userId) {
-    console.error("사용자 ID가 없습니다.");
-    return;
-  }
+  const userId = user.userId;
 
   try {
     const response = await apiClient.get('/api-challenge/challenges', {
@@ -94,8 +89,14 @@ const fetchChallenges = async () => {
 // 참여한 챌린지를 떠나는 함수 (X 버튼)
 const leaveChallenge = async (challengeId) => {
   try {
-    await axios.post('/api/leave/challenge', { challenge_id: challengeId });
-    challenges.value = challenges.value.filter(challenge => challenge.challenge_id !== challengeId);
+    // 서버에 챌린지 탈퇴 요청
+    await apiClient.post('/api-challenge/leave', { challenge_id: challengeId });
+
+    // 성공적으로 나갔으면 리스트에서 해당 챌린지 삭제
+    const index = challenges.value.findIndex(challenge => challenge.challenge_id === challengeId);
+    if (index !== -1) {
+      challenges.value.splice(index, 1);  // 해당 항목 삭제
+    }
   } catch (error) {
     console.error('챌린지를 떠나지 못했습니다.', error);
   }

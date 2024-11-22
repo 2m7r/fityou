@@ -77,7 +77,7 @@
 	<select id="selectChallenges" resultType="Challenge">
 		SELECT
 		c.challenge_id,
-		c.name AS challenge_name,
+		c.name,
 		c.description,
 		c.duration_start,
 		c.duration_end,

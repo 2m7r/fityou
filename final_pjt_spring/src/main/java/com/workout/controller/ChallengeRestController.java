@@ -84,10 +84,9 @@ public class ChallengeRestController {
 	
 	
 	// 챌린지 참여하기
-	@PutMapping("/join")
+	@PostMapping("/join/{challengeId}")
 	@Operation(summary = "챌린지 참여하기", description = "특정 챌린지에 참여합니다.")
-	public ResponseEntity<?> takePartChallenge(@RequestParam long challengeId, @RequestParam long userId){
-		System.out.println("챌린지 참여하기 전");
+	public ResponseEntity<?> takePartChallenge(@PathVariable long challengeId, @RequestParam long userId){
 		int result = challengeService.intoChallenge(challengeId, userId);
 		if (result > 0) {
             return ResponseEntity.ok("챌린지 참여 성공");

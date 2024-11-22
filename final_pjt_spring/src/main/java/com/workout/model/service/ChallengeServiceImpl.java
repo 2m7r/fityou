@@ -63,4 +63,9 @@ public class ChallengeServiceImpl implements ChallengeService{
 		return dao.selectAllChallenges();
 	}
 
+	@Override
+	public List<Challenge> getChallenges(long userId) {
+		return dao.selectChallenges(userId);
+	}
+
 }

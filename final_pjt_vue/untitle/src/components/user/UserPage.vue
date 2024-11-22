@@ -102,7 +102,7 @@ export default {
       profile: null,
       role: "USER", // 기본값은 USER
       gymName: "",
-      isPrivateAccount: "false", // 기본값은 공개로 설정
+      isPrivateAccount: false, // 기본값은 공개로 설정
     };
   },
   async created() {
@@ -123,28 +123,37 @@ export default {
   methods: {
     async updateUserInfo() {
       const userStore = useUserStore();
-      const updatedData = {
-        name: this.name,
-        email: this.email,
-        phoneNum: this.phoneNum,
-        gender: this.gender,
-        isPrivateAccount: this.isPrivateAccount === "true", // 문자열을 Boolean으로 변환
-        profile: this.profile,
-        gymName: this.gymName,
-      };
+  const data = {
+    name: this.name,
+    email: this.email,
+    phoneNum: this.phoneNum,
+    gender: this.gender,
+    isPrivateAccount: this.isPrivateAccount,
+    profile: this.profile,
+    gymName: this.gymName
+  };
 
-      try {
-        await userStore.updateUserInfo(updatedData); // Pinia store에서 사용자 정보 업데이트
-      } catch (error) {
-        console.error("정보 수정 실패", error);
-        alert("정보 수정에 실패했습니다.");
-      }
+  try {
+    const userId = userStore.user.userId;
+    const response = await apiClient.put(`/api-user/update/${userId}`, data);
+
+    const updatedUserData = response.data;
+    userStore.setUser(updatedUserData);
+
+    alert("정보가 성공적으로 수정되었습니다.");
+  } catch (error) {
+    console.error("정보 수정 실패", error);
+    alert("정보 수정에 실패했습니다.");
+  }
     },
+
 
     handleProfileImage(event) {
       const file = event.target.files[0];
       if (file) {
-        this.profileImage = file;
+        this.profile = file;
+      } else {
+        this.profile = null;  // 파일이 선택되지 않은 경우 null로 처리
       }
     },
 

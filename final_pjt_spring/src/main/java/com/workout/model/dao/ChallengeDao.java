@@ -22,4 +22,6 @@ public interface ChallengeDao {
 	List<User> selectChallengeUsers(Long challengeId);
 
 	List<Challenge> selectAllChallenges();
+
+	List<Challenge> selectChallenges(long userId);
 }

@@ -84,9 +84,10 @@ public class ChallengeRestController {
 	
 	
 	// 챌린지 참여하기
-	@PutMapping("/into/{challengeId}")
+	@PutMapping("/join")
 	@Operation(summary = "챌린지 참여하기", description = "특정 챌린지에 참여합니다.")
-	public ResponseEntity<?> takePartChallenge(@PathVariable Long challengeId, @RequestParam Long userId){
+	public ResponseEntity<?> takePartChallenge(@RequestParam long challengeId, @RequestParam long userId){
+		System.out.println("챌린지 참여하기 전");
 		int result = challengeService.intoChallenge(challengeId, userId);
 		if (result > 0) {
             return ResponseEntity.ok("챌린지 참여 성공");
@@ -104,6 +105,15 @@ public class ChallengeRestController {
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 챌린지의 유저를 찾을 수 없습니다.");
 	}
+	
+	// 내가 참여한 챌린지 목록 조회하기
+	@GetMapping("/challenges")
+	@Operation(summary = "내가 참여한 챌린지 목록 조회", description = "특정 유저의 참여 챌린지 목록을 조회합니다.")
+	public ResponseEntity<List<Challenge>> selectChallenges(@RequestParam long userId){
+		List<Challenge> list = challengeService.getChallenges(userId);
+		return ResponseEntity.ok(list);
+	}
+	
 	
 	// 전체 챌린지 목록 조회
 	@GetMapping

@@ -28,5 +28,7 @@ public interface ChallengeService {
 	// 전체 챌린지 목록 조회
 	List<Challenge> getAllChallenges();
 
+	List<Challenge> getChallenges(long userId);
+
 
 }

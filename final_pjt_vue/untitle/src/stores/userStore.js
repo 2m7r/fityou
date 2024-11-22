@@ -49,7 +49,7 @@ export const useUserStore = defineStore('user', {
         formData.append('isPrivateAccount', updatedData.isPrivateAccount);
 
         if (updatedData.profileImage) {
-          formData.append('profileImage', updatedData.profileImage);
+          formData.append('profile', updatedData.profile);
         }
 
         if (updatedData.role === 'TRAINER') {

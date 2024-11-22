@@ -2,60 +2,93 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.workout.model.dao.ChallengeDao" >
+<mapper namespace="com.workout.model.dao.ChallengeDao">
 	<!-- 챌린지 등록 -->
-	<insert id="insertChallenge" parameterType="Challenge" useGeneratedKeys="true" keyProperty="challengeId">
-		INSERT INTO challenges (name, creator_user_id, description, duration_start, duration_end, exercise_type)
-		values (#{name}, #{creatorUserId}, #{description}, #{durationStart}, #{durationEnd}, #{exerciseType})
+	<insert id="insertChallenge" parameterType="Challenge"
+		useGeneratedKeys="true" keyProperty="challengeId">
+		INSERT INTO challenges (name,
+		creator_user_id, description, duration_start, duration_end,
+		exercise_type)
+		values (#{name}, #{creatorUserId}, #{description},
+		#{durationStart}, #{durationEnd}, #{exerciseType})
 	</insert>
 
 	<!-- 챌린지 상세 조회 -->
-	<select id="selectChallengeById" parameterType="Long" resultType="Challenge">
+	<select id="selectChallengeById" parameterType="Long"
+		resultType="Challenge">
 		SELECT * FROM challenges
 		WHERE challenge_id = #{challengeId}
 	</select>
-	
+
 	<!-- 챌린지 수정 -->
 	<update id="modifyChallenge" parameterType="Challenge">
 		UPDATE challenges
-		SET name = #{name},
+		SET
+		name = #{name},
 		description = #{description},
-		duration_start = #{durationStart},
+		duration_start =
+		#{durationStart},
 		duration_end = #{durationEnd},
-		exercise_type = #{exerciseType}
+		exercise_type =
+		#{exerciseType}
 		WHERE challenge_id = #{challengeId}
 	</update>
-	
+
 	<!-- 챌린지 삭제 -->
 	<delete id="deleteChallenge" parameterType="Long">
-		DELETE FROM challenges
+		DELETE FROM
+		challenges
 		WHERE challenge_id = #{challengeId}
 	</delete>
-	
+
 	<!-- 챌린지 참여 -->
 	<update id="countUp" parameterType="Long">
 		UPDATE challenges
-		SET participant_count = participant_count + 1
-		WHERE challenge_id = #{challengeId}
+		SET
+		participant_count = participant_count + 1
+		WHERE challenge_id =
+		#{challengeId}
 	</update>
-	
+
 	<!-- 챌린지 참여자 테이블에 넣기 -->
 	<insert id="intoChallenge" parameterType="Long">
-		INSERT INTO challenge_people (user_id, challenge_id)
-		VALUES (#{userId}, #{challengeId})
+		INSERT INTO
+		challenge_people (user_id, challenge_id)
+		VALUES (#{userId},
+		#{challengeId})
 	</insert>
-	
+
 	<!-- 챌린지 참여자 목록 조회 -->
-	<select id="selectChallengeUsers" parameterType="Long" resultType="User">
+	<select id="selectChallengeUsers" parameterType="Long"
+		resultType="User">
 		SELECT u.*
-    	FROM users u
-    	JOIN challenge_people cp ON u.user_id = cp.user_id
-    	WHERE cp.challenge_id = #{challengeId}
+		FROM users u
+		JOIN challenge_people cp ON u.user_id = cp.user_id
+		WHERE cp.challenge_id = #{challengeId}
 	</select>
-	
+
 	<!-- 챌린지 전체 목록 조회 -->
 	<select id="selectAllChallenges" resultType="Challenge">
-		SELECT * FROM challenges
+		SELECT * FROM
+		challenges
 	</select>
-	
+
+	<!-- 내가 참여한 챌린지 목록 불러오기 -->
+	<select id="selectChallenges" resultType="Challenge">
+		SELECT
+		c.challenge_id,
+		c.name AS challenge_name,
+		c.description,
+		c.duration_start,
+		c.duration_end,
+		c.exercise_type,
+		c.participant_count
+		FROM
+		challenges c
+		JOIN
+		challenge_people cp ON c.challenge_id = cp.challenge_id
+		WHERE
+		cp.user_id = #{userId}
+	</select>
+
 </mapper>

@@ -10,6 +10,7 @@
       <div class="right">
         <ChallengesMy />
         <ChallengesRecommended />
+        <ChallengeList />
       </div>
     </div>
   </div>
@@ -19,6 +20,7 @@
 import UserAside from '@/components/user/UserAside.vue';
 import ChallengesRecommended from '@/components/challenge/ChallengesRecommended.vue';
 import ChallengesMy from '@/components/challenge/ChallengesMy.vue';
+import ChallengeList from '@/components/challenge/ChallengeList.vue';
 </script>
 
 <style scoped>

@@ -59,5 +59,15 @@ public class Challenge {
 	public void setExerciseType(String exerciseType) {
 		this.exerciseType = exerciseType;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "Challenge [challengeId=" + challengeId + ", name=" + name + ", creatorUserId=" + creatorUserId
+				+ ", description=" + description + ", participantCount=" + participantCount + ", durationStart="
+				+ durationStart + ", durationEnd=" + durationEnd + ", exerciseType=" + exerciseType + "]";
+	}
+	
+	
     
 }

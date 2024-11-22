@@ -47,10 +47,9 @@
 		SET name = #{name},
 		email = #{email},
 		phoneNum = #{phoneNum},
-		gender =
-		#{gender},
+		gender = #{gender},
 		profile_image_url = #{profile},
-		gym_name = {gymName},
+		gym_name = #{gymName},
 		is_private_account = #{isPrivateAccount}
 		WHERE user_id = #{userId}
 	</update>

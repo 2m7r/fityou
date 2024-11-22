@@ -51,37 +51,6 @@ CREATE TABLE preferred_exercises (
     CONSTRAINT unique_user_exercise UNIQUE (user_id, exercise_name)  -- 유니크 제약
 );
 
--- '김싸피' 사용자에 대한 선호 운동 추가
-INSERT INTO preferred_exercises (user_id, exercise_name)
-VALUES
-    ((SELECT user_id FROM users WHERE username = 'ssafy'), '헬스'),
-    ((SELECT user_id FROM users WHERE username = 'ssafy'), '요가');
-
--- '임가현' 사용자에 대한 선호 운동 추가
-INSERT INTO preferred_exercises (user_id, exercise_name)
-VALUES
-    ((SELECT user_id FROM users WHERE username = 'rkgus'), '수영'),
-    ((SELECT user_id FROM users WHERE username = 'rkgus'), '크로스핏');
-
--- '홍길동' 사용자에 대한 선호 운동 추가
-INSERT INTO preferred_exercises (user_id, exercise_name)
-VALUES
-    ((SELECT user_id FROM users WHERE username = 'hong123'), '복싱'),
-    ((SELECT user_id FROM users WHERE username = 'hong123'), '테니스');
-
--- '박지현' 사용자에 대한 선호 운동 추가
-INSERT INTO preferred_exercises (user_id, exercise_name)
-VALUES
-    ((SELECT user_id FROM users WHERE username = 'jihan92'), '배구'),
-    ((SELECT user_id FROM users WHERE username = 'jihan92'), '헬스');
-    
--- '김민수' 사용자에 대한 선호 운동 추가
-INSERT INTO preferred_exercises (user_id, exercise_name)
-VALUES
-    ((SELECT user_id FROM users WHERE username = 'minsu88'), '농구'),
-    ((SELECT user_id FROM users WHERE username = 'minsu88'), '축구');
-
-
 select * from preferred_exercises;
 
 -- ------------------------- 식단일기 -----------------------------------
@@ -152,7 +121,29 @@ CREATE TABLE challenges (
 );
 
 insert into challenges (name, creator_user_id, description, duration_start, duration_end, exercise_type)
-values ('빡세게 살빼자', 1, '빡세게 살 뺄 분만 오세요', '2024-10-10', '2024-12-14', '헬스');
+values
+('빡세게 살빼자', 1, '빡세게 살 뺄 분만 오세요', '2024-10-10', '2024-12-14', '헬스'),
+('요가로 마음 챙기기', 3, '스트레스 해소와 유연성 향상을 위한 요가 챌린지', '2024-09-01', '2024-10-30', '요가'),
+('체중 감량 챌린지', 4, '건강하게 체중을 감량하는 도전', '2024-11-01', '2024-12-01', '헬스'),
+('식단 관리 마스터', 5, '균형 잡힌 식단으로 건강한 생활', '2024-11-10', '2024-12-10', '식단'),
+('힙업 챌린지', 6, '힙업과 하체 강화 운동', '2024-10-15', '2024-11-30', '헬스'),
+('매일 운동하기', 7, '매일 꾸준히 운동하며 체력 키우기', '2024-08-20', '2024-11-20', '헬스'),
+('건강한 아침 시작', 8, '매일 아침 건강한 루틴으로 하루 시작하기', '2024-09-01', '2024-09-30', '식단'),
+('매일 10,000보 걷기', 9, '하루 10,000보 걷기로 체력 향상', '2024-07-01', '2024-09-01', '운동'),
+('스트레칭으로 시작하는 하루', 10, '하루를 스트레칭으로 시작하며 유연성 키우기', '2024-10-01', '2024-10-31', '요가'),
+('체지방 감소 프로젝트', 11, '체지방 감소를 목표로 하는 운동 챌린지', '2024-11-05', '2024-12-05', '헬스'),
+('헬스 루틴 만들기', 2, '자기 맞춤형 헬스 루틴 만들기 도전', '2024-09-10', '2024-11-10', '헬스'),
+('하루 30분 요가', 3, '하루 30분 요가로 유연성 키우기', '2024-10-05', '2024-11-05', '요가'),
+('식단 조절로 다이어트', 4, '식단 조절을 통해 다이어트 성공하기', '2024-10-15', '2024-11-15', '식단'),
+('운동으로 스트레스 날리기', 5, '운동으로 스트레스를 해소하는 도전', '2024-09-01', '2024-10-01', '헬스'),
+('매일 20분 운동', 6, '매일 20분 운동으로 건강을 지키기', '2024-08-01', '2024-10-01', '헬스'),
+('요가로 체형 개선', 7, '요가를 통해 체형을 개선하고 건강하게', '2024-10-01', '2024-12-01', '요가'),
+('다이어트 챌린지', 8, '건강한 다이어트를 위한 챌린지', '2024-09-01', '2024-11-01', '식단'),
+('근력 훈련 챌린지', 9, '근력 훈련으로 강한 몸 만들기', '2024-10-01', '2024-11-30', '헬스'),
+('꾸준한 운동 습관 만들기', 10, '꾸준히 운동해서 좋은 습관 만들기', '2024-08-15', '2024-11-15', '헬스');
+
+select * from challenges;
+
 
 drop table if exists challenge_people;
 -- 5. 챌린지별 참여하고 있는 참여자 목록 저장
@@ -163,17 +154,28 @@ create table challenge_people (
     FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE
 );
 
-insert into challenge_people (user_id, challenge_id)
-values (1, 1);
+INSERT INTO challenge_people (user_id, challenge_id) VALUES
+(1, 1),
+(3, 2),
+(4, 3),
+(5, 4),
+(6, 5),
+(7, 6),
+(8, 7),
+(9, 8),
+(10, 9),
+(11, 10),
+(2, 11),
+(3, 12),
+(4, 13),
+(5, 14),
+(6, 15),
+(7, 16),
+(8, 17),
+(9, 18),
+(10, 19);
 
-select * from challenges;
-
-select user_id from challenge_people
-where challenge_id = 4;
-
-select challenge_id from challenge_people
-where user_id = 1;
-
+select * from challenge_people;
 
 -- -----------------------운동 일기 ----------------------------------------------
 -- 6. 운동

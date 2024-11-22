@@ -50,30 +50,44 @@ public class UserRestController {
 	// 사용자 회원가입
 	@PostMapping("/signup")
 	@Operation(summary = "회원가입", description = "새로운 사용자를 회원가입합니다.")
-	public ResponseEntity<?> signup(@RequestBody User user,
-			@RequestParam(required = false) MultipartFile profileImage) {
-
-		// 파일 업로드 처리
-		String profileImagePath = null;
-
-		try {
-			if (profileImage != null) {
-				profileImagePath = uploadImage(profileImage);
-			}
-		} catch (IOException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
-		}
-
-		// 식단일기 객체에 경로 세팅
-		if (profileImagePath != null)
-			user.setProfile(profileImagePath);
-
+	public ResponseEntity<?> signup(@RequestBody User user) {
 		int result = us.registUser(user);
-		System.out.println("들어옴");
 		if (result > 0) {
 			return ResponseEntity.status(HttpStatus.CREATED).body("유저 등록 성공");
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 등록 실패");
+	}
+	
+	// 사용자 정보 수정
+	@PutMapping("/update/{userId}")
+	public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestBody User user,
+	        @RequestParam(required = false) MultipartFile profileImage) {
+	    user.setUserId(userId);
+	    
+	    // 파일 업로드 처리
+	    String profileImagePath = null;
+	    
+	    // 프로필 이미지가 있는 경우에만 업로드 처리
+	    if (profileImage != null && !profileImage.isEmpty()) {
+	        try {
+	            profileImagePath = uploadImage(profileImage);
+	        } catch (IOException e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
+	        }
+	    }
+	    
+	    // 업로드한 이미지가 있을 경우에만 사용자 프로필에 경로 설정
+	    if (profileImagePath != null) {
+	        user.setProfile(profileImagePath);
+	    }
+	    
+	    int result = us.modifyUser(user);
+	    
+	    if (result > 0) {
+	    	System.out.println(user);
+	        return ResponseEntity.ok(user);
+	    }
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");
 	}
 
 	private String uploadImage(MultipartFile image) throws IOException {
@@ -166,19 +180,6 @@ public class UserRestController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
-
-	// 사용자 정보 수정
-    @PutMapping("/update/{userId}")
-    public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestBody User user){
-    	user.setUserId(userId);
-    	
-    	int result = us.modifyUser(user);
-    	
-    	if (result > 0) {
-	        return ResponseEntity.ok("유저 수정 성공");
-	    }
-	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");
-    }
     
     // 선호 운동 선택
     @PostMapping("/preferred-exercises")

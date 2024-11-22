@@ -18,13 +18,13 @@
           <div class="card" @click="viewChallengeDetail(challenge)">
             <img :src="challenge.image || 'https://via.placeholder.com/150'" class="card-img-top" alt="Challenge Image" />
             <div class="card-body">
-              <h5 class="card-title">{{ challenge.title }}</h5>
+              <h5 class="card-title">{{ challenge.name }}</h5>
               <p class="card-text">{{ challenge.description }}</p>
 
               <div class="button-container">
                 <!-- 참여자 수와 불모양 아이콘을 flexbox로 정렬 -->
                 <span class="participant-count">
-                  {{ challenge.participant_count }} 명 참여
+                  {{ challenge.participantCount }} 명 참여
                 </span>
                 <i class="bi bi-fire participant-icon"></i> <!-- 불모양 아이콘 추가 -->
               </div>
@@ -54,6 +54,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 const challenges = ref([]);  // 내가 참여한 챌린지 목록
 const scrollContainer = ref(null);
@@ -73,8 +74,17 @@ const scrollRight = () => {
 
 // 내가 참여한 챌린지 데이터를 가져오는 함수
 const fetchChallenges = async () => {
+  const user = JSON.parse(sessionStorage.getItem('user'));
+  const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
+  if (!userId) {
+    console.error("사용자 ID가 없습니다.");
+    return;
+  }
+
   try {
-    const response = await axios.get('/api/user/challenges');
+    const response = await apiClient.get('/api-challenge/challenges', {
+      params: { userId }
+    });
     challenges.value = response.data;
   } catch (error) {
     console.error('챌린지 데이터를 가져오는 데 실패했습니다.', error);

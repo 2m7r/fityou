@@ -91,25 +91,28 @@ public class UserRestController {
 	}
 
 	// 로그인
-	@PostMapping("/login")
-	@Operation(summary = "로그인", description = "사용자가 로그인하여 세션에 사용자 정보를 저장합니다.")
-	public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-		Map<String, Object> result = new HashMap<>();
-		HttpStatus status;
+    @PostMapping("/login")
+    @Operation(summary = "로그인", description = "사용자가 로그인하여 세션에 사용자 정보를 저장합니다.")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
 
-		User loginUser = us.login(user.getUsername(), user.getPassword());
-		if (loginUser != null) {
-			result.put("message", "로그인 성공");
-			result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
-			result.put("loginUser", loginUser);
-			status = HttpStatus.OK; // 200 상태 코드
-			System.out.println("result : " + result);
-		} else {
-			result.put("message", "로그인 실패: 잘못된 자격 증명");
-			status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
-		}
-		return new ResponseEntity<>(result, status);
-	}
+        User loginUser = us.login(user.getUsername(), user.getPassword());
+        List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
+        
+        if (loginUser != null) {
+            loginUser.setPreferredExercises(preferredExcercises);
+            result.put("message", "로그인 성공");
+            result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
+            result.put("loginUser", loginUser);
+            status = HttpStatus.OK; // 200 상태 코드
+            System.out.println("result : " + result);
+        } else {
+            result.put("message", "로그인 실패: 잘못된 자격 증명");
+            status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
+        }
+        return new ResponseEntity<>(result, status);
+    }
 
 	// 로그아웃
 	@PostMapping("/logout")

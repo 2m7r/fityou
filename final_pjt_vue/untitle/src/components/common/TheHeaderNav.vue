@@ -61,7 +61,7 @@ const setActive = (tab) => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1050;
+  z-index: 1000;  /* 오버레이보다 높은 z-index */
   width: 100%;
   background-color: transparent;
   box-shadow: none;

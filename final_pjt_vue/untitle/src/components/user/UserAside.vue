@@ -31,70 +31,72 @@
     <div class="my-3"></div>
 
     <!-- 캘린더 -->
-    <UserCalender class="calender"/>
+    <UserCalender class="calender" />
+
+    <!-- 식단일기 모달 --> <!-- userId를 userStore에서 가져오기 -->
+    <DietLogModal
+      v-if="isDietLogModalOpen"
+      @close="closeDietLogModal"
+      :userId="userStore.user?.userId"  
+    />
   </div>
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
+import { ref } from "vue";
+import DietLogModal from "@/components/feed/DietLogModal.vue";
 import UserCalender from "@/components/user/UserCalender.vue";
-import { useUserStore } from '@/stores/userStore';
-import apiClient from "../api/apiClient";
-import { onMounted } from 'vue';
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
 
+
+// 'showOverlay'는 App.vue에서 props로 받습니다.
+const props = defineProps({
+  showOverlay: Function,
+});
+
+// 이벤트 정의: 'showOverlay' 이벤트를 App.vue로 전달
+const emit = defineEmits();
+
+// 사용자 상태
 const userStore = useUserStore();
 const router = useRouter();
 
-onMounted(() => {
-      console.log('userId:', userStore.userId); // userId가 정상적으로 출력되는지 확인
-      if (userStore.userId) {
-        apiClient.get(`/api-diet/feed/${userStore.userId}`)
-          .then(response => {
-            console.log('식단일기 응답:', response.data);
-          })
-          .catch(error => {
-            console.error('식단일기 확인 실패:', error);
-          });
-      } else {
-        console.error('userId가 없습니다!');
-      }
-    });
+// 모달 상태 관리
+const isDietLogModalOpen = ref(false);
 
-const logout = () => {
-  sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
-  userStore.clearUser(); // 사용자 정보 초기화
-  router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
-};
-
-const openDietLogModal = async () => {
-  const today = new Date();
-  const formattedDate = today.toISOString().split("T")[0]; // 예: '2024-11-22'
-
-  try {
-    const response = await apiClient.get(`/api-diet/feed/${userStore.userId}`);
-    console.log("API 응답 데이터:", response.data);  // 응답 데이터 구조 확인
-
-    if (Array.isArray(response.data)) {
-      const todayDiet = response.data.find(diet => diet.recordDate === formattedDate);
-      if (todayDiet) {
-        router.push(`/diet/edit/${todayDiet.dietId}`);
-      } else {
-        router.push(`/diet/create/${formattedDate}`);
-      }
-    } else if (response.data && Array.isArray(response.data.diets)) {
-      const todayDiet = response.data.diets.find(diet => diet.recordDate === formattedDate);
-      if (todayDiet) {
-        router.push(`/diet/edit/${todayDiet.dietId}`);
-      } else {
-        router.push(`/diet/create/${formattedDate}`);
-      }
-    } else {
-      console.error("응답 데이터 구조가 예상과 다릅니다.");
-    }
-  } catch (error) {
-    console.error("식단일기 확인 실패:", error);
+// 식단일기 작성 모달 열기
+const openDietLogModal = () => {
+  isDietLogModalOpen.value = true;
+  if (typeof props.showOverlay === "function") {
+    props.showOverlay(true); // App.vue에 오버레이 표시 요청
   }
 };
+
+// 식단일기 작성 모달 닫기
+const closeDietLogModal = () => {
+  isDietLogModalOpen.value = false;
+  if (typeof props.showOverlay === "function") {
+    props.showOverlay(false); // App.vue에 오버레이 숨기기 요청
+  }
+};
+
+// 운동일기 작성 페이지로 이동
+const goToExerciseLog = () => {
+  router.push("/exercise/create");
+};
+
+
+// 로그아웃 처리
+const logout = () => {
+  sessionStorage.removeItem("access-token"); // 세션 스토리지에서 토큰 삭제
+  userStore.clearUser(); // 사용자 정보 초기화
+  router.push({ name: "login" }); // 로그인 페이지로 리디렉션
+};
+
+// sessionStorage에서 userId 가져오기
+const user = JSON.parse(sessionStorage.getItem("user"));
+const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
 
 </script>
 
@@ -128,7 +130,6 @@ const openDietLogModal = async () => {
     top: 0; /* 화면 상단에 고정 */
   }
 }
-
 
 /* 프로필 사진 확대 */
 .profile-img {
@@ -169,7 +170,8 @@ const openDietLogModal = async () => {
 
 .router-link i {
   font-size: 18px;
-}s
+}
+s
 
 /* 버튼 크기 고정 */
 .my-2 {

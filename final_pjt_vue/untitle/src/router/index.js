@@ -12,7 +12,7 @@ import ChallengeView from '../views/ChallengeView.vue'
 import ManagementView from '../views/ManagementView.vue'
 import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
-import DietModal from '@/views/DietModal.vue'
+import DietModal from '@/components/feed/DietLogModal.vue'
 
 
 

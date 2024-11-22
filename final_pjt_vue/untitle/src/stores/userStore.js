@@ -22,7 +22,10 @@ export const useUserStore = defineStore('user', {
     setUser(userData) {
       this.user = userData; // 사용자 정보를 상태에 저장
       sessionStorage.setItem('user', JSON.stringify(userData)); // sessionStorage에 사용자 정보 저장
+<<<<<<< HEAD
       console.log('User data saved to sessionStorage:', userData); // 디버깅용 로그
+=======
+>>>>>>> master
     },
 
     // 토큰 설정 (로그인 후 토큰을 설정)

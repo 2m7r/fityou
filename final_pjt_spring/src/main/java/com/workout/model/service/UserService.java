@@ -1,5 +1,7 @@
 package com.workout.model.service;
 
+import java.util.List;
+
 import com.workout.model.dto.FindIdRequest;
 import com.workout.model.dto.User;
 
@@ -16,4 +18,8 @@ public interface UserService {
 	String findPassword(FindIdRequest request);
 
 	int modifyUser(User user);
+
+	void savePreferredExercises(Long userId, List<String> exercises);
+
+	List<String> getprefereedExcercise(String username);
 }

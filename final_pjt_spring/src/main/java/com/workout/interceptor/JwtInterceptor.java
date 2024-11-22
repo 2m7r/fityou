@@ -25,7 +25,6 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         String token = request.getHeader(HEADER_AUTH);
         if (token != null) {
-            // 블랙리스트에 포함된 토큰인지 확인
             jwtUtil.validate(token); // 토큰 유효성 검증
             return true;
         }

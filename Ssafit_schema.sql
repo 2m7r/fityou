@@ -44,10 +44,18 @@ drop table IF EXISTS preferred_exercises;
 -- 선호 운동
 CREATE TABLE preferred_exercises (
     exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+<<<<<<< HEAD
     user_id BIGINT NOT NULL, -- 사용자 ID
     exercise_name VARCHAR(100) NOT NULL, -- 운동 이름
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+=======
+    user_id BIGINT NOT NULL,  -- 사용자 ID
+    exercise_name VARCHAR(100) NOT NULL,  -- 운동 이름
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 생성 시간
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT unique_user_exercise UNIQUE (user_id, exercise_name)  -- 유니크 제약
+>>>>>>> master
 );
 
 -- '김싸피' 사용자에 대한 선호 운동 추가

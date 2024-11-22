@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import com.workout.exception.InvalidAnswerException;
 import com.workout.exception.UserNotFoundException;
 import com.workout.jwt.JwtUtil;
 import com.workout.model.dto.FindIdRequest;
+import com.workout.model.dto.SelectPreferredExercisesRequest;
 import com.workout.model.dto.User;
 import com.workout.model.service.UserService;
 
@@ -97,6 +99,7 @@ public class UserRestController {
         Map<String, Object> result = new HashMap<>();
         HttpStatus status;
 
+<<<<<<< HEAD
         User loginUser = us.login(user.getUsername(), user.getPassword());
         List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
         
@@ -113,6 +116,24 @@ public class UserRestController {
         }
         return new ResponseEntity<>(result, status);
     }
+=======
+		User loginUser = us.login(user.getUsername(), user.getPassword());
+		List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
+		
+		if (loginUser != null) {
+			loginUser.setPreferredExercises(preferredExcercises);
+			result.put("message", "로그인 성공");
+			result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
+			result.put("loginUser", loginUser);
+			status = HttpStatus.OK; // 200 상태 코드
+			System.out.println("result : " + result);
+		} else {
+			result.put("message", "로그인 실패: 잘못된 자격 증명");
+			status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
+		}
+		return new ResponseEntity<>(result, status);
+	}
+>>>>>>> master
 
 	// 로그아웃
 	@PostMapping("/logout")
@@ -176,6 +197,17 @@ public class UserRestController {
 	        return ResponseEntity.ok("유저 수정 성공");
 	    }
 	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");
+    }
+    
+    // 선호 운동 선택
+    @PostMapping("/preferred-exercises")
+    public ResponseEntity<?> selectPreferredExercises(@RequestBody SelectPreferredExercisesRequest request){
+    	try {
+            us.savePreferredExercises(request.getLoginUser().getUserId(), request.getExercises());
+            return ResponseEntity.ok("선호 운동이 저장되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("선호 운동 저장에 실패했습니다.");
+        }
     }
 
 }

@@ -94,9 +94,33 @@ const logout = () => {
   router.push({ name: "login" }); // 로그인 페이지로 리디렉션
 };
 
+<<<<<<< HEAD
 // sessionStorage에서 userId 가져오기
 const user = JSON.parse(sessionStorage.getItem("user"));
 const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
+=======
+
+const goToDietLog = () => {
+  //만약 값이 없으면 등록
+  router.push("/diet/create");
+  //값이 있으면 수정
+  // router.push(`/diet/${    }`)
+};
+
+// const goToDietLog = (userId) => {
+//   // 예시로, 유저가 오늘 날짜에 등록한 식단 값이 없으면 등록하는 로직
+//   const dietExist = checkIfDietExistsToday(userId); // 이 함수는 유저가 오늘 등록한 식단이 있는지 확인하는 함수라고 가정
+
+//   if (!dietExist) {
+//     router.push('/diet/create'); // 값이 없으면 등록 페이지로 이동
+//   } else {
+//     router.push(`/diet/${userId}`); // 값이 있으면 수정 페이지로 이동
+//   }
+// }
+
+// sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
+//   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+>>>>>>> master
 
 </script>
 

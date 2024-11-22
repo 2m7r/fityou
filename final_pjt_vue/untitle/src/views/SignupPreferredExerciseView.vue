@@ -24,61 +24,77 @@
 </template>
 
 <script>
+import { ref } from 'vue'; // ref를 사용하여 reactive data 정의
 import apiClient from '@/components/api/apiClient'; // axios 클라이언트
+import { useUserStore } from '@/stores/userStore'; // Pinia store import
+import { useRouter } from 'vue-router'
 
 export default {
-  data() {
-    return {
-      categories: [
-        '헬스', '필라테스', '요가', '방송댄스', '크로스핏',
-        '수영', '러닝', '사이클', '스피닝', '복싱',
-        '태권도', '유도', '스쿼시', '탁구', '배드민턴',
-        '축구', '농구', '배구', '골프', '테니스',
-        '보디빌딩', '발레', '에어로빅', '클라이밍', '기타'
-      ],
-      selectedCategories: [],
-    };
-  },
-  methods: {
+  setup() {
+    const router = useRouter();
+    
+    // userStore를 setup에서 사용
+    const userStore = useUserStore();
+
+    // 운동 카테고리와 선택된 카테고리 상태
+    const categories = ref([
+      '헬스', '필라테스', '요가', '방송댄스', '크로스핏',
+      '수영', '러닝', '사이클', '스피닝', '복싱',
+      '태권도', '유도', '스쿼시', '탁구', '배드민턴',
+      '축구', '농구', '배구', '골프', '테니스',
+      '보디빌딩', '발레', '에어로빅', '클라이밍', '기타'
+    ]);
+
+    const selectedCategories = ref([]); // 선택된 카테고리
+
     // 운동 항목을 클릭할 때 선택 및 해제
-    toggleCategory(category) {
-      if (this.selectedCategories.includes(category)) {
-        this.selectedCategories = this.selectedCategories.filter(c => c !== category);
+    const toggleCategory = (category) => {
+      if (selectedCategories.value.includes(category)) {
+        selectedCategories.value = selectedCategories.value.filter(c => c !== category);
       } else {
-        this.selectedCategories.push(category);
+        selectedCategories.value.push(category);
       }
-    },
+    };
 
     // 선호 운동 제출
-    async submitPreferredExercises() {
-      if (this.selectedCategories.length === 0) {
+    const submitPreferredExercises = async () => {
+      if (selectedCategories.value.length === 0) {
         alert('하나 이상의 운동을 선택해주세요.');
         return;
       }
 
       try {
         const response = await apiClient.post('/api-user/preferred-exercises', {
-          exercises: this.selectedCategories
+          loginUser: userStore.user,
+          exercises: selectedCategories.value
         });
 
         alert('선호 운동 선택 완료');
-        this.$router.push({ name: 'home' });
+        router.push({ name: 'home' });
       } catch (error) {
         console.error('선호 운동 선택 실패', error);
         alert('선호 운동 선택에 실패했습니다.');
       }
-    }
+    };
+
+    return {
+      categories,
+      selectedCategories,
+      toggleCategory,
+      submitPreferredExercises
+    };
   }
-}
+};
 </script>
 
 <style scoped>
+/* 스타일은 그대로 유지 */
 .exercise-selection-container {
   text-align: center;
   padding: 40px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 세로 중앙 정렬 */
+  align-items: center;
   margin-top: 10%;
 }
 
@@ -89,16 +105,16 @@ export default {
 }
 
 .exercise-categories {
-  display: grid; /* 그리드 사용 */
-  grid-template-columns: repeat(5, 150px); /* 한 줄에 5개의 박스를 고정 크기로 배치 */
-  gap: 30px; /* 박스 간 간격 */
-  justify-content: center; /* 그리드 항목을 가로로 중앙 정렬 */
-  justify-items: center; /* 그리드 항목을 세로로 중앙 정렬 */
+  display: grid;
+  grid-template-columns: repeat(5, 150px);
+  gap: 30px;
+  justify-content: center;
+  justify-items: center;
 }
 
 .exercise-box {
-  width: 150px;  /* 각 박스의 너비 고정 */
-  height: 110px; /* 박스의 세로 길이 고정 */
+  width: 150px;
+  height: 110px;
   background-color: #f8f9fa;
   border-radius: 12px;
   display: flex;
@@ -111,7 +127,7 @@ export default {
 }
 
 .exercise-box.selected {
-  border: 2px solid #bbbbbb; /* 선택 시 보더 컬러를 회색으로 */
+  border: 2px solid #bbbbbb;
   box-shadow: 0 4px 8px rgba(200, 200, 200, 0.3);
 }
 
@@ -124,11 +140,10 @@ export default {
   font-weight: 500;
 }
 
-/* 제출 버튼 스타일 */
 .submit-btn {
   margin-top: 50px;
-  padding: 17px 30px; /* padding을 더 크게 설정하여 버튼 크기 확대 */
-  font-size: 18px; /* 글씨 크기도 키움 */
+  padding: 17px 30px;
+  font-size: 18px;
   border: none;
   border-radius: 50px;
   background-color: #ccc;
@@ -148,4 +163,3 @@ export default {
   background-color: #e0e0e0;
 }
 </style>
-

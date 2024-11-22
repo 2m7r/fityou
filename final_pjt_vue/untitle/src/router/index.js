@@ -58,7 +58,11 @@ const router = createRouter({
           component: SignupPreferredExerciseView,
           meta: { requiresAuth: true }, // 인증 필요
         },
+<<<<<<< HEAD
         {
+=======
+        {  
+>>>>>>> master
           path: 'find-id',
           name: 'find-id',
           component: UserFindId,

@@ -12,6 +12,8 @@ import ChallengeView from '../views/ChallengeView.vue'
 import ManagementView from '../views/ManagementView.vue'
 import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
+import DietModal from '@/components/feed/DietLogModal.vue'
+
 
 
 const router = createRouter({
@@ -28,6 +30,14 @@ const router = createRouter({
       name: 'feed',
       component: FeedView,
       meta: { requiresAuth: true }, // 인증 필요
+      children: [
+        {
+          path: '${id}',
+          name: 'my-feed',
+          component: FeedView,
+          meta: { requiresAuth: false }, // 인증 노필요
+        },
+      ]
     },
     {
       path: '/user',
@@ -83,6 +93,12 @@ const router = createRouter({
       path: '/management',
       name: 'management',
       component: ManagementView,
+      meta: { requiresAuth: true }, // 인증 필요
+    },
+    {
+      path: '/diet/create/:date',
+      name: 'diet-create',
+      component: DietModal,
       meta: { requiresAuth: true }, // 인증 필요
     },
   ],

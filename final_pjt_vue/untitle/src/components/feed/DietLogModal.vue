@@ -1,12 +1,13 @@
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal-content" @click.stop>
-      <h2 class="modal-title">식단일기</h2>
+      <h2 class="modal-title">식단일기 작성</h2>
       
       <p class="modal-description">오늘의 식단을 작성해주세요.</p>
 
       <!-- 식사 내용 입력 -->
       <div class="form-group">
+        <label for="meal">식사 내용</label>
         <textarea v-model="dietContent" id="meal" placeholder="식사 내용을 입력하세요" class="meal-input"></textarea>
       </div>
 
@@ -16,15 +17,13 @@
           <!-- 아침 사진 첨부 -->
           <div class="image-item">
             <label for="breakfastImage" class="image-label">
-              <button v-if="!breakfastImage" class="image-upload-btn" @click="triggerFileInput('breakfast')">
+              <button v-if="!breakfastImage" class="image-upload-btn" @click="selectImage('breakfast')">
                 <i class="bi bi-plus"></i>
               </button>
               <input v-if="!breakfastImage" type="file" id="breakfastImage" class="image-input" @change="handleImageChange('breakfast', $event)" />
               <div v-if="breakfastImagePreview" class="image-preview-container">
                 <img :src="breakfastImagePreview" alt="아침 식사 사진 미리보기" class="image-preview" />
-                <button class="remove-image-btn" @click="removeImage('breakfast')">
-                  <i class="bi bi-x-circle"></i> <!-- X 버튼을 부트스트랩 아이콘으로 변경 -->
-                </button>
+                <button class="remove-image-btn" @click="removeImage('breakfast')">×</button>
               </div>
             </label>
           </div>
@@ -32,15 +31,13 @@
           <!-- 점심 사진 첨부 -->
           <div class="image-item">
             <label for="lunchImage" class="image-label">
-              <button v-if="!lunchImage" class="image-upload-btn" @click="triggerFileInput('lunch')">
+              <button v-if="!lunchImage" class="image-upload-btn" @click="selectImage('lunch')">
                 <i class="bi bi-plus"></i>
               </button>
               <input v-if="!lunchImage" type="file" id="lunchImage" class="image-input" @change="handleImageChange('lunch', $event)" />
               <div v-if="lunchImagePreview" class="image-preview-container">
                 <img :src="lunchImagePreview" alt="점심 식사 사진 미리보기" class="image-preview" />
-                <button class="remove-image-btn" @click="removeImage('lunch')">
-                  <i class="bi bi-x-circle"></i> <!-- X 버튼을 부트스트랩 아이콘으로 변경 -->
-                </button>
+                <button class="remove-image-btn" @click="removeImage('lunch')">×</button>
               </div>
             </label>
           </div>
@@ -48,15 +45,13 @@
           <!-- 저녁 사진 첨부 -->
           <div class="image-item">
             <label for="dinnerImage" class="image-label">
-              <button v-if="!dinnerImage" class="image-upload-btn" @click="triggerFileInput('dinner')">
+              <button v-if="!dinnerImage" class="image-upload-btn" @click="selectImage('dinner')">
                 <i class="bi bi-plus"></i>
               </button>
               <input v-if="!dinnerImage" type="file" id="dinnerImage" class="image-input" @change="handleImageChange('dinner', $event)" />
               <div v-if="dinnerImagePreview" class="image-preview-container">
                 <img :src="dinnerImagePreview" alt="저녁 식사 사진 미리보기" class="image-preview" />
-                <button class="remove-image-btn" @click="removeImage('dinner')">
-                  <i class="bi bi-x-circle"></i> <!-- X 버튼을 부트스트랩 아이콘으로 변경 -->
-                </button>
+                <button class="remove-image-btn" @click="removeImage('dinner')">×</button>
               </div>
             </label>
           </div>
@@ -100,7 +95,7 @@ const dinnerImage = ref(null);
 
 // 모달 닫기
 const closeModal = () => {
-  emit('close');  // 부모로부터 받은 close 이벤트 실행
+  emit('close');
 };
 
 // 이미지 업로드 처리
@@ -183,14 +178,6 @@ onMounted(async () => {
     console.error("식단일기 불러오기 실패", error);
   }
 });
-
-// 사진 선택을 위한 파일 입력 트리거 함수
-const triggerFileInput = (mealType) => {
-  const inputElement = document.getElementById(`${mealType}Image`);
-  if (inputElement) {
-    inputElement.click();
-  }
-};
 </script>
 
 <style scoped>
@@ -209,24 +196,16 @@ const triggerFileInput = (mealType) => {
 
 .modal-content {
   background: white;
-  padding: 40px;
+  padding: 20px;
   border-radius: 8px;
   width: 90%;
-  max-width: 850px;
-  height: auto; /* 세로 길이가 유동적으로 변하도록 설정 */
-  max-height: 6000px; /* 최대 높이 제한 */
-  overflow: hidden; /* 내부 스크롤을 막고 컨텐츠에 맞춰 높이 조정 */
+  max-width: 800px;
+  max-height: 520px;
+  overflow-y: auto; /* 스크롤이 가능하도록 설정 */
 }
 
-.modal-title {
+.modal-title, .modal-description {
   text-align: center;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.modal-description {
-  text-align: center;
-  margin-bottom: 25px;
 }
 
 .form-group {
@@ -235,10 +214,8 @@ const triggerFileInput = (mealType) => {
 
 .modal-actions {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: center;
-  margin-top: 20px;
+  justify-content: center;
+  gap: 20px; /* 버튼 간격 늘림 */
 }
 
 .btn {
@@ -257,10 +234,6 @@ const triggerFileInput = (mealType) => {
   color: white;
 }
 
-.btn-primary:hover {
-  background-color: #4e9d63;
-}
-
 .meal-input {
   width: 100%;
   height: 100px;
@@ -268,22 +241,16 @@ const triggerFileInput = (mealType) => {
   border-radius: 10px;
   border: 1px solid #ddd;
   resize: none;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 연한 그림자 추가 */
 }
 
 .image-upload-container {
   display: flex;
-  gap: 20px;
+  gap: 10px; /* 이미지 업로드 버튼 간격 */
 }
 
 .image-item {
   flex: 1;
-}
-
-.image-label {
-  display: block;
-  position: relative;
-  width: 100%;
 }
 
 .image-upload-btn {
@@ -300,19 +267,16 @@ const triggerFileInput = (mealType) => {
   font-size: 24px;
 }
 
-.image-input {
-  display: none;
-}
-
 .image-preview-container {
   position: relative;
-  margin-top: 10px;
+  display: inline-block;
+  width: 100%;
+  max-width: 120px;
 }
 
 .image-preview {
   width: 100%;
   height: auto;
-  max-height: 200px;
   object-fit: cover;
   border-radius: 10px;
 }
@@ -328,11 +292,6 @@ const triggerFileInput = (mealType) => {
   cursor: pointer;
   padding: 5px;
   font-size: 18px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .remove-image-btn:hover {

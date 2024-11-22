@@ -14,7 +14,7 @@
     <!-- 식단일기 작성 버튼 -->
     <button
       class="btn btn-lg btn-diet my-2 d-flex align-items-center rounded-full"
-      @click="goToDietLog"
+      @click="openDietLogModal"
     >
       <i class="bi bi-pencil-square me-2"></i>식단일기 작성
     </button>
@@ -22,7 +22,7 @@
     <!-- 운동일기 작성 버튼 -->
     <button
       class="btn btn-lg btn-exercise d-flex align-items-center rounded-full"
-      @click="goToExerciseLog"
+      @click="openWorkoutLogModal"
     >
       <i class="bi bi-bicycle me-2"></i>운동일기 작성
     </button>
@@ -31,45 +31,72 @@
     <div class="my-3"></div>
 
     <!-- 캘린더 -->
-    <UserCalender class="calender"/>
+    <UserCalender class="calender" />
+
+    <!-- 식단일기 모달 --> <!-- userId를 userStore에서 가져오기 -->
+    <DietLogModal
+      v-if="isDietLogModalOpen"
+      @close="closeDietLogModal"
+      :userId="userStore.user?.userId"  
+    />
   </div>
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
+import { ref } from "vue";
+import DietLogModal from "@/components/feed/DietLogModal.vue";
 import UserCalender from "@/components/user/UserCalender.vue";
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
 
+
+// 'showOverlay'는 App.vue에서 props로 받습니다.
+const props = defineProps({
+  showOverlay: Function,
+});
+
+// 이벤트 정의: 'showOverlay' 이벤트를 App.vue로 전달
+const emit = defineEmits();
+
+// 사용자 상태
 const userStore = useUserStore();
 const router = useRouter();
 
+// 모달 상태 관리
+const isDietLogModalOpen = ref(false);
+
+// 식단일기 작성 모달 열기
+const openDietLogModal = () => {
+  isDietLogModalOpen.value = true;
+  if (typeof props.showOverlay === "function") {
+    props.showOverlay(true); // App.vue에 오버레이 표시 요청
+  }
+};
+
+// 식단일기 작성 모달 닫기
+const closeDietLogModal = () => {
+  isDietLogModalOpen.value = false;
+  if (typeof props.showOverlay === "function") {
+    props.showOverlay(false); // App.vue에 오버레이 숨기기 요청
+  }
+};
+
+// 운동일기 작성 페이지로 이동
+const goToExerciseLog = () => {
+  router.push("/exercise/create");
+};
+
+
+// 로그아웃 처리
 const logout = () => {
-  sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
+  sessionStorage.removeItem("access-token"); // 세션 스토리지에서 토큰 삭제
   userStore.clearUser(); // 사용자 정보 초기화
-  router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+  router.push({ name: "login" }); // 로그인 페이지로 리디렉션
 };
 
-
-const goToDietLog = () => {
-  //만약 값이 없으면 등록
-  router.push("/diet/create");
-  //값이 있으면 수정
-  // router.push(`/diet/${    }`)
-};
-
-// const goToDietLog = (userId) => {
-//   // 예시로, 유저가 오늘 날짜에 등록한 식단 값이 없으면 등록하는 로직
-//   const dietExist = checkIfDietExistsToday(userId); // 이 함수는 유저가 오늘 등록한 식단이 있는지 확인하는 함수라고 가정
-
-//   if (!dietExist) {
-//     router.push('/diet/create'); // 값이 없으면 등록 페이지로 이동
-//   } else {
-//     router.push(`/diet/${userId}`); // 값이 있으면 수정 페이지로 이동
-//   }
-// }
-
-// sessionStorage.removeItem('access-token'); // 세션 스토리지에서 토큰 삭제
-//   router.push({ name: 'login' }); // 로그인 페이지로 리디렉션
+// sessionStorage에서 userId 가져오기
+const user = JSON.parse(sessionStorage.getItem("user"));
+const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
 
 </script>
 
@@ -103,7 +130,6 @@ const goToDietLog = () => {
     top: 0; /* 화면 상단에 고정 */
   }
 }
-
 
 /* 프로필 사진 확대 */
 .profile-img {
@@ -145,6 +171,7 @@ const goToDietLog = () => {
 .router-link i {
   font-size: 18px;
 }
+s
 
 /* 버튼 크기 고정 */
 .my-2 {

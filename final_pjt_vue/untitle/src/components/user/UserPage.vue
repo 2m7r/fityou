@@ -50,10 +50,29 @@
         </select>
       </div>
 
-      <!-- 프로필 사진 입력 -->
-      <div class="input-group">
-        <label for="profile">프로필 사진</label>
-        <input type="file" id="profile" @change="handleProfileImage" />
+      <!-- 프로필 사진 업로드 -->
+      <div class="input-group profile-upload">
+        <label for="profileImage">프로필 사진</label>
+        <div class="profile-upload-container">
+          <!-- 파일 선택 input 숨기기 -->
+          <input
+            type="file"
+            id="profileImage"
+            ref="profileImageInput"
+            @change="handleProfileImage"
+            style="display: none"
+          />
+          <!-- 프로필 사진 미리보기 -->
+          <div v-if="previewImage">
+            <img :src="previewImage" alt="프로필 사진 미리보기" class="profile-img-preview" />
+          </div>
+          <div v-else>
+            <!-- 이미 프로필 사진이 있을 경우 해당 이미지 표시 -->
+            <img :src="'http://localhost:8080' + userProfileImage.replace(/\\/g, '/') || defaultImage" alt="기본 프로필 이미지" class="profile-img-preview" />
+          </div>
+          <!-- 사진 업로드 버튼 -->
+          <button type="button" class="upload-btn" @click="triggerFileInput">프로필 업로드</button>
+        </div>
       </div>
 
       <!-- 트레이너일 경우 체육관 이름 입력 -->
@@ -91,6 +110,7 @@
 <script>
 import { useUserStore } from "@/stores/userStore"; // Pinia store 가져오기
 import apiClient from "@/components/api/apiClient";
+import { ref } from "vue";
 
 export default {
   data() {
@@ -99,7 +119,10 @@ export default {
       email: "",
       phoneNum: "",
       gender: "M", // 기본값은 남성
-      profile: null,
+      profileImage: null, // 프로필 사진 (파일)
+      previewImage: null, // 프로필 이미지 미리보기 URL
+      userProfileImage: null, // 사용자 프로필 이미지 URL (기본값은 빈 문자열)
+      defaultImage: 'src/assets/profile.jpg',
       role: "USER", // 기본값은 USER
       gymName: "",
       isPrivateAccount: false, // 기본값은 공개로 설정
@@ -109,58 +132,66 @@ export default {
     const userStore = useUserStore();
 
     const userData = userStore.user;
+    console.log(userData.profileImage.replace(/\\/g, '/'))
 
     this.name = userData.name;
     this.email = userData.email;
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
     this.role = userData.role;
-    this.isPrivateAccount = userData.isPrivateAccount !== undefined ? this.isPrivateAccount : false;
+    this.isPrivateAccount = userData.isPrivateAccount !== undefined ? userData.isPrivateAccount : false;
+    this.userProfileImage = userData.profileImage || 'src/assets/profile.jpg'; // 사용자 프로필 이미지 URL
     if (this.role === "TRAINER") {
       this.gymName = userData.gymName;
     }
   },
   methods: {
     async updateUserInfo() {
-  const userStore = useUserStore();
+      const userStore = useUserStore();
 
-  const formData = new FormData();
-  formData.append("name", this.name);
-  formData.append("email", this.email);
-  formData.append("phoneNum", this.phoneNum);
-  formData.append("gender", this.gender);
-  formData.append("isPrivateAccount", this.isPrivateAccount);
-  formData.append("profile", this.profile);
-  formData.append("gymName", this.gymName);
+      const formData = new FormData();
+      formData.append("name", this.name);
+      formData.append("email", this.email);
+      formData.append("phoneNum", this.phoneNum);
+      formData.append("gender", this.gender);
+      formData.append("isPrivateAccount", this.isPrivateAccount);
+      formData.append("profileImage", this.profileImage);
+      formData.append("gymName", this.gymName);
+      try {
+        const userId = userStore.user.userId;
+        const response = await apiClient.put(`/api-user/update/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
 
-  try {
-    const userId = userStore.user.userId;
-    const response = await apiClient.put(`/api-user/update/${userId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
+        const updatedUserData = response.data;
+        console.log('------업데이트 데이터-----')
+        console.log(response.data)
+        console.log('------------------------')
+
+        userStore.setUser(updatedUserData);
+
+        alert("정보가 성공적으로 수정되었습니다.");
+      } catch (error) {
+        console.error("정보 수정 실패", error);
+        alert("정보 수정에 실패했습니다.");
       }
-    });
-
-    const updatedUserData = response.data;
-    console.log(response.data)
-
-    userStore.setUser(updatedUserData);
-
-    alert("정보가 성공적으로 수정되었습니다.");
-  } catch (error) {
-    console.error("정보 수정 실패", error);
-    alert("정보 수정에 실패했습니다.");
-  }
-},
-
+    },
 
     handleProfileImage(event) {
       const file = event.target.files[0];
       if (file) {
-        this.profile = file;
+        this.profileImage = file; // profileImage로 수정
+        this.previewImage = URL.createObjectURL(file); // 파일을 미리보기 URL로 설정
       } else {
-        this.profile = null;  // 파일이 선택되지 않은 경우 null로 처리
+        this.profileImage = null; // profileImage로 수정
+        this.previewImage = null; // 파일이 선택되지 않으면 미리보기도 초기화
       }
+    },
+
+    triggerFileInput() {
+      this.$refs.profileImageInput.click(); // 업로드 버튼 클릭 시 input 파일 열리도록
     },
 
     formatPhoneNumber() {
@@ -181,6 +212,33 @@ export default {
 </script>
 
 <style scoped>
+.profile-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 이미지와 버튼 사이의 간격 */
+}
+
+.profile-img-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.upload-btn:hover {
+  background-color: #388e7f;
+}
+
 .user-page {
   width: 100%;
   max-width: 480px;
@@ -224,59 +282,49 @@ h2 {
   align-items: center;
   font-size: 14px;
   color: #666;
-  cursor: pointer; /* 전체 라벨에 클릭 효과 추가 */
 }
 
-/* 스위치 스타일 */
 .switch-container {
   position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 25px;
 }
 
 .switch-container input {
-  opacity: 0; /* 기본 체크박스를 숨김 */
-  width: 0;
-  height: 0;
+  position: absolute;
+  opacity: 0;
 }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.switch-container .slider {
+  width: 34px;
+  height: 20px;
   background-color: #ccc;
+  border-radius: 50px;
   transition: 0.4s;
-  border-radius: 25px;
+  cursor: pointer;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 19px;
-  width: 19px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
+.switch-container input:checked + .slider {
   background-color: #42b983;
 }
 
-input:checked + .slider:before {
-  transform: translateX(24px);
+.switch-container .slider:before {
+  content: "";
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background-color: white;
+  transition: 0.4s;
+  left: 4px;
+  top: 4px;
 }
 
-/* 버튼 스타일 */
+.switch-container input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
 button {
   width: 100%;
-  padding: 12px;
+  padding: 15px;
   background-color: #42b983;
   color: white;
   border: none;
@@ -287,6 +335,6 @@ button {
 }
 
 button:hover {
-  background-color: #3c8f6a;
+  background-color: #388e7f;
 }
 </style>

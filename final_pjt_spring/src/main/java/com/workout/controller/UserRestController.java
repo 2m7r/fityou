@@ -58,16 +58,29 @@ public class UserRestController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 등록 실패");
 	}
 	
-	// 사용자 정보 수정
 	@PutMapping("/update/{userId}")
-	public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestBody User user,
-	        @RequestParam(required = false) MultipartFile profileImage) {
+	public ResponseEntity<?> modifyUser(
+	        @PathVariable long userId, 
+	        @RequestParam("name") String name,
+	        @RequestParam("email") String email,
+	        @RequestParam("phoneNum") String phoneNum,
+	        @RequestParam("gender") String gender,
+	        @RequestParam("isPrivateAccount") boolean isPrivateAccount,
+	        @RequestParam(required = false) MultipartFile profileImage,
+	        @RequestParam("gymName") String gymName) {
+	    
+	    User user = new User();
 	    user.setUserId(userId);
-	    
-	    // 파일 업로드 처리
+	    user.setName(name);
+	    user.setEmail(email);
+	    user.setPhoneNum(phoneNum);
+	    user.setGender(gender);
+	    user.setPrivateAccount(isPrivateAccount);
+	    user.setGymName(gymName);
+	    System.out.println(user);
+
+	    // 프로필 이미지 처리
 	    String profileImagePath = null;
-	    
-	    // 프로필 이미지가 있는 경우에만 업로드 처리
 	    if (profileImage != null && !profileImage.isEmpty()) {
 	        try {
 	            profileImagePath = uploadImage(profileImage);
@@ -75,16 +88,14 @@ public class UserRestController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
 	        }
 	    }
-	    
-	    // 업로드한 이미지가 있을 경우에만 사용자 프로필에 경로 설정
+
 	    if (profileImagePath != null) {
 	        user.setProfile(profileImagePath);
 	    }
-	    
+
 	    int result = us.modifyUser(user);
 	    
 	    if (result > 0) {
-	    	System.out.println(user);
 	        return ResponseEntity.ok(user);
 	    }
 	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");

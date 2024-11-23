@@ -115,29 +115,35 @@ export default {
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
     this.role = userData.role;
-    this.isPrivateAccount = userData.isPrivateAccount;
+    this.isPrivateAccount = userData.isPrivateAccount !== undefined ? this.isPrivateAccount : false;
     if (this.role === "TRAINER") {
       this.gymName = userData.gymName;
     }
   },
   methods: {
     async updateUserInfo() {
-      const userStore = useUserStore();
-  const data = {
-    name: this.name,
-    email: this.email,
-    phoneNum: this.phoneNum,
-    gender: this.gender,
-    isPrivateAccount: this.isPrivateAccount,
-    profile: this.profile,
-    gymName: this.gymName
-  };
+  const userStore = useUserStore();
+
+  const formData = new FormData();
+  formData.append("name", this.name);
+  formData.append("email", this.email);
+  formData.append("phoneNum", this.phoneNum);
+  formData.append("gender", this.gender);
+  formData.append("isPrivateAccount", this.isPrivateAccount);
+  formData.append("profile", this.profile);
+  formData.append("gymName", this.gymName);
 
   try {
     const userId = userStore.user.userId;
-    const response = await apiClient.put(`/api-user/update/${userId}`, data);
+    const response = await apiClient.put(`/api-user/update/${userId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
 
     const updatedUserData = response.data;
+    console.log(response.data)
+
     userStore.setUser(updatedUserData);
 
     alert("정보가 성공적으로 수정되었습니다.");
@@ -145,7 +151,7 @@ export default {
     console.error("정보 수정 실패", error);
     alert("정보 수정에 실패했습니다.");
   }
-    },
+},
 
 
     handleProfileImage(event) {

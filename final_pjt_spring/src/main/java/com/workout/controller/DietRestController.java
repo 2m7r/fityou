@@ -1,11 +1,12 @@
 package com.workout.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workout.model.dto.Diet;
 import com.workout.model.service.DietService;
 
@@ -70,20 +68,19 @@ public class DietRestController {
     @PostMapping("/create/{userId}")
     @Operation(summary = "식단일기 등록", description = "새로운 식단일기를 등록합니다.")
     public ResponseEntity<?> registDiet(
-    	@PathVariable long userId,
-        @RequestParam(required = false) MultipartFile breakfastImage,
-        @RequestParam(required = false) MultipartFile lunchImage,
-        @RequestParam(required = false) MultipartFile dinnerImage,
-        @RequestParam("diet") String dietJson
-    ) throws JsonMappingException, JsonProcessingException {
-        // Diet 객체로 변환
-        Diet diet = new ObjectMapper().readValue(dietJson, Diet.class);
-
+            @PathVariable long userId,
+            @RequestParam(required = false) MultipartFile breakfastImage,
+            @RequestParam(required = false) MultipartFile lunchImage,
+            @RequestParam(required = false) MultipartFile dinnerImage,
+            @RequestParam String content,  // Diet의 content 속성 받기
+            @RequestParam String recordDate // 식단 기록 날짜 (년-월-일 형식)
+    ) {
         String breakfastImagePath = null;
         String lunchImagePath = null;
         String dinnerImagePath = null;
-
+        
         try {
+            // 파일 업로드 처리
             if (breakfastImage != null) {
                 breakfastImagePath = uploadImage(breakfastImage);
             }
@@ -97,16 +94,26 @@ public class DietRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
         }
 
-        // 이미지 경로 설정
+        // Diet 객체 생성 및 데이터 설정
+        Diet diet = new Diet();
+        diet.setUserId(userId);  // userId 설정
+        diet.setContent(content); // content 설정
+        diet.setRecordDate(recordDate); // 날짜 설정
         if (breakfastImagePath != null) diet.setBreakfastImagePath(breakfastImagePath);
         if (lunchImagePath != null) diet.setLunchImagePath(lunchImagePath);
         if (dinnerImagePath != null) diet.setDinnerImagePath(dinnerImagePath);
-
-        int result = dietService.registDiet(diet);
-        if (result > 0) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("식단일기 등록 성공");
+        System.out.println(diet);
+        // 식단일기 등록
+        try {
+            int result = dietService.registDiet(diet);
+            if (result > 0) {
+                return ResponseEntity.status(HttpStatus.CREATED).body("식단일기 등록 성공");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("식단일기 등록 실패");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("식단일기 등록 중 오류 발생");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("식단일기 등록 실패");
     }
 
     @PutMapping("/{dietId}")
@@ -140,22 +147,37 @@ public class DietRestController {
         if (lunchImagePath != null) diet.setLunchImagePath(lunchImagePath);
         if (dinnerImagePath != null) diet.setDinnerImagePath(dinnerImagePath);
 
-        diet.setDietId(dietId);
-        int result = dietService.modifyDiet(diet);
-        if (result > 0) {
-            return ResponseEntity.ok("식단일기 수정 성공");
+        boolean isUpdated = dietService.modifyDiet(dietId, diet);
+        if (isUpdated) {
+            return ResponseEntity.ok("식단일기 수정 완료");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("식단일기 수정 실패");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("식단일기 수정 실패");
     }
 
     private String uploadImage(MultipartFile image) throws IOException {
-        String uploadDir = "uploads/diet_images/";
-        String originalFilename = image.getOriginalFilename();
-        String fileName = StringUtils.cleanPath(originalFilename);
-        Path targetPath = Paths.get(uploadDir + fileName);
-        Files.copy(image.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-        return targetPath.toString();
-    }
+		// 이미지 파일 저장 디렉토리
+		String uploadDir = "uploads/diet_images/";
+		File dir = new File(uploadDir);
+		if (!dir.exists()) {
+		    dir.mkdirs();  // 디렉토리가 없으면 생성
+		}
+		
+		// 파일명 처리 (중복 방지)
+		String originalFilename = image.getOriginalFilename();
+		String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(originalFilename);
+		Path targetPath = Paths.get(uploadDir + fileName);
+
+		try {
+	        // 파일 저장
+	        Files.copy(image.getInputStream(), targetPath);
+	    } catch (IOException e) {
+	        System.out.println("이미지 업로드 실패: " + e.getMessage());
+	        throw e;  // 예외 다시 던지기
+	    }
+
+		// 업로드한 이미지의 파일 경로를 반환
+		return targetPath.toString();
+	}
 
     @DeleteMapping("/{dietId}")
     @Operation(summary = "식단일기 삭제", description = "특정 식단일기를 삭제합니다.")

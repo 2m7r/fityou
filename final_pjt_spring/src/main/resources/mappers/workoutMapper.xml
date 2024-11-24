@@ -5,14 +5,9 @@
 <mapper namespace="com.workout.model.dao.WorkoutDao">
 
 	<insert id="insertWorkout" useGeneratedKeys="true" keyProperty="workoutId">
-		INSERT INTO workouts (user_id, description)
+		INSERT INTO workouts (user_id, description, workout_image)
 		VALUES
-		(#{userId}, #{description})
-	</insert>
-
-	<insert id="insertWorkoutPhoto">
-		INSERT INTO workout_photos (workout_id, photo_url)
-		VALUES (#{workoutId}, #{photoUrl})
+		(#{userId}, #{description}, #{workoutImage})
 	</insert>
 
 	<insert id="insertWorkoutExercise">

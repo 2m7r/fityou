@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,48 +59,43 @@ public class UserRestController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 등록 실패");
 	}
-	
+
 	@PutMapping("/update/{userId}")
-	public ResponseEntity<?> modifyUser(
-	        @PathVariable long userId, 
-	        @RequestParam("name") String name,
-	        @RequestParam("email") String email,
-	        @RequestParam("phoneNum") String phoneNum,
-	        @RequestParam("gender") String gender,
-	        @RequestParam("isPrivateAccount") boolean isPrivateAccount,
-	        @RequestParam(required = false) MultipartFile profileImage,
-	        @RequestParam("gymName") String gymName) {
-	    
-	    User user = new User();
-	    user.setUserId(userId);
-	    user.setName(name);
-	    user.setEmail(email);
-	    user.setPhoneNum(phoneNum);
-	    user.setGender(gender);
-	    user.setPrivateAccount(isPrivateAccount);
-	    user.setGymName(gymName);
-	    System.out.println(user);
+	public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestParam("name") String name,
+			@RequestParam("email") String email, @RequestParam("phoneNum") String phoneNum,
+			@RequestParam("gender") String gender, @RequestParam("isPrivateAccount") boolean isPrivateAccount,
+			@RequestParam(required = false) MultipartFile profileImage, @RequestParam("gymName") String gymName) {
 
-	    // 프로필 이미지 처리
-	    String profileImagePath = null;
-	    if (profileImage != null && !profileImage.isEmpty()) {
-	        try {
-	            profileImagePath = uploadImage(profileImage);
-	        } catch (IOException e) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
-	        }
-	    }
+		User user = new User();
+		user.setUserId(userId);
+		user.setName(name);
+		user.setEmail(email);
+		user.setPhoneNum(phoneNum);
+		user.setGender(gender);
+		user.setPrivateAccount(isPrivateAccount);
+		user.setGymName(gymName);
+		System.out.println(user);
 
-	    if (profileImagePath != null) {
-	        user.setProfileImage(profileImagePath);
-	    }
+		// 프로필 이미지 처리
+		String profileImagePath = null;
+		if (profileImage != null && !profileImage.isEmpty()) {
+			try {
+				profileImagePath = uploadImage(profileImage);
+			} catch (IOException e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
+			}
+		}
 
-	    int result = us.modifyUser(user);
-	    
-	    if (result > 0) {
-	        return ResponseEntity.ok(user);
-	    }
-	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");
+		if (profileImagePath != null) {
+			user.setProfileImage(profileImagePath);
+		}
+
+		int result = us.modifyUser(user);
+
+		if (result > 0) {
+			return ResponseEntity.ok(user);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유저 수정 실패");
 	}
 
 	private String uploadImage(MultipartFile image) throws IOException {
@@ -107,50 +103,49 @@ public class UserRestController {
 		String uploadDir = "uploads/profile_images/";
 		File dir = new File(uploadDir);
 		if (!dir.exists()) {
-		    dir.mkdirs();  // 디렉토리가 없으면 생성
+			dir.mkdirs(); // 디렉토리가 없으면 생성
 		}
-		
+
 		// 파일명 처리 (중복 방지)
 		String originalFilename = image.getOriginalFilename();
-		String fileName = StringUtils.cleanPath(originalFilename);
+		String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(originalFilename);
 		Path targetPath = Paths.get(uploadDir + fileName);
 
 		try {
-	        // 파일 저장
-	        Files.copy(image.getInputStream(), targetPath);
-	    } catch (IOException e) {
-	        System.out.println("이미지 업로드 실패: " + e.getMessage());
-	        throw e;  // 예외 다시 던지기
-	    }
+			// 파일 저장
+			Files.copy(image.getInputStream(), targetPath);
+		} catch (IOException e) {
+			System.out.println("이미지 업로드 실패: " + e.getMessage());
+			throw e; // 예외 다시 던지기
+		}
 
 		// 업로드한 이미지의 파일 경로를 반환
 		return targetPath.toString();
 	}
 
 	// 로그인
-    @PostMapping("/login")
-    @Operation(summary = "로그인", description = "사용자가 로그인하여 세션에 사용자 정보를 저장합니다.")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-        Map<String, Object> result = new HashMap<>();
-        HttpStatus status;
+	@PostMapping("/login")
+	@Operation(summary = "로그인", description = "사용자가 로그인하여 세션에 사용자 정보를 저장합니다.")
+	public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+		Map<String, Object> result = new HashMap<>();
+		HttpStatus status;
 
-        User loginUser = us.login(user.getUsername(), user.getPassword());
-        List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
-        
-        if (loginUser != null) {
-            loginUser.setPreferredExercises(preferredExcercises);
-            result.put("message", "로그인 성공");
-            result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
-            result.put("loginUser", loginUser);
-            status = HttpStatus.OK; // 200 상태 코드
-            System.out.println("result : " + result);
-        } else {
-            result.put("message", "로그인 실패: 잘못된 자격 증명");
-            status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
-        }
-        return new ResponseEntity<>(result, status);
-    }
+		User loginUser = us.login(user.getUsername(), user.getPassword());
+		List<String> preferredExcercises = us.getprefereedExcercise(user.getUsername());
 
+		if (loginUser != null) {
+			loginUser.setPreferredExercises(preferredExcercises);
+			result.put("message", "로그인 성공");
+			result.put("access-token", jwtUtil.createToken(loginUser.getName())); // 토큰 생성
+			result.put("loginUser", loginUser);
+			status = HttpStatus.OK; // 200 상태 코드
+			System.out.println("result : " + result);
+		} else {
+			result.put("message", "로그인 실패: 잘못된 자격 증명");
+			status = HttpStatus.UNAUTHORIZED; // 401 상태 코드
+		}
+		return new ResponseEntity<>(result, status);
+	}
 
 	// 로그아웃
 	@PostMapping("/logout")
@@ -202,16 +197,16 @@ public class UserRestController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
-    
-    // 선호 운동 선택
-    @PostMapping("/preferred-exercises")
-    public ResponseEntity<?> selectPreferredExercises(@RequestBody SelectPreferredExercisesRequest request){
-    	try {
-            us.savePreferredExercises(request.getLoginUser().getUserId(), request.getExercises());
-            return ResponseEntity.ok("선호 운동이 저장되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("선호 운동 저장에 실패했습니다.");
-        }
-    }
+
+	// 선호 운동 선택
+	@PostMapping("/preferred-exercises")
+	public ResponseEntity<?> selectPreferredExercises(@RequestBody SelectPreferredExercisesRequest request) {
+		try {
+			us.savePreferredExercises(request.getLoginUser().getUserId(), request.getExercises());
+			return ResponseEntity.ok("선호 운동이 저장되었습니다.");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("선호 운동 저장에 실패했습니다.");
+		}
+	}
 
 }

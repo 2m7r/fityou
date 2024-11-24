@@ -19,7 +19,7 @@ public interface DietDao {
 	int insertDiet(Diet diet);
 	
 	// 식단일기 수정
-	int updateDiet(Diet diet);
+	boolean updateDiet(Long dietId, Diet diet);
 	
 	// 식단일기 삭제
 	int deleteDiet(Long dietId);

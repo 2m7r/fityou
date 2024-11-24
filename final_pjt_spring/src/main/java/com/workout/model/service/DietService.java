@@ -19,7 +19,7 @@ public interface DietService {
 	int registDiet(Diet diet);
 	
 	// 식단일기 수정
-	int modifyDiet(Diet diet);
+	boolean modifyDiet(Long dietId, Diet diet);
 	
 	// 식단일기 삭제
 	int removeDiet(Long dietId);

@@ -2,7 +2,7 @@
   <div class="user-aside">
     <!-- 사용자 프로필 사진 -->
     <div class="profile">
-      <img src="@/assets/profile.jpg" alt="User Profile" class="profile-img" />
+      <img :src="userProfileImage || defaultImage" alt="User Profile" class="profile-img" />
     </div>
 
     <!-- 사용자 이름 -->
@@ -48,6 +48,7 @@ import DietLogModal from "@/components/feed/DietLogModal.vue";
 import UserCalender from "@/components/user/UserCalender.vue";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
+import defaultprofileImage from '@/assets/profile.jpg' // 기본 이미지 임포트
 
 // 'showOverlay'는 App.vue에서 props로 받습니다.
 const props = defineProps({
@@ -60,6 +61,14 @@ const emit = defineEmits();
 // 사용자 상태
 const userStore = useUserStore();
 const router = useRouter();
+
+// 기본 이미지 경로 지정
+const defaultImage = defaultprofileImage;
+
+// userProfileImage가 null일 경우 기본 이미지를 사용
+const userProfileImage = userStore.userProfileImage 
+  ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
+  : defaultImage; // userProfileImage가 null이면 기본 이미지 사용
 
 // 모달 상태 관리
 const isDietLogModalOpen = ref(false);

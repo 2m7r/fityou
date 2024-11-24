@@ -65,6 +65,8 @@ export default {
 
         userStore.setUser(loginUser); // 사용자 정보 스토어에 저장
         userStore.setToken(token);
+        console.log('------로그인 유저-----')
+        console.log(loginUser)
 
         // preferredExercises가 존재하는지 확인하고 처리
         if (loginUser && loginUser.preferredExercises.length > 0) {

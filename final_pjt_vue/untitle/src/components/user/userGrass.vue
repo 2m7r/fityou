@@ -138,7 +138,6 @@ const getDayStatus = (date) => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     height: 100vh; /* 화면 전체 높이 */
     padding: 0 10px; /* 왼쪽, 오른쪽 여백 */
     max-width: 500px; /* 최대 너비 500px */

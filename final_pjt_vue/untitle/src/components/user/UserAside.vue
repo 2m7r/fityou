@@ -97,7 +97,6 @@ const closeDietLogModal = () => {
   isDietLogModalOpen.value = false;
   if (typeof props.showOverlay === "function") {
     props.showOverlay(false); // 오버레이 숨기기 요청
-<<<<<<< HEAD
   }
 };
 
@@ -116,8 +115,6 @@ const closeWorkoutLogModal = () => {
   isWorkoutLogModalOpen.value = false;
   if (typeof props.showOverlay === "function") {
     props.showOverlay(false); // 오버레이 숨기기 요청
-=======
->>>>>>> eunji
   }
 };
 

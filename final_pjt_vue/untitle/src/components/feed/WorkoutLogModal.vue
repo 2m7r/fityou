@@ -255,6 +255,8 @@ onMounted(() => {
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: 850px;
+  overflow: hidden;
 }
 
 .modal-title {
@@ -284,6 +286,8 @@ onMounted(() => {
 .exercise-container {
   display: flex;
   justify-content: space-between;
+  max-height: 400px;  /* 최대 높이 설정 */
+  overflow-y: auto;   /* 세로 스크롤 활성화 */
 }
 
 .exercise-category, .exercise-routine {
@@ -322,7 +326,7 @@ onMounted(() => {
   border: 1px solid #ddd;
   border-radius: 12px;
   cursor: pointer;
-  width: 100%;
+  width: 90%;
   transition: all 0.3s ease;
 }
 
@@ -383,6 +387,7 @@ onMounted(() => {
 .modal-actions {
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
 }
 
 .btn {

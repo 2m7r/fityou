@@ -1,5 +1,6 @@
 package com.workout.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -104,14 +105,23 @@ public class UserRestController {
 	private String uploadImage(MultipartFile image) throws IOException {
 		// 이미지 파일 저장 디렉토리
 		String uploadDir = "uploads/profile_images/";
-
+		File dir = new File(uploadDir);
+		if (!dir.exists()) {
+		    dir.mkdirs();  // 디렉토리가 없으면 생성
+		}
+		
 		// 파일명 처리 (중복 방지)
 		String originalFilename = image.getOriginalFilename();
 		String fileName = StringUtils.cleanPath(originalFilename);
 		Path targetPath = Paths.get(uploadDir + fileName);
 
-		// 파일 저장
-		Files.copy(image.getInputStream(), targetPath);
+		try {
+	        // 파일 저장
+	        Files.copy(image.getInputStream(), targetPath);
+	    } catch (IOException e) {
+	        System.out.println("이미지 업로드 실패: " + e.getMessage());
+	        throw e;  // 예외 다시 던지기
+	    }
 
 		// 업로드한 이미지의 파일 경로를 반환
 		return targetPath.toString();

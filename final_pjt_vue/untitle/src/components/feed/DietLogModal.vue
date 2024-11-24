@@ -1,57 +1,28 @@
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal-content" @click.stop>
-      <h2 class="modal-title">식단일기 작성</h2>
-      
+      <h2 class="modal-title">식단일기</h2>
       <p class="modal-description">오늘의 식단을 작성해주세요.</p>
 
       <!-- 식사 내용 입력 -->
       <div class="form-group">
-        <label for="meal">식사 내용</label>
         <textarea v-model="dietContent" id="meal" placeholder="식사 내용을 입력하세요" class="meal-input"></textarea>
       </div>
 
       <!-- 사진 첨부 -->
       <div class="form-group">
         <div class="image-upload-container">
-          <!-- 아침 사진 첨부 -->
-          <div class="image-item">
-            <label for="breakfastImage" class="image-label">
-              <button v-if="!breakfastImage" class="image-upload-btn" @click="selectImage('breakfast')">
+          <div v-for="meal in ['breakfast', 'lunch', 'dinner']" :key="meal" class="image-item">
+            <label :for="`${meal}Image`" class="image-label">
+              <button v-if="!mealImages[meal]" class="image-upload-btn" @click="triggerFileInput(meal)">
                 <i class="bi bi-plus"></i>
               </button>
-              <input v-if="!breakfastImage" type="file" id="breakfastImage" class="image-input" @change="handleImageChange('breakfast', $event)" />
-              <div v-if="breakfastImagePreview" class="image-preview-container">
-                <img :src="breakfastImagePreview" alt="아침 식사 사진 미리보기" class="image-preview" />
-                <button class="remove-image-btn" @click="removeImage('breakfast')">×</button>
-              </div>
-            </label>
-          </div>
-
-          <!-- 점심 사진 첨부 -->
-          <div class="image-item">
-            <label for="lunchImage" class="image-label">
-              <button v-if="!lunchImage" class="image-upload-btn" @click="selectImage('lunch')">
-                <i class="bi bi-plus"></i>
-              </button>
-              <input v-if="!lunchImage" type="file" id="lunchImage" class="image-input" @change="handleImageChange('lunch', $event)" />
-              <div v-if="lunchImagePreview" class="image-preview-container">
-                <img :src="lunchImagePreview" alt="점심 식사 사진 미리보기" class="image-preview" />
-                <button class="remove-image-btn" @click="removeImage('lunch')">×</button>
-              </div>
-            </label>
-          </div>
-
-          <!-- 저녁 사진 첨부 -->
-          <div class="image-item">
-            <label for="dinnerImage" class="image-label">
-              <button v-if="!dinnerImage" class="image-upload-btn" @click="selectImage('dinner')">
-                <i class="bi bi-plus"></i>
-              </button>
-              <input v-if="!dinnerImage" type="file" id="dinnerImage" class="image-input" @change="handleImageChange('dinner', $event)" />
-              <div v-if="dinnerImagePreview" class="image-preview-container">
-                <img :src="dinnerImagePreview" alt="저녁 식사 사진 미리보기" class="image-preview" />
-                <button class="remove-image-btn" @click="removeImage('dinner')">×</button>
+              <input v-if="!mealImages[meal]" type="file" :id="`${meal}Image`" class="image-input" @change="handleImageChange(meal, $event)" />
+              <div v-if="mealImages[`${meal}Preview`]" class="image-preview-container">
+                <img :src="mealImages[`${meal}Preview`]" :alt="`${meal} 식사 사진 미리보기`" class="image-preview" />
+                <button class="remove-image-btn" @click="removeImage(meal)">
+                  <i class="bi bi-x-circle"></i> <!-- X 버튼을 부트스트랩 아이콘으로 변경 -->
+                </button>
               </div>
             </label>
           </div>
@@ -83,15 +54,15 @@ const emit = defineEmits(['close']);
 const dietContent = ref('');
 const isDietExist = ref(false);
 
-// 이미지 미리보기용 변수
-const breakfastImagePreview = ref(null);
-const lunchImagePreview = ref(null);
-const dinnerImagePreview = ref(null);
-
-// 이미지 파일 저장용 변수
-const breakfastImage = ref(null);
-const lunchImage = ref(null);
-const dinnerImage = ref(null);
+// 이미지 관련 상태
+const mealImages = ref({
+  breakfast: null,
+  lunch: null,
+  dinner: null,
+  breakfastPreview: null,
+  lunchPreview: null,
+  dinnerPreview: null,
+});
 
 // 모달 닫기
 const closeModal = () => {
@@ -99,38 +70,22 @@ const closeModal = () => {
 };
 
 // 이미지 업로드 처리
-const handleImageChange = (mealType, event) => {
+const handleImageChange = (meal, event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
-      if (mealType === 'breakfast') {
-        breakfastImagePreview.value = reader.result;
-        breakfastImage.value = file;
-      } else if (mealType === 'lunch') {
-        lunchImagePreview.value = reader.result;
-        lunchImage.value = file;
-      } else if (mealType === 'dinner') {
-        dinnerImagePreview.value = reader.result;
-        dinnerImage.value = file;
-      }
+      mealImages.value[`${meal}Preview`] = reader.result;
+      mealImages.value[meal] = file;
     };
     reader.readAsDataURL(file);
   }
 };
 
 // 이미지 제거
-const removeImage = (mealType) => {
-  if (mealType === 'breakfast') {
-    breakfastImagePreview.value = null;
-    breakfastImage.value = null;
-  } else if (mealType === 'lunch') {
-    lunchImagePreview.value = null;
-    lunchImage.value = null;
-  } else if (mealType === 'dinner') {
-    dinnerImagePreview.value = null;
-    dinnerImage.value = null;
-  }
+const removeImage = (meal) => {
+  mealImages.value[`${meal}Preview`] = null;
+  mealImages.value[meal] = null;
 };
 
 // 식단일기 제출
@@ -140,21 +95,18 @@ const submitDietLog = async () => {
     formData.append('content', dietContent.value);
     formData.append('userId', props.userId);
 
-    if (breakfastImage.value) {
-      formData.append('breakfastImage', breakfastImage.value);
-    }
-    if (lunchImage.value) {
-      formData.append('lunchImage', lunchImage.value);
-    }
-    if (dinnerImage.value) {
-      formData.append('dinnerImage', dinnerImage.value);
-    }
+    // 각 식사의 이미지가 있다면 추가
+    ['breakfast', 'lunch', 'dinner'].forEach((meal) => {
+      if (mealImages.value[meal]) {
+        formData.append(`${meal}Image`, mealImages.value[meal]);
+      }
+    });
 
     if (isDietExist.value) {
-      await apiClient.put(`/api-diet/feed/${props.userId}`, formData);
+      await apiClient.put(`/api-diet/${dietId.value}`, formData);
       alert("식단일기가 수정되었습니다.");
     } else {
-      await apiClient.post(`/api-diet/feed/${props.userId}`, formData);
+      await apiClient.post(`/api-diet/create/${props.userId}`, formData);
       alert("식단일기가 등록되었습니다.");
     }
     closeModal();
@@ -170,14 +122,22 @@ onMounted(async () => {
     if (response.data) {
       isDietExist.value = true;
       dietContent.value = response.data.content;
-      breakfastImagePreview.value = response.data.breakfastImagePath;
-      lunchImagePreview.value = response.data.lunchImagePath;
-      dinnerImagePreview.value = response.data.dinnerImagePath;
+      mealImages.value.breakfastPreview = response.data.breakfastImagePath;
+      mealImages.value.lunchPreview = response.data.lunchImagePath;
+      mealImages.value.dinnerPreview = response.data.dinnerImagePath;
     }
   } catch (error) {
     console.error("식단일기 불러오기 실패", error);
   }
 });
+
+// 사진 선택을 위한 파일 입력 트리거 함수
+const triggerFileInput = (meal) => {
+  const inputElement = document.getElementById(`${meal}Image`);
+  if (inputElement) {
+    inputElement.click();
+  }
+};
 </script>
 
 <style scoped>
@@ -196,16 +156,24 @@ onMounted(async () => {
 
 .modal-content {
   background: white;
-  padding: 20px;
+  padding: 40px;
   border-radius: 8px;
   width: 90%;
-  max-width: 800px;
-  max-height: 520px;
-  overflow-y: auto; /* 스크롤이 가능하도록 설정 */
+  max-width: 850px;
+  height: auto; /* 세로 길이가 유동적으로 변하도록 설정 */
+  max-height: 6000px; /* 최대 높이 제한 */
+  overflow: hidden; /* 내부 스크롤을 막고 컨텐츠에 맞춰 높이 조정 */
 }
 
-.modal-title, .modal-description {
+.modal-title {
   text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal-description {
+  text-align: center;
+  margin-bottom: 25px;
 }
 
 .form-group {
@@ -214,8 +182,10 @@ onMounted(async () => {
 
 .modal-actions {
   display: flex;
-  justify-content: center;
-  gap: 20px; /* 버튼 간격 늘림 */
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .btn {
@@ -234,6 +204,10 @@ onMounted(async () => {
   color: white;
 }
 
+.btn-primary:hover {
+  background-color: #4e9d63;
+}
+
 .meal-input {
   width: 100%;
   height: 100px;
@@ -241,16 +215,22 @@ onMounted(async () => {
   border-radius: 10px;
   border: 1px solid #ddd;
   resize: none;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* 연한 그림자 추가 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .image-upload-container {
   display: flex;
-  gap: 10px; /* 이미지 업로드 버튼 간격 */
+  gap: 20px;
 }
 
 .image-item {
   flex: 1;
+}
+
+.image-label {
+  display: block;
+  position: relative;
+  width: 100%;
 }
 
 .image-upload-btn {
@@ -267,16 +247,19 @@ onMounted(async () => {
   font-size: 24px;
 }
 
+.image-input {
+  display: none;
+}
+
 .image-preview-container {
   position: relative;
-  display: inline-block;
-  width: 100%;
-  max-width: 120px;
+  margin-top: 10px;
 }
 
 .image-preview {
   width: 100%;
   height: auto;
+  max-height: 200px;
   object-fit: cover;
   border-radius: 10px;
 }
@@ -292,6 +275,11 @@ onMounted(async () => {
   cursor: pointer;
   padding: 5px;
   font-size: 18px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .remove-image-btn:hover {

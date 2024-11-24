@@ -50,10 +50,29 @@
         </select>
       </div>
 
-      <!-- 프로필 사진 입력 -->
-      <div class="input-group">
+      <!-- 프로필 사진 업로드 -->
+      <div class="input-group profile-upload">
         <label for="profile">프로필 사진</label>
-        <input type="file" id="profile" @change="handleProfileImage" />
+        <div class="profile-upload-container">
+          <!-- 파일 선택 input 숨기기 -->
+          <input
+            type="file"
+            id="profile"
+            ref="profileInput"
+            @change="handleProfileImage"
+            style="display: none"
+          />
+          <!-- 프로필 사진 미리보기 -->
+          <div v-if="previewImage">
+            <img :src="previewImage" alt="프로필 사진 미리보기" class="profile-img-preview" />
+          </div>
+          <div v-else>
+            <!-- 이미 프로필 사진이 있을 경우 해당 이미지 표시 -->
+            <img :src="userProfileImage || defaultImage" alt="기본 프로필 이미지" class="profile-img-preview" />
+          </div>
+          <!-- 사진 업로드 버튼 -->
+          <button type="button" class="upload-btn" @click="triggerFileInput">프로필 업로드</button>
+        </div>
       </div>
 
       <!-- 트레이너일 경우 체육관 이름 입력 -->
@@ -100,6 +119,9 @@ export default {
       phoneNum: "",
       gender: "M", // 기본값은 남성
       profile: null,
+      previewImage: null, // 프로필 이미지 미리보기 URL
+      userProfileImage: '', // 사용자 프로필 이미지 URL (기본값은 빈 문자열)
+      defaultImage: '@/assets/profile.jpg', // 기본 프로필 이미지 경로
       role: "USER", // 기본값은 USER
       gymName: "",
       isPrivateAccount: false, // 기본값은 공개로 설정
@@ -115,52 +137,59 @@ export default {
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
     this.role = userData.role;
-    this.isPrivateAccount = userData.isPrivateAccount !== undefined ? this.isPrivateAccount : false;
+    this.isPrivateAccount = userData.isPrivateAccount !== undefined ? userData.isPrivateAccount : false;
+    this.userProfileImage = userData.profileImage || ''; // 사용자 프로필 이미지 URL
     if (this.role === "TRAINER") {
       this.gymName = userData.gymName;
     }
   },
   methods: {
     async updateUserInfo() {
-  const userStore = useUserStore();
+      const userStore = useUserStore();
 
-  const formData = new FormData();
-  formData.append("name", this.name);
-  formData.append("email", this.email);
-  formData.append("phoneNum", this.phoneNum);
-  formData.append("gender", this.gender);
-  formData.append("isPrivateAccount", this.isPrivateAccount);
-  formData.append("profile", this.profile);
-  formData.append("gymName", this.gymName);
+      const formData = new FormData();
+      formData.append("name", this.name);
+      formData.append("email", this.email);
+      formData.append("phoneNum", this.phoneNum);
+      formData.append("gender", this.gender);
+      formData.append("isPrivateAccount", this.isPrivateAccount);
+      formData.append("profileImage", this.profile);
+      formData.append("gymName", this.gymName);
+      try {
+        const userId = userStore.user.userId;
+        const response = await apiClient.put(`/api-user/update/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
 
-  try {
-    const userId = userStore.user.userId;
-    const response = await apiClient.put(`/api-user/update/${userId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
+        const updatedUserData = response.data;
+        console.log('------업데이트 데이터-----')
+        console.log(response.data)
+        console.log('------------------------')
+
+        userStore.setUser(updatedUserData);
+
+        alert("정보가 성공적으로 수정되었습니다.");
+      } catch (error) {
+        console.error("정보 수정 실패", error);
+        alert("정보 수정에 실패했습니다.");
       }
-    });
-
-    const updatedUserData = response.data;
-    console.log(response.data)
-
-    userStore.setUser(updatedUserData);
-
-    alert("정보가 성공적으로 수정되었습니다.");
-  } catch (error) {
-    console.error("정보 수정 실패", error);
-    alert("정보 수정에 실패했습니다.");
-  }
-},
-
+    },
 
     handleProfileImage(event) {
       const file = event.target.files[0];
       if (file) {
         this.profile = file;
+        this.previewImage = URL.createObjectURL(file); // 파일을 미리보기 URL로 설정
       } else {
-        this.profile = null;  // 파일이 선택되지 않은 경우 null로 처리
+        this.profile = null;
+        this.previewImage = null; // 파일이 선택되지 않으면 미리보기도 초기화
       }
+    },
+
+    triggerFileInput() {
+      this.$refs.profileInput.click(); // 업로드 버튼 클릭 시 input 파일 열리도록
     },
 
     formatPhoneNumber() {
@@ -181,6 +210,33 @@ export default {
 </script>
 
 <style scoped>
+.profile-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 이미지와 버튼 사이의 간격 */
+}
+
+.profile-img-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.upload-btn:hover {
+  background-color: #388e7f;
+}
+
 .user-page {
   width: 100%;
   max-width: 480px;
@@ -236,7 +292,7 @@ h2 {
 }
 
 .switch-container input {
-  opacity: 0; /* 기본 체크박스를 숨김 */
+  opacity: 0;
   width: 0;
   height: 0;
 }
@@ -256,13 +312,13 @@ h2 {
 .slider:before {
   position: absolute;
   content: "";
-  height: 19px;
-  width: 19px;
-  left: 3px;
-  bottom: 3px;
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
   background-color: white;
   transition: 0.4s;
-  border-radius: 50%;
 }
 
 input:checked + .slider {
@@ -270,23 +326,22 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(24px);
+  transform: translateX(25px);
 }
 
-/* 버튼 스타일 */
-button {
+button[type="submit"] {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background-color: #42b983;
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
   cursor: pointer;
+  font-size: 16px;
   margin-top: 20px;
 }
 
-button:hover {
-  background-color: #3c8f6a;
+button[type="submit"]:hover {
+  background-color: #388e7f;
 }
 </style>

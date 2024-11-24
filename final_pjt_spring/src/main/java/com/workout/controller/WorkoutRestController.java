@@ -49,10 +49,10 @@ public class WorkoutRestController {
 	public ResponseEntity<?> registWorkout(
 			@PathVariable long userId,
 			@RequestParam(required = false) MultipartFile workoutImage,
-			@RequestParam String description,
-			@RequestParam List<WorkoutExercise> exercises
+			@RequestParam(required = false) String description,
+			@RequestBody List<WorkoutExercise> exercises
 			) {
-		
+		System.out.println("등록 들어옴");
 		String workoutImagePath = null;
 		
 		try {

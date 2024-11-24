@@ -2,7 +2,7 @@
   <div class="user-aside">
     <!-- 사용자 프로필 사진 -->
     <div class="profile">
-      <img :src="userProfileImage" alt="User Profile" class="profile-img" />
+      <img :src="userProfileImage || defaultprofileImage" alt="User Profile" class="profile-img" />
     </div>
 
     <!-- 사용자 이름 -->
@@ -69,14 +69,12 @@ const emit = defineEmits();
 // 사용자 상태
 const userStore = useUserStore();
 const router = useRouter();
-
-// 기본 이미지 경로 지정
-const defaultImage = defaultprofileImage;
+console.log(userStore.userProfileImage.trim())
 
 // userProfileImage 계산 로직
-const userProfileImage = userStore.userProfileImage && userStore.userProfileImage.trim()
+const userProfileImage = userStore.userProfileImage.trim()
   ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
-  : defaultImage;
+  : null;
 
 // 모달 상태 관리
 const isDietLogModalOpen = ref(false);

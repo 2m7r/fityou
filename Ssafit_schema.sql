@@ -91,7 +91,7 @@ VALUES
 -- WHERE user_id = 1
 -- ORDER BY record_date DESC;
 
--- select * from diet;
+select * from diet;
 
 
 -- ------------------------- 팔로우 -----------------------------------

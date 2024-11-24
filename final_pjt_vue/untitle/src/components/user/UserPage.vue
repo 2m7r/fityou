@@ -50,9 +50,6 @@
         </select>
       </div>
       
-      <!-- <img src="@/assets/profile.jpg" />
-      <img src="http://localhost:8080/uploads/profile_images/KakaoTalk_20240613_222632738.png" /> -->
-
       <!-- 프로필 사진 업로드 -->
       <div class="input-group profile-upload">
         <label for="profileImage">프로필 사진</label>

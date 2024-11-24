@@ -91,7 +91,7 @@ public class UserRestController {
 	    }
 
 	    if (profileImagePath != null) {
-	        user.setProfile(profileImagePath);
+	        user.setProfileImage(profileImagePath);
 	    }
 
 	    int result = us.modifyUser(user);

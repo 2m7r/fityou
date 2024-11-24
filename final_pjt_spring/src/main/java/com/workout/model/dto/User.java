@@ -15,7 +15,7 @@ public class User {
     private List<String> awards; // 수상 경력 리스트
     private List<String> preferredExercises; // 선호 운동 리스트
     private boolean isPrivateAccount; // 공개/비공개 계정 여부
-    private String profile;
+    private String profileImage;
     private String phoneNum;
     
     // 본인 확인 질문과 답변
@@ -41,11 +41,11 @@ public class User {
 	public void setPhoneNum(String phoneNum) {
 		this.phoneNum = phoneNum;
 	}
-	public String getProfile() {
-		return profile;
+	public String getProfileImage() {
+		return profileImage;
 	}
-	public void setProfile(String profile) {
-		this.profile = profile;
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 	public Long getUserId() {
 		return userId;
@@ -125,7 +125,7 @@ public class User {
 		return "User [userId=" + userId + ", name=" + name + ", birthDate=" + birthDate + ", gender=" + gender
 				+ ", email=" + email + ", username=" + username + ", password=" + password + ", role=" + role
 				+ ", gymName=" + gymName + ", awards=" + awards + ", preferredExercises=" + preferredExercises
-				+ ", isPrivateAccount=" + isPrivateAccount + ", profile=" + profile + ", phoneNum=" + phoneNum
+				+ ", isPrivateAccount=" + isPrivateAccount + ", profileImage=" + profileImage + ", phoneNum=" + phoneNum
 				+ ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + "]";
 	}
 	

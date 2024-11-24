@@ -1,4 +1,3 @@
-// src/stores/userStore.js
 import { defineStore } from 'pinia';
 import api from '@/components/api/apiClient';
 
@@ -13,8 +12,13 @@ export const useUserStore = defineStore('user', {
     userEmail: (state) => state.user?.email || '',
     userPhone: (state) => state.user?.phoneNum || '',
     userGender: (state) => state.user?.gender || 'M',
+<<<<<<< HEAD
     // 프로필 이미지 URL 반환
     userProfileImage: (state) => state.user?.profileImage || '@/assets/profile.jpg', // 기본 이미지 추가
+=======
+    // 프로필 이미지 URL 반환 (default 이미지 경로)
+    userProfileImage: (state) => state.user?.profileImage || require('@/assets/profile.jpg'),
+>>>>>>> eunji
   },
   actions: {
     setUser(userData) {

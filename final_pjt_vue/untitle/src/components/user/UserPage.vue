@@ -49,16 +49,28 @@
           <option value="O">기타</option>
         </select>
       </div>
+      
+      <!-- <img src="@/assets/profile.jpg" />
+      <img src="http://localhost:8080/uploads/profile_images/KakaoTalk_20240613_222632738.png" /> -->
 
       <!-- 프로필 사진 업로드 -->
       <div class="input-group profile-upload">
+<<<<<<< HEAD
         <label for="profile">프로필 사진</label>
+=======
+        <label for="profileImage">프로필 사진</label>
+>>>>>>> eunji
         <div class="profile-upload-container">
           <!-- 파일 선택 input 숨기기 -->
           <input
             type="file"
+<<<<<<< HEAD
             id="profile"
             ref="profileInput"
+=======
+            id="profileImage"
+            ref="profileImageInput"
+>>>>>>> eunji
             @change="handleProfileImage"
             style="display: none"
           />
@@ -68,7 +80,11 @@
           </div>
           <div v-else>
             <!-- 이미 프로필 사진이 있을 경우 해당 이미지 표시 -->
+<<<<<<< HEAD
             <img :src="userProfileImage || defaultImage" alt="기본 프로필 이미지" class="profile-img-preview" />
+=======
+            <img :src="userProfileImage.replace(/\\/g, '/') || defaultImage" alt="기본 프로필 이미지" class="profile-img-preview" />
+>>>>>>> eunji
           </div>
           <!-- 사진 업로드 버튼 -->
           <button type="button" class="upload-btn" @click="triggerFileInput">프로필 업로드</button>
@@ -110,6 +126,8 @@
 <script>
 import { useUserStore } from "@/stores/userStore"; // Pinia store 가져오기
 import apiClient from "@/components/api/apiClient";
+import { ref } from "vue";
+import defaultprofileImage from '@/assets/profile.jpg'
 
 export default {
   data() {
@@ -118,10 +136,17 @@ export default {
       email: "",
       phoneNum: "",
       gender: "M", // 기본값은 남성
+<<<<<<< HEAD
       profile: null,
       previewImage: null, // 프로필 이미지 미리보기 URL
       userProfileImage: '', // 사용자 프로필 이미지 URL (기본값은 빈 문자열)
       defaultImage: '@/assets/profile.jpg', // 기본 프로필 이미지 경로
+=======
+      profileImage: null, // 프로필 사진 (파일)
+      previewImage: null, // 프로필 이미지 미리보기 URL
+      userProfileImage: null, // 사용자 프로필 이미지 URL (기본값은 빈 문자열)
+      defaultImage: defaultprofileImage,
+>>>>>>> eunji
       role: "USER", // 기본값은 USER
       gymName: "",
       isPrivateAccount: false, // 기본값은 공개로 설정
@@ -129,16 +154,26 @@ export default {
   },
   async created() {
     const userStore = useUserStore();
-
     const userData = userStore.user;
-
+    
+    // profileImage가 null인지 확인 후 처리
+    if (userData.profileImage) {
+      this.userProfileImage = 'http://localhost:8080/' + userData.profileImage.replace(/\\/g, '/');
+    } else {
+      this.userProfileImage = this.defaultImage;
+    }
+    
     this.name = userData.name;
     this.email = userData.email;
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
     this.role = userData.role;
     this.isPrivateAccount = userData.isPrivateAccount !== undefined ? userData.isPrivateAccount : false;
+<<<<<<< HEAD
     this.userProfileImage = userData.profileImage || ''; // 사용자 프로필 이미지 URL
+=======
+
+>>>>>>> eunji
     if (this.role === "TRAINER") {
       this.gymName = userData.gymName;
     }
@@ -153,7 +188,11 @@ export default {
       formData.append("phoneNum", this.phoneNum);
       formData.append("gender", this.gender);
       formData.append("isPrivateAccount", this.isPrivateAccount);
+<<<<<<< HEAD
       formData.append("profileImage", this.profile);
+=======
+      formData.append("profileImage", this.profileImage);
+>>>>>>> eunji
       formData.append("gymName", this.gymName);
       try {
         const userId = userStore.user.userId;
@@ -166,7 +205,10 @@ export default {
         const updatedUserData = response.data;
         console.log('------업데이트 데이터-----')
         console.log(response.data)
+<<<<<<< HEAD
         console.log('------------------------')
+=======
+>>>>>>> eunji
 
         userStore.setUser(updatedUserData);
 
@@ -180,16 +222,27 @@ export default {
     handleProfileImage(event) {
       const file = event.target.files[0];
       if (file) {
+<<<<<<< HEAD
         this.profile = file;
         this.previewImage = URL.createObjectURL(file); // 파일을 미리보기 URL로 설정
       } else {
         this.profile = null;
         this.previewImage = null; // 파일이 선택되지 않으면 미리보기도 초기화
+=======
+        this.profileImage = file; // profileImage로 수정
+        this.previewImage = URL.createObjectURL(file); // 파일을 미리보기 URL로 설정
+      } else {
+        this.previewImage = this.userProfileImage || this.defaultImage;
+>>>>>>> eunji
       }
     },
 
     triggerFileInput() {
+<<<<<<< HEAD
       this.$refs.profileInput.click(); // 업로드 버튼 클릭 시 input 파일 열리도록
+=======
+      this.$refs.profileImageInput.click(); // 업로드 버튼 클릭 시 input 파일 열리도록
+>>>>>>> eunji
     },
 
     formatPhoneNumber() {
@@ -280,15 +333,13 @@ h2 {
   align-items: center;
   font-size: 14px;
   color: #666;
-  cursor: pointer; /* 전체 라벨에 클릭 효과 추가 */
 }
 
-/* 스위치 스타일 */
 .switch-container {
-  position: relative;
   display: inline-block;
-  width: 50px;
-  height: 25px;
+  width: 34px;
+  height: 20px;
+  position: relative;
 }
 
 .switch-container input {
@@ -306,17 +357,24 @@ h2 {
   bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
-  border-radius: 25px;
+  border-radius: 20px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
+<<<<<<< HEAD
   height: 17px;
   width: 17px;
   border-radius: 50%;
   left: 4px;
   bottom: 4px;
+=======
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+>>>>>>> eunji
   background-color: white;
   transition: 0.4s;
 }
@@ -326,12 +384,22 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
+<<<<<<< HEAD
   transform: translateX(25px);
 }
 
 button[type="submit"] {
   width: 100%;
   padding: 14px;
+=======
+  transform: translateX(14px);
+}
+
+
+button {
+  width: 100%;
+  padding: 15px;
+>>>>>>> eunji
   background-color: #42b983;
   color: white;
   border: none;
@@ -341,7 +409,11 @@ button[type="submit"] {
   margin-top: 20px;
 }
 
+<<<<<<< HEAD
 button[type="submit"]:hover {
+=======
+button:hover {
+>>>>>>> eunji
   background-color: #388e7f;
 }
 </style>

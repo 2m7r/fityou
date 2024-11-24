@@ -15,26 +15,14 @@ public class WebConfig implements WebMvcConfigurer{
 	@Autowired
 	private JwtInterceptor jwtInterceptor;
 
-//	@Override
-//	public void addInterceptors(InterceptorRegistry registry) {
-//		registry.addInterceptor(jwtInterceptor)
-//			.addPathPatterns("/**")
-//			.excludePathPatterns("/api-user/**", "/swagger-ui/**", "/v3/api-docs/**");
-//	}
 	
 	@Override
-<<<<<<< HEAD
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(jwtInterceptor)
-			.addPathPatterns("/**")
-			.excludePathPatterns("/api-user/**", "/swagger-ui/**", "/v3/api-docs/**");
+	    registry.addInterceptor(jwtInterceptor)
+	        .addPathPatterns("/**")
+	        .excludePathPatterns("/api-user/**", "/swagger-ui/**", "/v3/api-docs/**", "/uploads/**");
 	}
-	
-	@Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("classpath:/uploads/**");  // 실제 이미지 디렉토리 경로
-=======
+
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // /uploads/** URL 요청을 실제 파일 시스템의 uploads 디렉토리로 매핑
         registry.addResourceHandler("/uploads/**")
@@ -42,7 +30,6 @@ public class WebConfig implements WebMvcConfigurer{
                 .setCachePeriod(3600) // 캐시 설정
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
->>>>>>> eunji
     }
 
 }

@@ -25,17 +25,7 @@ public class WorkoutServiceImpl implements WorkoutService{
             throw new RuntimeException("운동일기 등록 실패");
         }
 
-        // 2. workout_photos 테이블에 사진 등록
-        if (workout.getPhotoUrls() != null) {
-            for (String photoUrl : workout.getPhotoUrls()) {
-                int photoResult = dao.insertWorkoutPhoto(workout.getWorkoutId(), photoUrl);
-                if (photoResult <= 0) {
-                    throw new RuntimeException("사진 등록 실패");
-                }
-            }
-        }
-
-        // 3. workout_exercises 테이블에 운동 세부정보 등록
+        // 2. workout_exercises 테이블에 운동 세부정보 등록
         if (workout.getExercises() != null) {
             for (WorkoutExercise exercise : workout.getExercises()) {
                 exercise.setWorkoutId(workout.getWorkoutId()); // 운동일기 ID 설정
@@ -55,10 +45,6 @@ public class WorkoutServiceImpl implements WorkoutService{
         Workout workout = dao.selectWorkoutById(workoutId);
         
         if (workout != null) {
-            // workout_photos 테이블에서 사진 경로 조회
-            List<String> photoUrls = dao.selectWorkoutPhotos(workoutId);
-            workout.setPhotoUrls(photoUrls);
-
             // workout_exercises 테이블에서 운동 세부정보 조회
             List<WorkoutExercise> exercises = dao.selectWorkoutExercises(workoutId);
             workout.setExercises(exercises);

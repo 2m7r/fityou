@@ -12,17 +12,11 @@ public interface WorkoutDao {
 	// 운동일기 등록
 	int insertWorkout(Workout workout);
 
-	// 운동일기 사진 등록
-	int insertWorkoutPhoto(@Param("workoutId") long workoutId, @Param("photoUrl") String photoUrl);
-
 	// 운동-운동일기 매핑 등록
 	int insertWorkoutExercise(WorkoutExercise workoutExercise);
 
 	// 운동일기 기본 정보 조회
 	Workout selectWorkoutById(long workoutId);
-
-	// 운동일기의 사진 경로 조회
-	List<String> selectWorkoutPhotos(long workoutId);
 
 	// 운동일기에 포함된 운동 세부정보 조회
 	List<WorkoutExercise> selectWorkoutExercises(long workoutId);

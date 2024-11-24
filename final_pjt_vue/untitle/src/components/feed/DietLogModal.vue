@@ -1,8 +1,13 @@
 <template>
   <div class="modal-overlay" @click="closeModal">
     <div class="modal-content" @click.stop>
-      <h2 class="modal-title">식단일기</h2>
+      <h2 class="modal-title">{{ isDietExist ? '식단일기 수정' : '식단일기 작성' }}</h2>
       <p class="modal-description">오늘의 식단을 작성해주세요.</p>
+
+      <!-- 날짜 선택 -->
+      <div class="form-group">
+        <input type="date" v-model="dietDate" class="date-input" />
+      </div>
 
       <!-- 식사 내용 입력 -->
       <div class="form-group">
@@ -21,7 +26,7 @@
               <div v-if="mealImages[`${meal}Preview`]" class="image-preview-container">
                 <img :src="mealImages[`${meal}Preview`]" :alt="`${meal} 식사 사진 미리보기`" class="image-preview" />
                 <button class="remove-image-btn" @click="removeImage(meal)">
-                  <i class="bi bi-x-circle"></i> <!-- X 버튼을 부트스트랩 아이콘으로 변경 -->
+                  <i class="bi bi-x-circle"></i>
                 </button>
               </div>
             </label>
@@ -32,7 +37,7 @@
       <!-- 제출 버튼 -->
       <div class="modal-actions">
         <button class="btn btn-secondary" @click="closeModal">취소</button>
-        <button class="btn btn-primary" @click="submitDietLog">제출</button>
+        <button class="btn btn-primary" @click="submitDietLog">{{ isDietExist ? '수정' : '등록' }}</button>
       </div>
     </div>
   </div>
@@ -52,7 +57,9 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const dietContent = ref('');
+const dietDate = ref('');  // 날짜 상태 추가
 const isDietExist = ref(false);
+const dietId = ref(null);
 
 // 이미지 관련 상태
 const mealImages = ref({
@@ -94,6 +101,7 @@ const submitDietLog = async () => {
     const formData = new FormData();
     formData.append('content', dietContent.value);
     formData.append('userId', props.userId);
+    formData.append('recordDate', dietDate.value);  // 날짜를 서버로 전송
 
     // 각 식사의 이미지가 있다면 추가
     ['breakfast', 'lunch', 'dinner'].forEach((meal) => {
@@ -103,10 +111,18 @@ const submitDietLog = async () => {
     });
 
     if (isDietExist.value) {
-      await apiClient.put(`/api-diet/${dietId.value}`, formData);
+      await apiClient.put(`/api-diet/${dietId.value}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+      }); // 수정
       alert("식단일기가 수정되었습니다.");
     } else {
-      await apiClient.post(`/api-diet/create/${props.userId}`, formData);
+      await apiClient.post(`/api-diet/create/${props.userId}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+      }); // 새로 등록
       alert("식단일기가 등록되었습니다.");
     }
     closeModal();
@@ -119,15 +135,29 @@ const submitDietLog = async () => {
 onMounted(async () => {
   try {
     const response = await apiClient.get(`/api-diet/feed/${props.userId}`);
+    
     if (response.data) {
-      isDietExist.value = true;
-      dietContent.value = response.data.content;
-      mealImages.value.breakfastPreview = response.data.breakfastImagePath;
-      mealImages.value.lunchPreview = response.data.lunchImagePath;
-      mealImages.value.dinnerPreview = response.data.dinnerImagePath;
+      const today = new Date();
+      const dietDate = new Date(response.data.date); // 서버에서 받은 식단일기 날짜
+
+      // 날짜 비교: 오늘 날짜와 식단일기 날짜가 같은지 확인
+      if (dietDate.toDateString() === today.toDateString()) {
+        isDietExist.value = true;
+        dietId.value = response.data.id;
+        dietContent.value = response.data.content;
+        dietDate.value = response.data.date;  // 날짜 설정
+        mealImages.value.breakfastPreview = response.data.breakfastImagePath;
+        mealImages.value.lunchPreview = response.data.lunchImagePath;
+        mealImages.value.dinnerPreview = response.data.dinnerImagePath;
+      } else {
+        isDietExist.value = false;
+      }
+    } else {
+      isDietExist.value = false;
     }
   } catch (error) {
     console.error("식단일기 불러오기 실패", error);
+    isDietExist.value = false;
   }
 });
 
@@ -160,9 +190,9 @@ const triggerFileInput = (meal) => {
   border-radius: 8px;
   width: 90%;
   max-width: 850px;
-  height: auto; /* 세로 길이가 유동적으로 변하도록 설정 */
-  max-height: 6000px; /* 최대 높이 제한 */
-  overflow: hidden; /* 내부 스크롤을 막고 컨텐츠에 맞춰 높이 조정 */
+  height: auto;
+  max-height: 6000px;
+  overflow: hidden;
 }
 
 .modal-title {
@@ -178,6 +208,14 @@ const triggerFileInput = (meal) => {
 
 .form-group {
   margin-bottom: 20px;
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .modal-actions {
@@ -259,9 +297,8 @@ const triggerFileInput = (meal) => {
 .image-preview {
   width: 100%;
   height: auto;
-  max-height: 200px;
-  object-fit: cover;
   border-radius: 10px;
+  object-fit: cover;
 }
 
 .remove-image-btn {
@@ -285,4 +322,5 @@ const triggerFileInput = (meal) => {
 .remove-image-btn:hover {
   background-color: #f44336;
 }
+
 </style>

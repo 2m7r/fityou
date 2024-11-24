@@ -13,6 +13,7 @@ import ManagementView from '../views/ManagementView.vue'
 import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
 import DietModal from '@/components/feed/DietLogModal.vue'
+import UserGrass from '@/components/user/userGrass.vue'
 
 
 
@@ -99,6 +100,12 @@ const router = createRouter({
       path: '/diet/create/:date',
       name: 'diet-create',
       component: DietModal,
+      meta: { requiresAuth: true }, // 인증 필요
+    },
+    {
+      path: '/grass',
+      name: 'grass',
+      component: UserGrass,
       meta: { requiresAuth: true }, // 인증 필요
     },
   ],

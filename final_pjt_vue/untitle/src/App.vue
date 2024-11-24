@@ -11,8 +11,12 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, computed, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import TheHeaderNav from './components/common/TheHeaderNav.vue'
+
+onMounted(() => {
+  document.title = 'FITYOU';  
+})
 
 // 현재 라우트 정보를 가져옴
 const route = useRoute()

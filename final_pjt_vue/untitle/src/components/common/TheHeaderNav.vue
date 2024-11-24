@@ -92,7 +92,7 @@ const setActive = (tab) => {
 }
 
 .logo {
-  width: 200px; /* 로고 크기 */
+  width: 350px; /* 로고 크기 */
   height: auto;
 }
 

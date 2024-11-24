@@ -253,6 +253,7 @@ export default {
   background-color: white;
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 150px;
 }
 
 h2 {

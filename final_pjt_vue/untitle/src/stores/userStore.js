@@ -12,6 +12,7 @@ export const useUserStore = defineStore('user', {
     userEmail: (state) => state.user?.email || '',
     userPhone: (state) => state.user?.phoneNum || '',
     userGender: (state) => state.user?.gender || 'M',
+    userDescription: (state) => state.user?.userDescription || '설명 없음',
     // 프로필 이미지 URL 반환
     userProfileImage: (state) => state.user?.profileImage || '@/assets/profile.jpg', // 기본 이미지 추가
   },

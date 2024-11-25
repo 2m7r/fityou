@@ -25,4 +25,8 @@ public interface UserDao {
 	
 	// 유저 ID가 포함된 유저를 검색
     List<User> findByUserIdContaining(String username);
+
+	User selectUserByUsername(String username);
+
+	int deleteUser(long userId);
 }

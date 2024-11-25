@@ -18,10 +18,20 @@ public class User {
     private String profileImage;
     private String phoneNum;
     
+    private String userDescription;
+    
     // 본인 확인 질문과 답변
     private String securityQuestion;  // 본인 확인 질문
 	private String securityAnswer;  // 본인 확인 답변
     
+	
+	
+	public String getUserDescription() {
+		return userDescription;
+	}
+	public void setUserDescription(String userDescription) {
+		this.userDescription = userDescription;
+	}
 	public String getSecurityQuestion() {
 		return securityQuestion;
 	}
@@ -119,14 +129,14 @@ public class User {
 	public void setPrivateAccount(boolean isPrivateAccount) {
 		this.isPrivateAccount = isPrivateAccount;
 	}
-	
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", name=" + name + ", birthDate=" + birthDate + ", gender=" + gender
 				+ ", email=" + email + ", username=" + username + ", password=" + password + ", role=" + role
 				+ ", gymName=" + gymName + ", awards=" + awards + ", preferredExercises=" + preferredExercises
 				+ ", isPrivateAccount=" + isPrivateAccount + ", profileImage=" + profileImage + ", phoneNum=" + phoneNum
-				+ ", securityQuestion=" + securityQuestion + ", securityAnswer=" + securityAnswer + "]";
+				+ ", userDescription=" + userDescription + ", securityQuestion=" + securityQuestion
+				+ ", securityAnswer=" + securityAnswer + "]";
 	}
 	
 }

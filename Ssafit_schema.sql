@@ -14,11 +14,12 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL, -- 이메일
     username VARCHAR(50) UNIQUE NOT NULL, -- 로그인 아이디
     password VARCHAR(255) NOT NULL, -- 로그인 PW
-    role ENUM('USER', 'TRAINER') NOT NULL, -- 일반유저 / 트레이너
+    role ENUM('USER', 'TRAINER'), -- 일반유저 / 트레이너
     gym_name VARCHAR(255), -- 트레이너만 사용
     is_private_account BOOLEAN DEFAULT FALSE, -- 공개 / 비공개 계정
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     profileImage VARCHAR(255), -- 프로필 이미지 경로
+    userDescription TEXT,
     security_question VARCHAR(255) NOT NULL, -- 본인 확인 질문
     security_answer VARCHAR(255) NOT NULL -- 본인 확인 답변
 );
@@ -123,6 +124,7 @@ CREATE TABLE challenges (
     challenge_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별 ID
     name VARCHAR(255) NOT NULL, -- 챌린지 이름
     creator_user_id BIGINT NOT NULL, -- 챌린지 등록 유저ID
+    creator_user_name VARCHAR(100),
     description TEXT, -- 설명
     participant_count INT DEFAULT 1, -- 챌린지 현재 참여자 수
     duration_start DATE NOT NULL, -- 시작날짜
@@ -154,17 +156,17 @@ values
 ('근력 훈련 챌린지', 9, '근력 훈련으로 강한 몸 만들기', '2024-10-01', '2024-11-30', '헬스'),
 ('꾸준한 운동 습관 만들기', 10, '꾸준히 운동해서 좋은 습관 만들기', '2024-08-15', '2024-11-15', '헬스');
 
-select * from challenges;
+-- select * from challenges;
 
 
 drop table if exists challenge_people;
 -- 5. 챌린지별 참여하고 있는 참여자 목록 저장
 CREATE TABLE challenge_people (
-    user_id BIGINT NOT NULL,  -- 참여한 유저ID
-    challenge_id BIGINT NOT NULL,  -- 참여한 챌린지ID
+    user_id BIGINT NOT NULL, -- 참여한 유저ID
+    challenge_id BIGINT NOT NULL, -- 참여한 챌린지ID
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE,
-    CONSTRAINT unique_user_challenge UNIQUE (user_id, challenge_id)  -- 유저와 챌린지의 조합에 유니크 제약 조건 추가
+    UNIQUE(user_id, challenge_id) -- 한 사람이 동일한 챌린지에 한 번만 참여하도록 제한
 );
 
 INSERT INTO challenge_people (user_id, challenge_id) VALUES
@@ -188,8 +190,7 @@ INSERT INTO challenge_people (user_id, challenge_id) VALUES
 (9, 18),
 (10, 19);
 
-select * from challenge_people
-ORDER BY user_id;
+-- select * from challenge_people;
 
 -- -----------------------운동 일기 ----------------------------------------------
 -- 6. 운동
@@ -198,7 +199,7 @@ DROP TABLE IF EXISTS workouts;
 CREATE TABLE workouts (
     workout_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     user_id BIGINT NOT NULL, -- 유저ID
-    name VARCHAR(100) NOT NULL, -- 이름
+    name VARCHAR(100) NOT NULL,
     description TEXT, -- 설명
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE

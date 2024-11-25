@@ -9,6 +9,8 @@ public interface UserService {
 	
 	int registUser(User user);
 	
+	User selectUserByUsername(String username);
+	
 	User login(String username, String password);
 
 	String findUsername(FindIdRequest request);
@@ -24,4 +26,6 @@ public interface UserService {
 	List<String> getprefereedExcercise(String username);
 
 	List<User> searchUsers(String username);
+
+	int deleteUser(long userId);
 }

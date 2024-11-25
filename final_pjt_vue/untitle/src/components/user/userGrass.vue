@@ -93,9 +93,6 @@ const getDayStatus = (date) => {
   const workout = workoutDates.some(d => d === formattedDate);  // 운동일기 날짜 비교
   const diet = dietDates.some(d => d === formattedDate);        // 식단일기 날짜 비교
 
-  console.log(formattedDate + " 운동: " + workout);  // 디버그 출력
-  console.log(formattedDate + " 식단: " + diet);    // 디버그 출력
-
   // 상태 반환
   if (workout && diet) return 'both';  // 운동과 식단일기 모두 작성된 경우
   if (workout) return 'workout';  // 운동일기만 작성된 경우

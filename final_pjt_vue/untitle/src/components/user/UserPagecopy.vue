@@ -16,7 +16,18 @@
             />
           </div>
 
-          <!-- 아이디 숨김 -->
+          <!-- 유저 설명 -->
+          <div class="input-group">
+            <label for="userDescription">소개글</label>
+            <input 
+              type="text"
+              id="userDescription"
+              v-model="userDescription"
+              placeholder="소개글을 작성해보세요!"
+            />
+          </div>
+
+          <!-- 아이디 못바꿈 -->
           <div class="input-group">
             <label for="username">아이디</label>
             <input v-model="username"  readonly/>
@@ -126,6 +137,7 @@
           <!-- 제출 버튼 -->
           <div class="modal-actions">
             <button class="btn btn-secondary rounded-full" @click="closeModal">취소</button>
+            <button class="btn btn-danger rounded-full" @click="joinOut">탈퇴</button>
             <button type="submit" class="btn btn-primary rounded-full" @click="submitEdit">
               수정
             </button>
@@ -154,6 +166,7 @@ export default {
       previewImage: null, // 프로필 이미지 미리보기 URL
       userProfileImage: null, // 사용자 프로필 이미지 URL (기본값은 빈 문자열)
       defaultImage: defaultprofileImage,
+      userDescription: "",
       role: "USER", // 기본값은 USER
       gymName: "",
       isPrivateAccount: false, // 기본값은 공개로 설정
@@ -181,8 +194,37 @@ export default {
     if (this.role === "TRAINER") {
       this.gymName = userData.gymName;
     }
+    this.userDescription = userData.userDescription;
   },
   methods: {
+    async joinOut() {
+      const userStore = useUserStore();
+      const userId = userStore.user.userId;
+
+      // 탈퇴 확인 팝업
+      const isConfirmed = window.confirm(
+        "정말로 탈퇴하시겠습니까? 다시 되돌릴 수 없습니다."
+      );
+
+      if (!isConfirmed) {
+        return; // 취소 시 아무 작업도 하지 않음
+      }
+
+      try {
+        // API 요청으로 탈퇴 처리
+        await apiClient.delete(`/api-user/delete/${userId}`);
+      
+        // 사용자 데이터를 초기화하고 홈으로 이동
+        userStore.clearUser();
+        alert("탈퇴가 성공적으로 완료되었습니다.");
+        clearUser();
+        this.$router.push("/"); // 홈 화면으로 이동
+      } catch (error) {
+        console.error("탈퇴 실패", error);
+        alert("탈퇴 중 문제가 발생했습니다. 다시 시도해주세요.");
+      }
+    },
+
     closeModal() {
       this.$emit("close"); // 부모 컴포넌트에 'close' 이벤트 전달
     },
@@ -197,8 +239,16 @@ export default {
       formData.append("phoneNum", this.phoneNum);
       formData.append("gender", this.gender);
       formData.append("isPrivateAccount", this.isPrivateAccount);
-      formData.append("profileImage", this.profileImage);
+
+      // 사용자가 이미지를 업로드하지 않았을 경우 기존 이미지 유지
+      if (this.profileImage) {
+        formData.append("profileImage", this.profileImage);
+      } else if (this.userProfileImage) {
+        formData.append("profileImage", this.userProfileImage.split("/").pop());
+      }
+
       formData.append("gymName", this.gymName);
+      formData.append("userDescription", this.userDescription);
       try {
         const userId = userStore.user.userId;
         const response = await apiClient.put(
@@ -460,4 +510,14 @@ button:hover {
 .rounded-full {
   border-radius: 50px !important;
 }
+
+.btn-danger {
+  background-color: #e74c3c; /* 빨간색 */
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b; /* 어두운 빨간색 */
+}
+
 </style>

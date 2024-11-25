@@ -53,7 +53,7 @@
 <script setup>
 import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import UserPageCopy from "@/components/user/UserPageCopy.vue";
+import UserPageCopy from "@/components/user/UserPagecopy.vue";
 import UserGrass from "@/components/user/userGrass.vue";
 import defaultprofileImage from '@/assets/profile.jpg'
 
@@ -61,7 +61,6 @@ const isEditModalOpen = ref(false); // 모달 상태
 
 // 사용자 상태
 const userStore = useUserStore();
-
 
 // 기본 이미지 경로 지정
 const defaultImage = defaultprofileImage;

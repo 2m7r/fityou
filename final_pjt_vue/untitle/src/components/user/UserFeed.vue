@@ -60,7 +60,7 @@
     <div v-if="currentTab === 'diet'" class="diet-tab">
       <!-- 나의 최근 식단일기 하나만 출력 -->
       <div v-if="myDietLogs.length > 0" class="log-card">
-        <h3>{{ myDietLogs[0].name }}의 최근 식단일기</h3>
+        <h3>{{ myDietLogs[0].name }}님의 최근 식단일기</h3>
     
         <!-- 날짜 -->
         <p><strong>{{ myDietLogs[0].recordDate }}</strong></p>

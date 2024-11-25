@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.workout.model.dao.UserDao">
 	<select id="selectOne" parameterType="Map" resultType="User">
-		SELECT user_id, name, phoneNum, gender, email, username, role, gym_name, is_private_account, profileImage
+		SELECT user_id, name, phoneNum, gender, email, username, is_private_account, userDescription, profileImage
 		FROM users
 		WHERE username = #{username} AND password = #{password}
 	</select>
@@ -18,9 +18,9 @@
 	<!-- 회원가입 -->
 	<insert id="insertUser" parameterType="User">
 		INSERT INTO users (name, birthDate, phoneNum, gender, email, username,
-		password, role, security_question, security_answer)
+		password, security_question, security_answer)
 		VALUES (#{name}, #{birthDate}, #{phoneNum}, #{gender}, #{email},
-		#{username}, #{password}, #{role}, #{securityQuestion},
+		#{username}, #{password}, #{securityQuestion},
 		#{securityAnswer})
 	</insert>
 
@@ -50,7 +50,8 @@
 		gender = #{gender},
 		profileImage = #{profileImage},
 		gym_name = #{gymName},
-		is_private_account = #{isPrivateAccount}
+		is_private_account = #{isPrivateAccount},
+		userDescription = #{userDescription}
 		WHERE user_id = #{userId}
 	</update>
 	
@@ -65,5 +66,15 @@
         SELECT user_id, name, username FROM users
         WHERE username LIKE CONCAT('%', #{username}, '%')
     </select>
+    
+    <select id="selectUserByUsername" resultType="User">
+    	SELECT profileImage FROM users
+    	WHERE username = #{username}
+    </select>
+    
+    <delete id="deleteUser">
+    	DELETE FROM users
+    	WHERE user_id = #{userId}
+    </delete>
 
 </mapper>

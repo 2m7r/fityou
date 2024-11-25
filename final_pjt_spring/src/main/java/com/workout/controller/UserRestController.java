@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,9 +65,13 @@ public class UserRestController {
 	@PutMapping("/update/{userId}")
 	public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestParam("name") String name,
 			@RequestParam("username") String username,
-			@RequestParam("email") String email, @RequestParam("phoneNum") String phoneNum,
-			@RequestParam("gender") String gender, @RequestParam("isPrivateAccount") boolean isPrivateAccount,
-			@RequestParam(required = false) MultipartFile profileImage, @RequestParam("gymName") String gymName) {
+			@RequestParam("email") String email, 
+			@RequestParam("phoneNum") String phoneNum,
+			@RequestParam("gender") String gender, 
+			@RequestParam("isPrivateAccount") boolean isPrivateAccount,
+			@RequestParam(required = false) MultipartFile profileImage,
+			@RequestParam("userDescription") String userDescription,
+			@RequestParam("gymName") String gymName) {
 
 		User user = new User();
 		user.setUserId(userId);
@@ -76,6 +81,7 @@ public class UserRestController {
 		user.setPhoneNum(phoneNum);
 		user.setGender(gender);
 		user.setPrivateAccount(isPrivateAccount);
+		user.setUserDescription(userDescription);
 		user.setGymName(gymName);
 		System.out.println(user);
 
@@ -91,6 +97,9 @@ public class UserRestController {
 
 		if (profileImagePath != null) {
 			user.setProfileImage(profileImagePath);
+		}else {
+			User preuser = us.selectUserByUsername(username);
+			user.setProfileImage(preuser.getProfileImage());
 		}
 
 		int result = us.modifyUser(user);
@@ -220,5 +229,14 @@ public class UserRestController {
     	return ResponseEntity.ok(list);
     }
 	
+    // 유저 탈퇴
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<?> joinOut(@PathVariable long userId){
+    	int result = us.deleteUser(userId);
+    	if(result > 0) {
+    		return ResponseEntity.status(HttpStatus.OK).body("유저 탈퇴 성공");
+    	}
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 탈퇴 실패");
+    }
 
 }

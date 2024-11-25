@@ -117,15 +117,6 @@ const submitDietLog = async () => {
         formData.append(`${meal}Image`, mealImages.value[meal]);
       }
     });
-
-    // if (isDietExist.value) {
-    //   await apiClient.put(`/api-diet/${dietId.value}`, formData, {
-    //     headers: {
-    //         "Content-Type": "multipart/form-data"
-    //     }
-    //   }); // 수정
-    //   alert("식단일기가 수정되었습니다.");
-    // } else {
       await apiClient.post(`/api-diet/create/${props.userId}`, formData, {
         headers: {
             "Content-Type": "multipart/form-data"

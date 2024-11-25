@@ -19,6 +19,7 @@ CREATE TABLE users (
     is_private_account BOOLEAN DEFAULT FALSE, -- 공개 / 비공개 계정
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     profileImage VARCHAR(255), -- 프로필 이미지 경로
+    userDescription TEXT,
     security_question VARCHAR(255) NOT NULL, -- 본인 확인 질문
     security_answer VARCHAR(255) NOT NULL -- 본인 확인 답변
 );

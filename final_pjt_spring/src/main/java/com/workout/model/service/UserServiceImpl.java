@@ -97,4 +97,14 @@ public class UserServiceImpl implements UserService{
 		return dao.findByUserIdContaining(username);
 	}
 
+	@Override
+	public User selectUserByUsername(String username) {
+		return dao.selectUserByUsername(username);
+	}
+
+	@Override
+	public int deleteUser(long userId) {
+		return dao.deleteUser(userId);
+	}
+
 }

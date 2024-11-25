@@ -114,6 +114,7 @@ public class DietRestController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("식단일기 등록 실패");
             }
         } catch (Exception e) {
+        	System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("식단일기 등록 중 오류 발생");
         }
     }

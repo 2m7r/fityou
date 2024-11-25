@@ -63,12 +63,14 @@ public class UserRestController {
 	// 유저 수정
 	@PutMapping("/update/{userId}")
 	public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestParam("name") String name,
+			@RequestParam("username") String username,
 			@RequestParam("email") String email, @RequestParam("phoneNum") String phoneNum,
 			@RequestParam("gender") String gender, @RequestParam("isPrivateAccount") boolean isPrivateAccount,
 			@RequestParam(required = false) MultipartFile profileImage, @RequestParam("gymName") String gymName) {
 
 		User user = new User();
 		user.setUserId(userId);
+		user.setUsername(username);
 		user.setName(name);
 		user.setEmail(email);
 		user.setPhoneNum(phoneNum);

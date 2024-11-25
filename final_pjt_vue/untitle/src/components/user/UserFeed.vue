@@ -23,9 +23,8 @@
         @click="selectUser(user)"
       >
         <p>{{ user.username }}</p>
-
-        <!-- 팔로우 버튼 표시 -->
-        <div v-if="user.userId !== userId.value">
+        <!-- 팔로우 버튼 표시 (내 자신을 제외) -->
+        <div v-if="user.userId !== userId"> <!-- 내 자신을 제외하는 조건 -->
           <button 
             v-if="!isFollowing(user.userId)"
             @click="followUser(user)"
@@ -87,10 +86,14 @@
         <!-- 수정 버튼 추가 -->
         <button @click="openDietLogModal(myDietLogs[0])">수정</button>
       </div>
+      <div v-else>
+        <hr>
+        <h3>최근 식단일기가 없습니다.... 다이어트 안하셨나요..?</h3>
+      </div>
       <hr>
       <!-- 팔로우한 유저들의 식단일기 -->
       <div v-for="log in dietLogs" :key="log.diet_id" class="log-card">
-        <!-- 제목: 내용(식단)에 대한 설명 -->
+        <!-- 이름 -->
         <h3>{{log.name}}</h3>
         
         <!-- 날짜 -->
@@ -135,13 +138,35 @@
           {{ exercise.sets }} 세트
         </div>
       </div>
+      <div v-else>
+        <hr>
+        <h3>최근 운동일기가 없습니다.... 운동 안하셨나요..?</h3>
+      </div>
       <hr>
+      <!-- 팔로우한 유저들의 운동일기 -->
+      <div v-for="log in workoutLogs" :key="log.workout_id" class="log-card">
+        <!-- 이름 -->
+        <h3>{{ log.name }}</h3>
+
+        <!-- 날짜 -->
+        <p><strong>{{ log.recordDate }}</strong></p>
+
+        <!-- 내용 -->
+        <p>{{ log.description }}</p>
+        
+        <div v-for="exercise in log.exercises" :key="exercise.id">
+          <strong>{{ exercise.exerciseName }}</strong>
+          {{ exercise.weight }} kg
+          {{ exercise.reps }} 회
+          {{ exercise.sets }} 세트
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import apiClient from '@/components/api/apiClient';
 
 // sessionStorage에서 'user' 키로 객체를 가져오기
@@ -152,6 +177,7 @@ const currentTab = ref('diet');
 
 // 유저 데이터 처리
 const userId = ref(user.value ? user.value.userId : null);
+const username = ref(user.value ? user.value.username : null);
 
 const searchUserId = ref('');  // 검색한 userId
 const searchedUsers = ref([]);  // 검색된 유저 목록
@@ -204,6 +230,7 @@ const selectTab = (tab) => {
   currentTab.value = tab;
   fetchLogs(tab);
 };
+
 
 // 유저 검색 처리
 const searchUser = async () => {

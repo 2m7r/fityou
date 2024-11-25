@@ -14,6 +14,12 @@
         />
       </div>
 
+      <!-- 아이디 숨김 -->
+      <div class="input-group">
+        <label for="username">아이디</label>
+        <input v-model="username"  readonly/>
+      </div>
+
       <!-- 이메일 입력 -->
       <div class="input-group">
         <label for="email">이메일</label>
@@ -49,7 +55,7 @@
           <option value="O">기타</option>
         </select>
       </div>
-      
+
       <!-- 프로필 사진 업로드 -->
       <div class="input-group profile-upload">
         <label for="profileImage">프로필 사진</label>
@@ -117,6 +123,7 @@ export default {
   data() {
     return {
       name: "",
+      username: "",
       email: "",
       phoneNum: "",
       gender: "M", // 기본값은 남성
@@ -141,6 +148,7 @@ export default {
     }
     
     this.name = userData.name;
+    this.username = userData.username;
     this.email = userData.email;
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
@@ -155,6 +163,7 @@ export default {
       const userStore = useUserStore();
 
       const formData = new FormData();
+      formData.append("username", this.username);
       formData.append("name", this.name);
       formData.append("email", this.email);
       formData.append("phoneNum", this.phoneNum);

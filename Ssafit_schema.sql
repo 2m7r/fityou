@@ -59,9 +59,10 @@ DROP TABLE IF EXISTS diet;
 CREATE TABLE diet (
     diet_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL, -- 사용자 ID
-    breakfast_image VARCHAR(255),  -- 아침 식단 사진 경로
-    lunch_image VARCHAR(255),      -- 점심 식단 사진 경로
-    dinner_image VARCHAR(255),      -- 저녁 식단 사진 경로
+    name VARCHAR(100) NOT NULL, -- 이름
+    breakfastImagePath VARCHAR(255),  -- 아침 식단 사진 경로
+    lunchImagePath VARCHAR(255),      -- 점심 식단 사진 경로
+    dinnerImagePath VARCHAR(255),      -- 저녁 식단 사진 경로
     content TEXT,  -- 기록 내용 (식단 내용 등)
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -195,6 +196,7 @@ DROP TABLE IF EXISTS workouts;
 CREATE TABLE workouts (
     workout_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     user_id BIGINT NOT NULL, -- 유저ID
+    name VARCHAR(100) NOT NULL, -- 이름
     description TEXT, -- 설명
 <<<<<<< HEAD
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)

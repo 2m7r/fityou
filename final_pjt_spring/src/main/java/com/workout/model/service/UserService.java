@@ -22,4 +22,6 @@ public interface UserService {
 	void savePreferredExercises(Long userId, List<String> exercises);
 
 	List<String> getprefereedExcercise(String username);
+
+	List<User> searchUsers(String username);
 }

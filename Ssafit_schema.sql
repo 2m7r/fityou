@@ -44,19 +44,11 @@ drop table IF EXISTS preferred_exercises;
 -- 선호 운동
 CREATE TABLE preferred_exercises (
     exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-<<<<<<< HEAD
-
-=======
->>>>>>> bdbcd0199deb5eb640bdb0c4f115c9f85b2b6928
     user_id BIGINT NOT NULL,  -- 사용자 ID
     exercise_name VARCHAR(100) NOT NULL,  -- 운동 이름
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 생성 시간
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     CONSTRAINT unique_user_exercise UNIQUE (user_id, exercise_name)  -- 유니크 제약
-<<<<<<< HEAD
-
-=======
->>>>>>> bdbcd0199deb5eb640bdb0c4f115c9f85b2b6928
 );
 
 -- select * from preferred_exercises;
@@ -78,14 +70,14 @@ CREATE TABLE diet (
 
 -- insert into diet (user_id, record_date)
 -- values (1, '2024-11-19');
-INSERT INTO diet (user_id, breakfast_image, lunch_image, dinner_image, content, record_date)
-VALUES 
-(3, 
- 'images/breakfast_2024_11_24.jpg',  
- 'images/lunch_2024_11_24.jpg',      
- 'images/dinner_2024_11_24.jpg',     
- '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
- '2024-11-22');
+-- INSERT INTO diet (user_id, breakfast_image, lunch_image, dinner_image, content, record_date)
+-- VALUES 
+-- (3, 
+--  'images/breakfast_2024_11_24.jpg',  
+--  'images/lunch_2024_11_24.jpg',      
+--  'images/dinner_2024_11_24.jpg',     
+--  '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
+--  '2024-11-22');
 
 -- SELECT * FROM diet
 -- WHERE user_id = 1
@@ -204,10 +196,11 @@ CREATE TABLE workouts (
     workout_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     user_id BIGINT NOT NULL, -- 유저ID
     description TEXT, -- 설명
-    workout_image VARCHAR(255),  -- 운동 사진 경로
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+select * from workouts;
 
 -- 운동 루틴 테이블 (운동 종류와 카테고리 추가)
 DROP TABLE IF EXISTS workout_exercises;
@@ -221,7 +214,7 @@ CREATE TABLE workout_exercises (
     sets INT,   -- 세트 수
     FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE
 );
--- SELECT * from workout_exercises;
+SELECT * from workout_exercises;
 
 
 -- ------------------------- 댓글 -----------------------------------

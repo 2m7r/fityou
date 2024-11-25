@@ -92,4 +92,9 @@ public class UserServiceImpl implements UserService{
 		return dao.getprefereedExcercise(username);
 	}
 
+	@Override
+	public List<User> searchUsers(String username) {
+		return dao.findByUserIdContaining(username);
+	}
+
 }

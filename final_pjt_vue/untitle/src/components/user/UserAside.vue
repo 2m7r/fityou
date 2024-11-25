@@ -69,7 +69,6 @@ const emit = defineEmits();
 // 사용자 상태
 const userStore = useUserStore();
 const router = useRouter();
-console.log(userStore.userProfileImage.trim())
 
 // userProfileImage 계산 로직
 const userProfileImage = userStore.userProfileImage.trim()

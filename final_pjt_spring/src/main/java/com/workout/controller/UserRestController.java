@@ -59,7 +59,8 @@ public class UserRestController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 등록 실패");
 	}
-
+	
+	// 유저 수정
 	@PutMapping("/update/{userId}")
 	public ResponseEntity<?> modifyUser(@PathVariable long userId, @RequestParam("name") String name,
 			@RequestParam("email") String email, @RequestParam("phoneNum") String phoneNum,
@@ -208,5 +209,14 @@ public class UserRestController {
 			return ResponseEntity.status(500).body("선호 운동 저장에 실패했습니다.");
 		}
 	}
+	
+	// 유저 검색 API (유저 ID에 포함된 문자열을 기반으로 검색)
+    @GetMapping("/search/{username}")
+    public ResponseEntity<List<User>> searchUsers(@PathVariable String username) {
+    	List<User> list = us.searchUsers(username);
+    	System.out.println(list);
+    	return ResponseEntity.ok(list);
+    }
+	
 
 }

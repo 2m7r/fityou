@@ -4,33 +4,15 @@
       <h2 class="modal-title">운동일기</h2>
       <p class="modal-description">오늘의 운동을 작성해주세요.</p>
 
+      <!-- 날짜 선택 -->
+      <div class="form-group">
+        <input type="date" v-model="workoutDate" class="date-input" />
+      </div>
+
       <!-- 운동일기 내용 입력 -->
       <div class="form-group">
         <textarea v-model="workoutContent" id="workout" placeholder="운동 내용을 입력하세요" class="workout-input"></textarea>
       </div>
-      
-      <!-- 사진 업로드 -->
-      <div class="form-group">
-  <div class="image-upload-container">
-    <div v-for="(exercise, index) in ['workout']" :key="index" class="image-item">
-      <label :for="`${exercise}Image`" class="image-label">
-        <!-- + 버튼 클릭으로 파일 선택 트리거 -->
-        <button v-if="!exerciseImages[exercise]" class="image-upload-btn" @click="triggerFileInput(exercise)">
-          <i class="bi bi-plus"></i>
-        </button>
-        <!-- 파일 입력 필드는 숨깁니다. -->
-        <input v-if="!exerciseImages[exercise]" type="file" :id="`${exercise}Image`" class="image-input" @change="handleImageChange(exercise, $event)" style="display: none;" />
-        <div v-if="exerciseImages[`${exercise}Preview`]" class="image-preview-container">
-          <img :src="exerciseImages[`${exercise}Preview`]" :alt="`${exercise} 운동 사진 미리보기`" class="image-preview" />
-          <button class="remove-image-btn" @click="removeImage(exercise)">
-            <i class="bi bi-x-circle"></i>
-          </button>
-        </div>
-      </label>
-    </div>
-  </div>
-</div>
-
 
       <!-- 운동 선택 및 루틴 입력 영역 (왼쪽/오른쪽 나누기) -->
       <div class="exercise-container">
@@ -110,6 +92,13 @@ const emit = defineEmits(['close']);
 // 상태 정의
 const workoutContent = ref('');
 const isWorkoutExist = ref(false);
+const workoutDate = ref('');
+
+// sessionStorage에서 'user' 키로 객체를 가져오기
+const user = ref(JSON.parse(sessionStorage.getItem('user')));
+
+// userId가 존재하는지 확인
+const name = ref(user.value ? user.value.name : null);
 
 // 운동 종류 및 루틴 관련 상태
 const exerciseCategories = ref(['가슴', '등', '어깨', '하체', '팔', '복부', '전신']); // 카테고리
@@ -130,12 +119,6 @@ const categoryColors = {
   '가슴': '#54a673', '등': '#8E44AD', '어깨': '#3498DB',
   '하체': '#F39C12', '팔': '#E74C3C', '복부': '#1ABC9C', '전신': '#fa8ec0'
 };
-
-// 이미지 관련 상태
-const exerciseImages = ref({
-  workout: null,
-  workoutPreview: null,
-});
 
 // 운동일기 제출 여부 체크
 const isFormValid = computed(() => {
@@ -180,67 +163,37 @@ const addExerciseToRoutine = (exercise) => {
   }
 };
 
-// 운동일기 제출
+const logFormData = (formData) => {
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+};
+
 const submitWorkoutLog = async () => {
   try {
-    const formData = new FormData();
-    formData.append('description', workoutContent.value);
-    formData.append('userId', props.userId);
-
-    // 각 운동 루틴을 formData에 추가
-    selectedExercises.value.forEach((exercise, index) => {
-      formData.append(`exercises[${index}].name`, exercise.name);
-      formData.append(`exercises[${index}].weight`, exercise.weight);
-      formData.append(`exercises[${index}].reps`, exercise.reps);
-      formData.append(`exercises[${index}].sets`, exercise.sets);
-    });
-
-    // 운동 사진 첨부
-    if (exerciseImages.value.workout) {
-      formData.append('workoutImage', exerciseImages.value.workout);
-    }
-
-    // API 호출
-    try {
-      const response = await apiClient.post(`/api-workout/create/${props.userId}`, formData,
-       {
-          headers: {
-            "Content-Type": "multipart/form-data", // 적절한 헤더 설정
-          },
-        });
-        
-      closeModal();
-      console.log("운동일기 제출 성공", response.data);
-    } catch(error) {
-      console.error("운동일기 제출 실패", error);
-    }
-  } catch (error) {
-    console.error("운동일기 제출 실패222", error);
-  }
-};
-
-// 이미지 첨부 관련
-const handleImageChange = (exercise, event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      exerciseImages.value[`${exercise}Preview`] = reader.result;
-      exerciseImages.value[exercise] = file;
+    const workoutData = {
+      description: workoutContent.value,
+      userId: props.userId,
+      name: name.value,
+      recordDate: workoutDate.value,
+      exerciseNames: selectedExercises.value.map(exercise => exercise.name),
+      weights: selectedExercises.value.map(exercise => exercise.weight),
+      reps: selectedExercises.value.map(exercise => exercise.reps),
+      sets: selectedExercises.value.map(exercise => exercise.sets)
     };
-    reader.readAsDataURL(file);
+
+    // 로그 데이터 출력
+    console.log('로그 데이터:', workoutData);
+
+    // API 호출 (JSON 방식으로 전송)
+    const response = await apiClient.post(`/api-workout/create/${props.userId}`, workoutData);
+    alert("운동일기가 등록되었습니다.");
+    closeModal();
+    console.log("운동일기 제출 성공", response.data);
+  } catch (error) {
+    alert("운동일기 등록실패..");
+    console.error("운동일기 제출 실패", error);
   }
-};
-
-const removeImage = (exercise) => {
-  exerciseImages.value[`${exercise}Preview`] = null;
-  exerciseImages.value[exercise] = null;
-};
-
-// 파일 선택 버튼 클릭
-const triggerFileInput = (exercise) => {
-  const fileInput = document.getElementById(`${exercise}Image`);
-  fileInput.click();
 };
 
 onMounted(() => {

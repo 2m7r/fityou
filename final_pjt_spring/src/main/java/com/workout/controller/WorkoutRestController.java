@@ -1,17 +1,10 @@
 package com.workout.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.workout.model.dto.Workout;
 import com.workout.model.dto.WorkoutExercise;
@@ -43,68 +34,43 @@ public class WorkoutRestController {
 		this.workoutService = workoutService;
 	}
 
-	// 운동일기 등록
 	@PostMapping("/create/{userId}")
 	@Operation(summary = "운동일기 등록", description = "새로운 운동일기를 등록합니다.")
 	public ResponseEntity<?> registWorkout(
-			@PathVariable long userId,
-			@RequestParam(required = false) MultipartFile workoutImage,
-			@RequestParam(required = false) String description,
-			@RequestBody List<WorkoutExercise> exercises
-			) {
-		System.out.println("등록 들어옴");
-		String workoutImagePath = null;
-		
-		try {
-            // 파일 업로드 처리
-            if (workoutImage != null) {
-            	workoutImagePath = uploadImage(workoutImage);
-            }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
-        }
-		
-		Workout workout = new Workout();
-		workout.setUserId(userId);
-		workout.setDescription(description);
-		workout.setExercises(exercises);
-		if(workoutImagePath != null) workout.setWorkoutImage(workoutImagePath);
-		System.out.println(workout);
-		try {
-			int result = workoutService.registWorkout(workout);
-			if (result > 0) {
-				return ResponseEntity.status(HttpStatus.CREATED).body("운동일기 등록 성공");
-			}
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("운동일기 등록 실패");
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("운동일기 등록 중 오류 발생");
-		}
-	}
+	        @PathVariable long userId,
+	        @RequestBody WorkoutRequest workoutRequest
+	) {
 
-	private String uploadImage(MultipartFile image) throws IOException {
-		// 이미지 파일 저장 디렉토리
-		String uploadDir = "uploads/workout_images/";
+	    // 운동 객체 생성 및 설정
+	    Workout workout = new Workout();
+	    workout.setUserId(userId);
+	    workout.setDescription(workoutRequest.getDescription());
+	    workout.setName(workoutRequest.getName());
+	    workout.setRecordDate(workoutRequest.getRecordDate());
 
-		File dir = new File(uploadDir);
-		if (!dir.exists()) {
-		    dir.mkdirs();  // 디렉토리가 없으면 생성
-		}
-		
-		// 파일명 처리 (중복 방지)
-		String originalFilename = image.getOriginalFilename();
-		String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(originalFilename);
-		Path targetPath = Paths.get(uploadDir + fileName);
-
-		try {
-	        // 파일 저장
-	        Files.copy(image.getInputStream(), targetPath);
-	    } catch (IOException e) {
-	        System.out.println("이미지 업로드 실패: " + e.getMessage());
-	        throw e;  // 예외 다시 던지기
+	    // 운동 데이터를 기반으로 운동 루틴 생성
+	    List<WorkoutExercise> exercises = new ArrayList<>();
+	    for (int i = 0; i < workoutRequest.getExerciseNames().size(); i++) {
+	        WorkoutExercise exercise = new WorkoutExercise();
+	        exercise.setExerciseName(workoutRequest.getExerciseNames().get(i));
+	        exercise.setWeight(workoutRequest.getWeights().get(i));
+	        exercise.setReps(workoutRequest.getReps().get(i));
+	        exercise.setSets(workoutRequest.getSets().get(i));
+	        exercises.add(exercise);
 	    }
+	    workout.setExercises(exercises);
+	    
+	    System.out.println("운동일기 등록 = " + workout);
 
-		// 업로드한 이미지의 파일 경로를 반환
-		return targetPath.toString();
+	    try {
+	        int result = workoutService.registWorkout(workout);
+	        if (result > 0) {
+	            return ResponseEntity.status(HttpStatus.CREATED).body("운동일기 등록 성공");
+	        }
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("운동일기 등록 실패");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("운동일기 등록 중 오류 발생");
+	    }
 	}
 
 	// 운동일기 상세조회
@@ -162,5 +128,65 @@ public class WorkoutRestController {
 	public ResponseEntity<List<Workout>> getFollowingDietsByUserId(@PathVariable Long userId) {
 		List<Workout> workouts = workoutService.getFollowingWorkoutsByUserId(userId);
 		return ResponseEntity.ok(workouts);
+	}
+	
+	public static class WorkoutRequest {
+	    private String description;
+	    private String name;
+	    private String recordDate;
+	    private List<String> exerciseNames;
+	    private List<Integer> weights;
+	    private List<Integer> reps;
+	    private List<Integer> sets;
+	    
+	    
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public String getRecordDate() {
+			return recordDate;
+		}
+		public void setRecordDate(String recordDate) {
+			this.recordDate = recordDate;
+		}
+		public List<String> getExerciseNames() {
+			return exerciseNames;
+		}
+		public void setExerciseNames(List<String> exerciseNames) {
+			this.exerciseNames = exerciseNames;
+		}
+		public List<Integer> getWeights() {
+			return weights;
+		}
+		public void setWeights(List<Integer> weights) {
+			this.weights = weights;
+		}
+		public List<Integer> getReps() {
+			return reps;
+		}
+		public void setReps(List<Integer> reps) {
+			this.reps = reps;
+		}
+		public List<Integer> getSets() {
+			return sets;
+		}
+		public void setSets(List<Integer> sets) {
+			this.sets = sets;
+		}
+		@Override
+		public String toString() {
+			return "WorkoutRequest [description=" + description + ", name=" + name + ", recordDate=" + recordDate
+					+ ", exerciseNames=" + exerciseNames + ", weights=" + weights + ", reps=" + reps + ", sets=" + sets
+					+ "]";
+		}
 	}
 }

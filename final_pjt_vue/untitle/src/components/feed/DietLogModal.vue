@@ -56,10 +56,17 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
+// 식단일기 관련 상태
 const dietContent = ref('');
 const dietDate = ref('');  // 날짜 상태 추가
 const isDietExist = ref(false);
 const dietId = ref(null);
+
+// sessionStorage에서 'user' 키로 객체를 가져오기
+const user = ref(JSON.parse(sessionStorage.getItem('user')));
+
+// userId가 존재하는지 확인
+const name = ref(user.value ? user.value.name : null);
 
 // 이미지 관련 상태
 const mealImages = ref({
@@ -102,6 +109,7 @@ const submitDietLog = async () => {
     formData.append('content', dietContent.value);
     formData.append('userId', props.userId);
     formData.append('recordDate', dietDate.value);  // 날짜를 서버로 전송
+    formData.append('name', name.value);
 
     // 각 식사의 이미지가 있다면 추가
     ['breakfast', 'lunch', 'dinner'].forEach((meal) => {

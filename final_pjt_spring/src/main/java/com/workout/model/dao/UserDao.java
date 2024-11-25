@@ -22,4 +22,7 @@ public interface UserDao {
 	void insertPreferredExercises(Long userId, String exercise);
 
 	List<String> getprefereedExcercise(String username);
+	
+	// 유저 ID가 포함된 유저를 검색
+    List<User> findByUserIdContaining(String username);
 }

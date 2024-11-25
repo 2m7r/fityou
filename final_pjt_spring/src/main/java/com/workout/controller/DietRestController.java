@@ -73,6 +73,7 @@ public class DietRestController {
             @RequestParam(required = false) MultipartFile lunchImage,
             @RequestParam(required = false) MultipartFile dinnerImage,
             @RequestParam String content,  // Diet의 content 속성 받기
+            @RequestParam String name,
             @RequestParam String recordDate // 식단 기록 날짜 (년-월-일 형식)
     ) {
         String breakfastImagePath = null;
@@ -98,11 +99,12 @@ public class DietRestController {
         Diet diet = new Diet();
         diet.setUserId(userId);  // userId 설정
         diet.setContent(content); // content 설정
+        diet.setName(name);
         diet.setRecordDate(recordDate); // 날짜 설정
         if (breakfastImagePath != null) diet.setBreakfastImagePath(breakfastImagePath);
         if (lunchImagePath != null) diet.setLunchImagePath(lunchImagePath);
         if (dinnerImagePath != null) diet.setDinnerImagePath(dinnerImagePath);
-        System.out.println(diet);
+        System.out.println("식단일기 등록 = " + diet);
         // 식단일기 등록
         try {
             int result = dietService.registDiet(diet);

@@ -34,16 +34,16 @@
 
 	<!-- 식단일기 등록 -->
 	<insert id="insertDiet" parameterType="Diet">
-		INSERT INTO diet (user_id, content, breakfast_image, lunch_image, dinner_image, record_date)
-		VALUES (#{userId}, #{content}, #{breakfastImagePath}, #{lunchImagePath}, #{dinnerImagePath}, #{recordDate})
+		INSERT INTO diet (user_id, name, content, breakfastImagePath, lunchImagePath, dinnerImagePath, record_date)
+		VALUES (#{userId}, #{name}, #{content}, #{breakfastImagePath}, #{lunchImagePath}, #{dinnerImagePath}, #{recordDate})
 	</insert>
 
 	<!-- 식단일기 수정 -->
 	<update id="updateDiet" parameterType="Diet">
 		UPDATE diet
-		SET breakfast_image = #{breakfastImagePath},
-		lunch_image = #{lunchImagePath},
-		dinner_image = #{dinnerImagePath},
+		SET breakfastImagePath = #{breakfastImagePath},
+		lunchImagePath = #{lunchImagePath},
+		dinnerImagePath = #{dinnerImagePath},
 		content = #{content}
 		WHERE diet_id = #{dietId}
 	</update>

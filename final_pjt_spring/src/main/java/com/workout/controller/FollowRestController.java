@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.model.dto.Follow;
@@ -32,7 +33,7 @@ public class FollowRestController {
 	}
 
 	// 팔로우 등록
-	@PostMapping
+	@PostMapping("/follow")
 	@Operation(summary = "팔로우 등록", description = "사용자가 다른 사용자를 팔로우합니다.")
 	public ResponseEntity<?> addFollow(@RequestBody Follow follow) {
 		int result = followService.addFollow(follow);
@@ -43,9 +44,12 @@ public class FollowRestController {
 	}
 
 	// 팔로잉 삭제
-	@DeleteMapping
+	@DeleteMapping("/unfollow")
 	@Operation(summary = "팔로잉 삭제", description = "사용자가 팔로잉을 취소합니다.")
-	public ResponseEntity<?> removeFollow(@RequestBody Follow follow) {
+	public ResponseEntity<?> removeFollow(@RequestParam long followerId, @RequestParam long followingId) {
+		Follow follow = new Follow();
+		follow.setFollowerId(followerId);
+		follow.setFollowingId(followingId);
 		int result = followService.removeFollow(follow);
 		if (result > 0) {
 			return ResponseEntity.ok("팔로잉 삭제 성공");

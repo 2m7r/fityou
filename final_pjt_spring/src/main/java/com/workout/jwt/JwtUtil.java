@@ -20,7 +20,7 @@ public class JwtUtil {
 	// 토큰 생성시 다양한 데이터를 저장할 수 있음 (DTO or Map)
 	public String createToken(String name) {
 		// 유효기간
-		Date exp = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 1시간
+		Date exp = new Date(System.currentTimeMillis() + 1000 * 60 * 600); // 1시간
 		return Jwts.builder().header().add("typ", "JWT").and().claim("name", name).expiration(exp).signWith(secretKey)
 				.compact();
 	}

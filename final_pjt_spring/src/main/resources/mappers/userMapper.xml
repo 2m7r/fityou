@@ -59,5 +59,11 @@
 		INSERT INTO preferred_exercises (user_id, exercise_name)
 		VALUES (#{userId}, #{exercise})
 	</insert>
+	
+	<!-- 유저 ID로 검색하는 SQL 쿼리 -->
+    <select id="findByUserIdContaining" resultType="User">
+        SELECT user_id, name, username FROM users
+        WHERE username LIKE CONCAT('%', #{username}, '%')
+    </select>
 
 </mapper>

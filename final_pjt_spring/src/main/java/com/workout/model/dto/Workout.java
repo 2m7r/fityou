@@ -5,11 +5,18 @@ import java.util.List;
 public class Workout {
 	private Long workoutId;
     private Long userId;
+    private String name; // 유저 이름
     private String description;
     private List<WorkoutExercise> exercises;
-    private String workoutImage;
+    private String recordDate;
     
     
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public Long getWorkoutId() {
 		return workoutId;
 	}
@@ -34,21 +41,16 @@ public class Workout {
 	public void setExercises(List<WorkoutExercise> exercises) {
 		this.exercises = exercises;
 	}
-	
-	
-	public String getWorkoutImage() {
-		return workoutImage;
+	public String getRecordDate() {
+		return recordDate;
 	}
-	public void setWorkoutImage(String workoutImage) {
-		this.workoutImage = workoutImage;
+	public void setRecordDate(String recordDate) {
+		this.recordDate = recordDate;
 	}
-	
 	@Override
 	public String toString() {
-		return "Workout [workoutId=" + workoutId + ", userId=" + userId + ", description=" + description
-				+ ", exercises=" + exercises + ", workoutImage=" + workoutImage + "]";
+		return "Workout [workoutId=" + workoutId + ", userId=" + userId + ", name=" + name + ", description="
+				+ description + ", exercises=" + exercises + ", recordDate=" + recordDate + "]";
 	}
-	
-	
 	
 }

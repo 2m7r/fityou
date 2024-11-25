@@ -8,6 +8,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './assets/styles/fonts.css';
 
+
+
 const app = createApp(App);
 const pinia = createPinia();
 app.use(pinia);

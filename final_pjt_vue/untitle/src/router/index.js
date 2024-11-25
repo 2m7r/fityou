@@ -35,7 +35,7 @@ const router = createRouter({
           path: '${id}',
           name: 'my-feed',
           component: FeedView,
-          meta: { requiresAuth: false }, // 인증 노필요
+          meta: { requiresAuth: true }, // 인증 필요
         },
       ]
     },

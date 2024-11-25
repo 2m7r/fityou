@@ -94,6 +94,10 @@ public class ChallengeRestController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("챌린지 참여 실패");
 	}
 	
+	
+	
+	
+	
 	// 챌린지 참여자 목록 조회
 	@GetMapping("/people/{challengeId}")
 	@Operation(summary = "특정 챌린지 참여자 목록 조회", description = "특정 챌린지의 참여자 목록을 조회합니다.")

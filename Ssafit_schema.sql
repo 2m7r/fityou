@@ -159,7 +159,7 @@ values
 drop table if exists challenge_people;
 -- 5. 챌린지별 참여하고 있는 참여자 목록 저장
 create table challenge_people (
-	user_id BIGINT NOT NULL, -- 참여한 유저ID
+    user_id BIGINT NOT NULL, -- 참여한 유저ID
     challenge_id BIGINT NOT NULL, -- 참여한 챌린지ID
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE
@@ -196,7 +196,11 @@ CREATE TABLE workouts (
     workout_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     user_id BIGINT NOT NULL, -- 유저ID
     description TEXT, -- 설명
+<<<<<<< HEAD
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
+=======
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+>>>>>>> vue
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 

@@ -35,6 +35,7 @@
           });
           const token = response.data.token;
           sessionStorage.setItem('access-token', token); // 로그인 성공 시 토큰 저장
+          
           this.$router.push({ name: 'home' }); // 로그인 후 대시보드로 이동
         } catch (error) {
           console.error('로그인 실패', error);

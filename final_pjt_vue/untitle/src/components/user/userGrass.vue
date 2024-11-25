@@ -1,7 +1,7 @@
 <template>
     <div class="calendar">
       <div class="calendar-header">
-        <h4>{{ currentMonth }}의 기록</h4>
+        <h4 class="month-title">{{ currentMonth }}월의 기록</h4>
       </div>
       <div class="calendar-body">
         <div class="calendar-grid">
@@ -137,11 +137,8 @@ const getDayStatus = (date) => {
   .calendar {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    height: 100vh; /* 화면 전체 높이 */
     padding: 0 10px; /* 왼쪽, 오른쪽 여백 */
     max-width: 500px; /* 최대 너비 500px */
-    margin: 0 auto; /* 가운데 정렬 */
   }
   
   .calendar-header {
@@ -211,5 +208,11 @@ const getDayStatus = (date) => {
     padding: 5px;
     text-align: center;
   }
+
+.month-title {
+  font-weight: bold;
+  font-size: 30px;
+}
+
   </style>
   

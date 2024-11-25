@@ -44,16 +44,11 @@ drop table IF EXISTS preferred_exercises;
 -- 선호 운동
 CREATE TABLE preferred_exercises (
     exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-<<<<<<< HEAD
-=======
-
->>>>>>> 3a2d423ccab3e823bb9022cfeee449d370edb60b
     user_id BIGINT NOT NULL,  -- 사용자 ID
     exercise_name VARCHAR(100) NOT NULL,  -- 운동 이름
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 생성 시간
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     CONSTRAINT unique_user_exercise UNIQUE (user_id, exercise_name)  -- 유니크 제약
-
 );
 
 -- select * from preferred_exercises;
@@ -75,26 +70,20 @@ CREATE TABLE diet (
 
 -- insert into diet (user_id, record_date)
 -- values (1, '2024-11-19');
-INSERT INTO diet (user_id, breakfast_image, lunch_image, dinner_image, content, record_date)
-VALUES 
-(3, 
- 'images/breakfast_2024_11_24.jpg',  
- 'images/lunch_2024_11_24.jpg',      
- 'images/dinner_2024_11_24.jpg',     
- '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
- '2024-11-30'),(3, 
- 'images/breakfast_2024_11_24.jpg',  
- 'images/lunch_2024_11_24.jpg',      
- 'images/dinner_2024_11_24.jpg',     
- '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
- '2024-11-02');
- 
- SELECT * FROM diet WHERE user_id = 3 AND record_date = '2024-11-22';
-
+-- INSERT INTO diet (user_id, breakfast_image, lunch_image, dinner_image, content, record_date)
+-- VALUES 
+-- (3, 
+--  'images/breakfast_2024_11_24.jpg',  
+--  'images/lunch_2024_11_24.jpg',      
+--  'images/dinner_2024_11_24.jpg',     
+--  '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
+--  '2024-11-22');
 
 -- SELECT * FROM diet
 -- WHERE user_id = 1
 -- ORDER BY record_date DESC;
+
+select * from diet;
 
 
 -- ------------------------- 팔로우 -----------------------------------
@@ -170,7 +159,7 @@ values
 drop table if exists challenge_people;
 -- 5. 챌린지별 참여하고 있는 참여자 목록 저장
 create table challenge_people (
-	user_id BIGINT NOT NULL, -- 참여한 유저ID
+    user_id BIGINT NOT NULL, -- 참여한 유저ID
     challenge_id BIGINT NOT NULL, -- 참여한 챌린지ID
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE
@@ -201,85 +190,27 @@ INSERT INTO challenge_people (user_id, challenge_id) VALUES
 
 -- -----------------------운동 일기 ----------------------------------------------
 -- 6. 운동
+-- 운동 일기 테이블
 DROP TABLE IF EXISTS workouts;
 CREATE TABLE workouts (
     workout_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     user_id BIGINT NOT NULL, -- 유저ID
-    description TEXT, -- 설명? 말?
+    description TEXT, -- 설명
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- SELECT * from workouts;
-
--- 7. 운동일기 사진
-DROP TABLE IF EXISTS workout_photos;
-CREATE TABLE workout_photos (
-    photo_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    workout_id BIGINT NOT NULL,
-    photo_url VARCHAR(255) NOT NULL, -- 사진 경로(URL 또는 파일 경로)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE
-);
--- SELECT * from workout_photos;
-
--- 8. 운동 종류
-DROP TABLE IF EXISTS exercises;
-CREATE TABLE exercises (
-    exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
-    name VARCHAR(100) NOT NULL UNIQUE, -- 운동 이름
-    category VARCHAR(50) -- 가슴, 어깨, 등 등
-);
-insert into exercises (name, category)
-values
-	('벤치 프레스', '가슴'),
-    ('인클라인 벤치 프레스', '가슴'),
-    ('덤벨 플라이', '가슴'),
-    ('체스트 프레스', '가슴'),
-    ('풀업', '등'),
-    ('랫 풀다운', '등'),
-    ('바벨 로우', '등'),
-    ('덤벨 로우', '등'),
-    ('데드리프트', '등'),
-    ('숄더 프레스', '어깨'),
-    ('덤벨 숄더 프레스', '어깨'),
-    ('사이드 레터럴 레이즈', '어깨'),
-    ('프론트 레이즈', '어깨'),
-    ('오버헤드 프레스', '어깨'),
-    ('버피', '전신'),
-    ('스쿼트 점프', '전신'),
-    ('클린 앤드 저크', '전신'),
-    ('케틀벨 스윙', '전신'),
-    ('푸쉬업', '전신'),
-    ('플랭크', '코어'),
-    ('러시안 트위스트', '코어'),
-    ('레그 레이즈', '코어'),
-    ('싯업', '코어'),
-    ('힙 브릿지', '코어'),
-    ('바벨 컬', '팔'),
-    ('덤벨 컬', '팔'),
-    ('트라이셉스 푸시다운', '팔'),
-    ('덤벨 트라이셉스 킥백', '팔'),
-    ('해머 컬', '팔'),
-    ('스쿼트', '하체'),
-    ('레그 프레스', '하체'),
-    ('런지', '하체'),
-    ('힙 스러스트', '하체'),
-    ('카프 레이즈', '하체');
-
--- SELECT * from exercises;
-
--- 9. 운동 루틴
+-- 운동 루틴 테이블 (운동 종류와 카테고리 추가)
 DROP TABLE IF EXISTS workout_exercises;
 CREATE TABLE workout_exercises (
     id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     workout_id BIGINT NOT NULL, -- 운동일기ID
-    exercise_id BIGINT NOT NULL, -- 운동종류ID
+    exercise_name VARCHAR(100) NOT NULL, -- 운동 이름
+    category VARCHAR(50), -- 운동 카테고리
     weight INT, -- 무게(kg)
     reps INT,   -- 횟수
     sets INT,   -- 세트 수
-    FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE,
-    FOREIGN KEY (exercise_id) REFERENCES exercises(exercise_id) ON DELETE CASCADE
+    FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE
 );
 -- SELECT * from workout_exercises;
 

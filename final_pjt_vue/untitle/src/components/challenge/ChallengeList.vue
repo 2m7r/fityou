@@ -1,6 +1,6 @@
 <template>
   <div class="recommended-challenges-container">
-    <h5>모든 챌린지</h5>
+    <h2>모든 챌린지</h2>
 
     <!-- 모든 챌린지 카드들이 들어있는 스크롤 영역 -->
     <div class="challenges-scroll-container" ref="scrollContainer">
@@ -198,7 +198,7 @@ onMounted(() => {
   }
 
   h2 {
-    font-weight: bold;
+    font-family: 'Bold';
   }
   
   /* 추천 챌린지 스크롤 영역 */

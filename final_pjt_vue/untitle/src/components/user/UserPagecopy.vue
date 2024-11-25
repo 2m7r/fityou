@@ -215,6 +215,8 @@ export default {
         userStore.setUser(updatedUserData);
 
         alert("정보가 성공적으로 수정되었습니다.");
+        // 수정 완료 후 모달 닫기
+        this.closeModal(); 
       } catch (error) {
         console.error("정보 수정 실패", error);
         alert("정보 수정에 실패했습니다.");

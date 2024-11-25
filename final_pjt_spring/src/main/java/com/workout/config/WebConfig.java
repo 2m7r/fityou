@@ -17,7 +17,6 @@ public class WebConfig implements WebMvcConfigurer{
 
 	
 	@Override
-<<<<<<< HEAD
 	public void addInterceptors(InterceptorRegistry registry) {
 	    registry.addInterceptor(jwtInterceptor)
 	        .addPathPatterns("/**")
@@ -25,9 +24,7 @@ public class WebConfig implements WebMvcConfigurer{
 	}
 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-=======
-   public void addResourceHandlers(ResourceHandlerRegistry registry) {
->>>>>>> vue
+
         // /uploads/** URL 요청을 실제 파일 시스템의 uploads 디렉토리로 매핑
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/") // 실제 파일 위치

@@ -71,9 +71,9 @@ const userStore = useUserStore();
 const router = useRouter();
 
 // userProfileImage 계산 로직
-const userProfileImage = userStore.userProfileImage.trim()
+const userProfileImage = (userStore.userProfileImage.trim()!== '')
   ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
-  : null;
+  : defaultprofileImage;
 
 // 모달 상태 관리
 const isDietLogModalOpen = ref(false);
@@ -173,7 +173,7 @@ const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
 }
 
 .user-name {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -221,6 +221,7 @@ const userId = user ? user.userId : null;  // userId가 없으면 null을 반환
 .btn-exercise {
   background-color: #54a673;
   color: white;
+  font-size: 1.1rem;
 }
 
 .btn-diet:hover,

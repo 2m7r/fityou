@@ -28,7 +28,7 @@
               <div class="button-container">
                 <!-- 참여하기 버튼 -->
                 <button
-                  class="btn btn-success"
+                  class="btn btn-success rounded-full"
                   @click.stop="joinChallenge(challenge)"
                 >
                   참여하기
@@ -67,6 +67,22 @@
         <!-- 오른쪽 화살표 아이콘 -->
       </button>
     </div>
+
+     <!-- 챌린지 상세 모달 -->
+     <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <span class="close-btn" @click="closeModal">&times;</span>
+        <h2>{{ modalChallenge.name }}</h2>
+        <p>{{ modalChallenge.description }}</p>
+        <p><strong>시작일:</strong> {{ modalChallenge.startDate }}</p>
+        <p><strong>진행 상태:</strong> {{ modalChallenge.status }}</p>
+        <p><strong>참여자 수:</strong> {{ modalChallenge.participantCount }} 명</p>
+        <button class="btn btn-success btn-modal rounded-full" @click="joinChallenge(modalChallenge)">참여하기</button>
+      </div>
+    </div>
+
+
+
   </div>
 </template>
 
@@ -91,6 +107,11 @@ const recommendedChallenges = ref([]); // 추천 챌린지 목록
 const challenges = ref([]); // 내가 참여한 챌린지 목록
 
 const scrollContainer = ref(null);
+
+// 모달 상태 관리
+const isModalOpen = ref(false);
+const modalChallenge = ref({}); // 초기값을 빈 객체로 설정
+
 
 // 추천 챌린지 데이터를 가져오는 함수
 const fetchRecommendedChallenges = async () => {
@@ -130,6 +151,20 @@ const joinChallenge = async (challenge) => {
     console.error('챌린지 참여에 실패했습니다.', error);
   }
 };
+
+
+// 챌린지 상세보기
+const viewChallengeDetail = (challenge) => {
+  modalChallenge.value = challenge; // 모달에 선택된 챌린지 데이터 설정
+  isModalOpen.value = true; // 모달 열기
+};
+
+// 모달 닫기
+const closeModal = () => {
+  isModalOpen.value = false; // 모달 닫기
+};
+
+
 
 onMounted(() => {
   fetchRecommendedChallenges();  // 추천 챌린지 목록 가져오기
@@ -299,5 +334,69 @@ h5 {
 .btn-close:hover {
   background-color: rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards; /* 애니메이션 추가 */
+  
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 50%;
+  max-width: 600px;
+  position: relative;
+  transform: scale(0.8);
+  animation: scaleUp 0.3s forwards;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.btn-modal {
+  max-width: 100px;
+  margin-left: auto;
+}
+
+.rounded-full {
+  border-radius: 50px;
+  background-color: 54a673;
 }
 </style>

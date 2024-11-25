@@ -9,7 +9,6 @@
       <!-- 오른쪽: ChallengesMy와 ChallengesRecommended -->
       <div class="right">
         <ChallengesMy />
-        <ChallengesRecommended />
         <ChallengeList />
       </div>
     </div>

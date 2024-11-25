@@ -291,14 +291,20 @@ const triggerFileInput = (meal) => {
 
 .image-preview-container {
   position: relative;
-  margin-top: 10px;
+  width: 100%;
+  height: 0;
+  padding-top: 100%; /* 1:1 비율로 설정 */
+  overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 함 */
 }
 
 .image-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  border-radius: 10px;
-  object-fit: cover;
+  height: 100%;
+  object-fit: cover; /* 이미지가 1:1 비율을 유지하면서 가득 차게 설정 */
+  border-radius: 10px; /* 모서리 둥글게 설정 */
 }
 
 .remove-image-btn {

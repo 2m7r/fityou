@@ -28,4 +28,8 @@ public interface UserService {
 	List<User> searchUsers(String username);
 
 	int deleteUser(long userId);
+
+	User selectUserById(Long userId);
+
+	List<User> selectAllUsers();
 }

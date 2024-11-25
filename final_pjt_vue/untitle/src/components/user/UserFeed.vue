@@ -7,6 +7,8 @@
         v-model="searchUserId" 
         placeholder="유저 ID를 입력하세요"
         @keyup.enter="searchUser"
+        @focus="showRecommendedUsers = true"  
+        @blur="showRecommendedUsers = false"
       />
       <button @click="searchUser">검색</button>
       <!-- 초기화 버튼 추가 -->
@@ -15,7 +17,6 @@
 
     <!-- 검색된 유저 목록 -->
     <div v-if="searchedUsers.length > 0" class="user-list">
-      <h3>검색된 유저들:</h3>
       <div 
         v-for="user in searchedUsers" 
         :key="user.userId" 
@@ -38,6 +39,32 @@
             팔로우 취소
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- 선호운동이 겹치는 추천 유저들 -->
+    <div v-if="showRecommendedUsers && recommendedUsers.length > 0" class="recommended-users">
+      <hr>
+      <h3>추천 유저</h3>
+      <div 
+        v-for="user in recommendedUsers" 
+        :key="user.userId" 
+        class="user-card"
+        @click="selectUser(user)"
+      >
+        <p>{{ user.username }}</p>
+        <button 
+            v-if="!isFollowing(user.userId)"
+            @click="followUser(user)"
+          >
+            팔로우
+          </button>
+          <button 
+            v-if="isFollowing(user.userId)"
+            @click="unfollowUser(user)"
+          >
+            팔로우 취소
+          </button>
       </div>
     </div>
 
@@ -117,6 +144,19 @@
             <img :src="'http://localhost:8080/'+log.dinnerImagePath" alt="Dinner Image" />
           </div>
         </div>
+
+        <!-- 식단일기 또는 운동일기에서 댓글 추가 및 표시 -->
+        <div v-if="log.comments">
+          <div v-for="comment in log.comments" :key="comment.id">
+            <p>{{ comment.username }}: {{ comment.content }}</p>
+          </div>
+        </div>
+
+          <!-- 댓글 입력창 -->
+          <div class="comment-box">
+            <input v-model="newComment" placeholder="댓글을 입력하세요" />
+            <button @click="addComment(log)">댓글 추가</button>
+          </div>
       </div>
     </div>
 
@@ -181,14 +221,58 @@ const username = ref(user.value ? user.value.username : null);
 
 const searchUserId = ref('');  // 검색한 userId
 const searchedUsers = ref([]);  // 검색된 유저 목록
+const recommendedUsers = ref([]);  // 선호운동이 겹치는 추천 유저 목록
+const showRecommendedUsers = ref(false);  // 추천 유저 목록 표시 여부
 
 const dietLogs = ref([]);  // 팔로우한 유저들의 식단일기 배열
 const myDietLogs = ref([]);  // 내 식단일기 배열
 const workoutLogs = ref([]);  // 팔로우한 유저들의 운동일기 배열
 const myWorkoutLogs = ref([]);  // 내 운동일기 배열
 
+// 각 일기 항목에 대한 댓글 관리
+const comments = ref({});  // {logId: [댓글들]}
+
 const selectedDietLog = ref(null);  // 선택한 식단일기
 const isDietLogModalOpen = ref(false);  // 모달 열림 여부
+
+const newComment = ref('');  // 새로 추가할 댓글 내용
+
+const addComment = async (log) => {
+  if (newComment.value.trim() === '') {
+    return;
+  }
+
+  try {
+    const response = await apiClient.post('/api-comment/create', {
+      targetId: log.id,  // 해당 일기의 ID
+      userId: userId.value,  // 댓글 작성자의 ID
+      content: newComment.value,  // 댓글 내용
+      targetType: currentTab.value
+    });
+
+    // 댓글 추가 후 댓글 목록 업데이트
+    fetchComments(log.id);
+    newComment.value = '';  // 댓글 입력창 초기화
+  } catch (error) {
+    console.error('댓글 추가 실패', error);
+  }
+};
+
+// 댓글을 불러오는 함수
+const fetchComments = async (logId) => {
+  console.log(currentTab.value)
+  try {
+    const response = await apiClient.get('/api-comment/comment', {
+      params:{
+        targetId: logId,
+        targetType: currentTab.value
+      }
+    });
+    comments.value[logId] = response.data;  // 해당 일기의 댓글 목록
+  } catch (error) {
+    console.error('댓글 불러오기 실패', error);
+  }
+};
 
 // 팔로우 상태 확인 함수
 const isFollowing = (otherUserId) => {
@@ -239,9 +323,28 @@ const searchUser = async () => {
       // 유저 ID와 비슷한 유저들을 찾는 API 요청
       const response = await apiClient.get(`/api-user/search/${searchUserId.value}`);
       searchedUsers.value = response.data;
+
+      // 추천 유저 목록 업데이트
+      recommendUsers();
     } catch (error) {
       console.error('유저 검색 실패', error);
     }
+  }
+};
+
+// 선호운동이 겹치는 유저 추천 함수
+const recommendUsers = async () => {
+  console.log('추천 호출됨')
+  try {
+    // 전체 유저 목록에서 선호 운동이 겹치는 유저 추천 요청
+    const response = await apiClient.get('/api-user/recommend', {
+      params: {
+        userId: userId.value,  // 현재 유저 ID를 전송
+      }
+    });
+    recommendedUsers.value = response.data;  // 추천된 유저들
+  } catch (error) {
+    console.error('추천 유저 불러오기 실패', error);
   }
 };
 
@@ -277,11 +380,25 @@ const fetchLogs = async (tab) => {
   }
 };
 
+watch(() => userId.value, (newUserId) => {
+  if (newUserId) {
+    fetchLogs(currentTab.value); // userId가 변경되면 데이터를 다시 로드
+  }
+});
+
+watch(() => showRecommendedUsers.value, (newValue) => {
+  if (newValue) {
+    recommendUsers(); // showRecommendedUsers가 true로 변경되면 추천 유저 목록을 업데이트
+  }
+});
+
+
 // 검색 초기화 함수
 const resetSearch = () => {
   searchUserId.value = '';  // 검색어 초기화
   searchedUsers.value = [];  // 검색된 유저 목록 초기화
   userId.value = user.value.userId;  // 내 ID로 돌아가기
+  showRecommendedUsers.value = false;
   fetchLogs(currentTab.value);  // 현재 탭에 해당하는 내 로그 불러오기
 };
 
@@ -305,6 +422,36 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.comment-box {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.comment-box input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 80%;
+}
+
+.comment-box button {
+  padding: 8px;
+  border-radius: 5px;
+  background-color: #54a673;
+  color: white;
+  cursor: pointer;
+}
+
+.comment-box button:hover {
+  background-color: #457f4e;
+}
+
+.comment-box input:focus {
+  outline: none;
+  border-color: #54a673;
+}
+
 .tabs {
   display: flex;
   gap: 10px;

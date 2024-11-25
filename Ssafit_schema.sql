@@ -52,7 +52,7 @@ CREATE TABLE preferred_exercises (
     CONSTRAINT unique_user_exercise UNIQUE (user_id, exercise_name)  -- 유니크 제약
 );
 
--- select * from preferred_exercises;
+select * from preferred_exercises;
 
 -- ------------------------- 식단일기 -----------------------------------
 DROP TABLE IF EXISTS diet;
@@ -237,7 +237,7 @@ CREATE TABLE comments (
 -- insert into comments (target_id, target_type, user_id, content)
 -- values (4, 'workout', 1, '트레이너임?');
 
--- SELECT * from comments;
+SELECT * from comments;
 
 
 -- ------------------------- 트레이너-회원관계 -----------------------------------

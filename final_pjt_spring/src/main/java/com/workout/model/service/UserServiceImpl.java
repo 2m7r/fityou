@@ -107,4 +107,14 @@ public class UserServiceImpl implements UserService{
 		return dao.deleteUser(userId);
 	}
 
+	@Override
+	public User selectUserById(Long userId) {
+		return dao.selectUserById(userId);
+	}
+
+	@Override
+	public List<User> selectAllUsers() {
+		return dao.selectAllUsers();
+	}
+
 }

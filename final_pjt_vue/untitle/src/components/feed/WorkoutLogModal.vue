@@ -189,6 +189,7 @@ const submitWorkoutLog = async () => {
     const response = await apiClient.post(`/api-workout/create/${props.userId}`, workoutData);
     alert("운동일기가 등록되었습니다.");
     closeModal();
+    window.location.reload();
     console.log("운동일기 제출 성공", response.data);
   } catch (error) {
     alert("운동일기 등록실패..");

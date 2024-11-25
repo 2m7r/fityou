@@ -31,6 +31,10 @@
             <button class="btn btn-danger btn-close" @click.stop="leaveChallenge(challenge.challengeId)">
               <i class="fas fa-times"></i>
             </button>
+            <!-- 마감된 챌린지 표시 -->
+            <div v-if="isChallengeClosed(challenge)" class="closed-badge">
+              <span>끝난 챌린지</span>
+            </div>
           </div>
         </div>
       </div>
@@ -144,6 +148,13 @@ const closeModal = () => {
   isModalOpen.value = false; // 모달 닫기
 };
 
+// 챌린지 마감 여부 확인 함수
+const isChallengeClosed = (challenge) => {
+  const currentDate = new Date();
+  const endDate = new Date(challenge.durationEnd);
+  return currentDate > endDate; // 마감일이 지나면 true 반환
+};
+
 
 onMounted(() => {
   fetchChallenges(); // 나의 챌린지 목록 가져오기
@@ -151,6 +162,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.closed-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
 .challenges-my-container {
   padding: 20px;
   position: relative;

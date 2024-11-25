@@ -3,7 +3,7 @@
     <div class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <h2 class="modal-title">내 정보 수정</h2>
-        <form @submit.prevent="updateUserInfo">
+        <form>
           <!-- 이름 입력 -->
           <div class="input-group">
             <label for="name">이름</label>
@@ -138,7 +138,7 @@
           <div class="modal-actions">
             <button class="btn btn-secondary rounded-full" @click="closeModal">취소</button>
             <button class="btn btn-danger rounded-full" @click="joinOut">탈퇴</button>
-            <button type="submit" class="btn btn-primary rounded-full" @click="submitEdit">
+            <button type="button" class="btn btn-primary rounded-full" @click="submitEdit">
               수정
             </button>
           </div>
@@ -197,6 +197,14 @@ export default {
     this.userDescription = userData.userDescription;
   },
   methods: {
+    async submitEdit() {
+      try {
+        await this.updateUserInfo(); // 직접 호출
+      } catch (error) {
+        console.error("수정 실패", error);
+      }
+    },
+
     async joinOut() {
       const userStore = useUserStore();
       const userId = userStore.user.userId;
@@ -217,7 +225,6 @@ export default {
         // 사용자 데이터를 초기화하고 홈으로 이동
         userStore.clearUser();
         alert("탈퇴가 성공적으로 완료되었습니다.");
-        clearUser();
         this.$router.push("/"); // 홈 화면으로 이동
       } catch (error) {
         console.error("탈퇴 실패", error);
@@ -267,7 +274,15 @@ export default {
 
         userStore.setUser(updatedUserData);
 
+        // 새로운 프로필 이미지 URL 업데이트
+        if (updatedUserData.profileImage) {
+          this.userProfileImage =
+            "http://localhost:8080/" + updatedUserData.profileImage.replace(/\\/g, "/");
+        }
+
         alert("정보가 성공적으로 수정되었습니다.");
+        this.$emit("close");
+        window.location.reload();
       } catch (error) {
         console.error("정보 수정 실패", error);
         alert("정보 수정에 실패했습니다.");

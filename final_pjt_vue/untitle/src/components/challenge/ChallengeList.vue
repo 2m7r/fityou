@@ -22,12 +22,22 @@
               <p class="card-text">{{ challenge.description }}</p>
 
               <div class="button-container">
-                <!-- 참여하기 버튼 -->
+                <!-- 참여하기 버튼을 눌렀을 때 -->
                 <button
+                  v-if="!isUserParticipated(challenge)"
                   class="btn btn-success rounded-full"
                   @click.stop="joinChallenge(challenge)"
+                  :disabled="isChallengeClosed(challenge)"
                 >
-                  참여하기
+                참여하기
+                </button>
+                <!-- 이미 참여한 경우 -->
+                <button
+                  v-else
+                  class="btn btn-secondary rounded-full"
+                  disabled
+                >
+                참여한 챌린지
                 </button>
               </div>
             </div>
@@ -38,6 +48,11 @@
                 {{ challenge.participantCount }} 명 참여
               </span>
               <i class="bi bi-fire participant-icon"></i>
+            </div>
+
+            <!-- 마감된 챌린지 표시 -->
+            <div v-if="isChallengeClosed(challenge)" class="closed-badge">
+              <span>끝난 챌린지</span>
             </div>
           </div>
         </div>
@@ -65,7 +80,10 @@
         <p><strong>시작일:</strong> {{ modalChallenge.durationStart }}</p>
         <p><strong>마감일:</strong> {{ modalChallenge.durationEnd }}</p>
         <p><strong>참여자 수:</strong> {{ modalChallenge.participantCount }} 명</p>
-        <button class="btn btn-success btn-modal rounded-full" @click="joinChallenge(modalChallenge)">참여하기</button>
+        
+        <button class="btn btn-success btn-modal rounded-full"
+          @click="joinChallenge(modalChallenge)"
+          :disabled="isChallengeClosed(modalChallenge) || isUserParticipated(modalChallenge)">참여하기</button>
       </div>
     </div>
 
@@ -76,6 +94,11 @@
 import { ref, onMounted } from "vue";
 import apiClient from '../api/apiClient';
 import eventBus from "@/eventBus";
+
+// 이미 참여한 챌린지인지 확인하는 함수
+const isUserParticipated = (challenge) => {
+  return userParticipatedChallenges.value.some(challengeItem => challengeItem.challengeId === challenge.challengeId);
+};
 
 // 스크롤 버튼 클릭 시 동작
 const scrollLeft = () => {
@@ -91,9 +114,20 @@ const scrollRight = () => {
 };
 
 const allChallenges = ref([]); // 추천 챌린지 목록
-const challenges = ref([]); // 내가 참여한 챌린지 목록
-
+const userParticipatedChallenges = ref([]); // 내가 참여한 챌린지 목록
 const scrollContainer = ref(null);
+
+// 사용자 참여한 챌린지 목록 가져오는 함수
+const fetchUserParticipatedChallenges = async () => {
+  try {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const userId = user.userId;  // 로그인된 사용자 ID
+    const response = await apiClient.get(`/api-challenge/challenges`, { params: { userId } });
+    userParticipatedChallenges.value = response.data; // 사용자가 참여한 챌린지 목록 저장
+  } catch (error) {
+    console.error("참여한 챌린지 목록을 가져오는 데 실패했습니다.", error);
+  }
+};
 
 // 모달 상태 관리
 const isModalOpen = ref(false);
@@ -137,6 +171,7 @@ const joinChallenge = async (challenge) => {
         allChallenges.value.splice(index, 1); // 해당 항목 삭제
       }
 
+      isModalOpen.value = false;
       // 챌린지 목록을 새로고침하도록 EventBus에 알림
       eventBus.triggerRefresh();
     }
@@ -150,7 +185,6 @@ const joinChallenge = async (challenge) => {
   }
 };
 
-
 // 챌린지 상세보기
 const viewChallengeDetail = (challenge) => {
   modalChallenge.value = challenge; // 모달에 선택된 챌린지 데이터 설정
@@ -162,21 +196,32 @@ const closeModal = () => {
   isModalOpen.value = false; // 모달 닫기
 };
 
+// 챌린지 마감 여부 확인 함수
+const isChallengeClosed = (challenge) => {
+  const currentDate = new Date();
+  const endDate = new Date(challenge.durationEnd);
+  return currentDate > endDate; // 마감일이 지나면 true 반환
+};
 
 onMounted(() => {
-  fetchAllChallenges();  // 모든 챌린지 목록 가져오기
+  fetchAllChallenges(); // 모든 챌린지 목록 가져오기
+  fetchUserParticipatedChallenges(); // 사용자가 참여한 챌린지 목록 가져오기
 });
 </script>
   
 
 
-
-
-
-
-
-
 <style scoped>
+  .closed-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
   .recommended-challenges-container {
     padding: 20px;
     position: relative;
@@ -195,20 +240,20 @@ onMounted(() => {
   h2 {
     font-weight: bold;
   }
-  
-  /* 추천 챌린지 스크롤 영역 */
+
   .challenges-scroll-container {
-    background-color: #f7f7f7;
-    padding-bottom: 20px;
-    padding-top: 20px;
-    border-radius: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: scroll;
-    white-space: nowrap;
-    position: relative;
-    margin-bottom: 60px;
-  }
+  background-color: #f7f7f7;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: scroll;
+  white-space: nowrap;
+  position: relative;
+  margin-bottom: 60px;
+  } 
+
   
   /* 스크롤바 숨기기 */
   .challenges-scroll-container::-webkit-scrollbar {

@@ -6,7 +6,7 @@
 
         <!-- 왼쪽: 사용자 프로필 사진 -->
         <div class="profile">
-          <img :src="userProfileImage" alt="User Profile" class="profile-img" />
+          <img :src="userProfileImage" class="profile-img" />
         </div>
 
         <!-- 중간: 사용자 이름과 설명 -->

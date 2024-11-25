@@ -125,6 +125,7 @@ const submitDietLog = async () => {
       alert("식단일기가 등록되었습니다.");
     // }
     closeModal();
+    window.location.reload();
   } catch (error) {
     console.error("식단일기 제출 실패", error);
   }

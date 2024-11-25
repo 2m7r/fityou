@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -238,5 +240,59 @@ public class UserRestController {
     	}
     	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 탈퇴 실패");
     }
+    
+    // 유저 추천
+    @GetMapping("/recommend")
+    public ResponseEntity<List<User>> recommendUsers(@RequestParam Long userId) {
+    	System.out.println("추천 들어옴");
+    	User curruser = us.selectUserById(userId);
+    	System.out.println(curruser);
+    	List<String> preferredExercises = curruser.getPreferredExercises();
+    	if (preferredExercises == null) {
+    		preferredExercises = new ArrayList<>();
+    	}
+    	List<User> allUsers = us.selectAllUsers();
+    	List<UserRecommendation> recommendations = new ArrayList<>();
+    	// 3. 선호 운동이 겹치는 유저 찾기
+        for (User user : allUsers) {
+            if (!user.getUserId().equals(userId)) {
+                long commonExercises = preferredExercises.stream()
+                    .filter(exercise -> user.getPreferredExercises().contains(exercise))
+                    .count();
 
+                if (commonExercises > 0) {
+                    recommendations.add(new UserRecommendation(user, commonExercises));
+                }
+            }
+        }
+
+        // 4. 선호 운동이 겹치는 수를 기준으로 내림차순 정렬
+        recommendations.sort((r1, r2) -> Long.compare(r2.getCommonExercises(), r1.getCommonExercises()));
+
+        // 5. 상위 5명만 반환
+        List<User> recommendedUsers = recommendations.stream()
+            .limit(5)
+            .map(UserRecommendation::getUser)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(recommendedUsers);
+    }
+    
+    public static class UserRecommendation {
+    	private User user;
+        private long commonExercises;
+        
+        public UserRecommendation(User user, long commonExercises) {
+            this.user = user;
+            this.commonExercises = commonExercises;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public long getCommonExercises() {
+            return commonExercises;
+        }
+    }
 }

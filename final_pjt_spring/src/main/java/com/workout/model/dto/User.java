@@ -1,5 +1,6 @@
 package com.workout.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -13,7 +14,7 @@ public class User {
     private String role; // USER 또는 TRAINER
     private String gymName; // 헬스장 이름 (트레이너일 경우)
     private List<String> awards; // 수상 경력 리스트
-    private List<String> preferredExercises; // 선호 운동 리스트
+    private List<String> preferredExercises = new ArrayList<>(); // 빈 리스트로 초기화 // 선호 운동 리스트
     private boolean isPrivateAccount; // 공개/비공개 계정 여부
     private String profileImage;
     private String phoneNum;

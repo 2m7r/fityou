@@ -29,4 +29,8 @@ public interface UserDao {
 	User selectUserByUsername(String username);
 
 	int deleteUser(long userId);
+
+	User selectUserById(Long userId);
+
+	List<User> selectAllUsers();
 }

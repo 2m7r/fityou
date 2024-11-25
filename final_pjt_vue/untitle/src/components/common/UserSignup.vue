@@ -52,6 +52,16 @@
         />
       </div>
 
+      <!-- 성별 선택 -->
+      <div class="input-group">
+        <label for="gender">성별</label>
+        <select id="gender" v-model="gender" required>
+          <option value="M">남성</option>
+          <option value="F">여성</option>
+          <option value="O">기타</option>
+        </select>
+      </div>
+
       <!-- 역할 선택 -->
       <div class="input-group">
         <label for="role">회원 유형</label>

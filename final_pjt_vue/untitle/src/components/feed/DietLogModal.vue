@@ -118,21 +118,21 @@ const submitDietLog = async () => {
       }
     });
 
-    if (isDietExist.value) {
-      await apiClient.put(`/api-diet/${dietId.value}`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-      }); // 수정
-      alert("식단일기가 수정되었습니다.");
-    } else {
+    // if (isDietExist.value) {
+    //   await apiClient.put(`/api-diet/${dietId.value}`, formData, {
+    //     headers: {
+    //         "Content-Type": "multipart/form-data"
+    //     }
+    //   }); // 수정
+    //   alert("식단일기가 수정되었습니다.");
+    // } else {
       await apiClient.post(`/api-diet/create/${props.userId}`, formData, {
         headers: {
             "Content-Type": "multipart/form-data"
         }
       }); // 새로 등록
       alert("식단일기가 등록되었습니다.");
-    }
+    // }
     closeModal();
   } catch (error) {
     console.error("식단일기 제출 실패", error);

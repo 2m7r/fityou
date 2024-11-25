@@ -16,9 +16,6 @@ public interface ChallengeService {
 	// 챌린지 수정
 	int modifyChallenge(Challenge challenge);
 
-	// 챌린지 삭제
-	int removeChallenge(Long challengeId);
-
 	// 챌린지 참여
 	int intoChallenge(Long challengeId, Long userId);
 	
@@ -30,5 +27,7 @@ public interface ChallengeService {
 
 	List<Challenge> getChallenges(long userId);
 
+	// 챌린지 떠나기
+	int leaveChallenge(long challengeId, long userId);
 
 }

@@ -34,11 +34,11 @@
 		WHERE challenge_id = #{challengeId}
 	</update>
 
-	<!-- 챌린지 삭제 -->
-	<delete id="deleteChallenge" parameterType="Long">
+	<!-- 챌린지 떠나기 -->
+	<delete id="leaveChallenge" parameterType="Long">
 		DELETE FROM
-		challenges
-		WHERE challenge_id = #{challengeId}
+		challenge_people
+		WHERE challenge_id = #{challengeId} AND user_id = #{userId}
 	</delete>
 
 	<!-- 챌린지 참여 -->
@@ -46,6 +46,15 @@
 		UPDATE challenges
 		SET
 		participant_count = participant_count + 1
+		WHERE challenge_id =
+		#{challengeId}
+	</update>
+	
+	<!-- 챌린지 사람수 -1 -->
+	<update id="countDown" parameterType="Long">
+		UPDATE challenges
+		SET
+		participant_count = participant_count - 1
 		WHERE challenge_id =
 		#{challengeId}
 	</update>

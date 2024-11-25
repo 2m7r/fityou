@@ -39,7 +39,6 @@
               </span>
               <i class="bi bi-fire participant-icon"></i>
             </div>
-            
           </div>
         </div>
       </div>
@@ -63,8 +62,8 @@
         <span class="close-btn" @click="closeModal">&times;</span>
         <h2>{{ modalChallenge.name }}</h2>
         <p>{{ modalChallenge.description }}</p>
-        <p><strong>시작일:</strong> {{ modalChallenge.startDate }}</p>
-        <p><strong>진행 상태:</strong> {{ modalChallenge.status }}</p>
+        <p><strong>시작일:</strong> {{ modalChallenge.durationStart }}</p>
+        <p><strong>마감일:</strong> {{ modalChallenge.durationEnd }}</p>
         <p><strong>참여자 수:</strong> {{ modalChallenge.participantCount }} 명</p>
         <button class="btn btn-success btn-modal rounded-full" @click="joinChallenge(modalChallenge)">참여하기</button>
       </div>
@@ -75,10 +74,8 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
 import apiClient from '../api/apiClient';
-
-
+import eventBus from "@/eventBus";
 
 // 스크롤 버튼 클릭 시 동작
 const scrollLeft = () => {
@@ -140,14 +137,12 @@ const joinChallenge = async (challenge) => {
         allChallenges.value.splice(index, 1); // 해당 항목 삭제
       }
 
-      // 2. challenges에 참여한 챌린지 추가
-      challenges.value.push(challenge);
-
-      // 3. 참여자 수 업데이트
-      challenge.participantCount += 1;
+      // 챌린지 목록을 새로고침하도록 EventBus에 알림
+      eventBus.triggerRefresh();
     }
   } catch (error) {
     if (error.response) {
+      alert('이미 참여하신 것 아닌가요?')
       console.error('서버 에러 메시지:', error.response.data); // 서버에서 반환한 오류 메시지 확인
     } else {
       console.error('네트워크 에러 또는 기타 오류:', error);

@@ -24,4 +24,8 @@ public interface ChallengeDao {
 	List<Challenge> selectAllChallenges();
 
 	List<Challenge> selectChallenges(long userId);
+
+	int countDown(long challengeId);
+
+	int leaveChallenge(long userId, long challengeId);
 }

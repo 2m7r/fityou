@@ -16,6 +16,12 @@
             />
           </div>
 
+          <!-- 아이디 숨김 -->
+          <div class="input-group">
+            <label for="username">아이디</label>
+            <input v-model="username"  readonly/>
+          </div>
+
           <!-- 이메일 입력 -->
           <div class="input-group">
             <label for="email">이메일</label>
@@ -51,9 +57,6 @@
               <option value="O">기타</option>
             </select>
           </div>
-
-          <!-- <img src="@/assets/profile.jpg" />
-      <img src="http://localhost:8080/uploads/profile_images/KakaoTalk_20240613_222632738.png" /> -->
 
           <!-- 프로필 사진 업로드 -->
           <div class="input-group profile-upload">
@@ -143,6 +146,7 @@ export default {
   data() {
     return {
       name: "",
+      username: "",
       email: "",
       phoneNum: "",
       gender: "M", // 기본값은 남성
@@ -168,14 +172,12 @@ export default {
     }
 
     this.name = userData.name;
+    this.username = userData.username;
     this.email = userData.email;
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
     this.role = userData.role;
-    this.isPrivateAccount =
-      userData.isPrivateAccount !== undefined
-        ? userData.isPrivateAccount
-        : false;
+    this.isPrivateAccount = userData.isPrivateAccount !== undefined ? userData.isPrivateAccount : false;
     if (this.role === "TRAINER") {
       this.gymName = userData.gymName;
     }
@@ -189,6 +191,7 @@ export default {
       const userStore = useUserStore();
 
       const formData = new FormData();
+      formData.append("username", this.username);
       formData.append("name", this.name);
       formData.append("email", this.email);
       formData.append("phoneNum", this.phoneNum);

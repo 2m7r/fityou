@@ -19,7 +19,6 @@
             <div class="card-body">
               <h5 class="card-title">{{ challenge.name }}</h5>
               <p class="card-text">{{ challenge.description }}</p>
-
               <div class="button-container">
                 <!-- 참여자 수와 불모양 아이콘을 flexbox로 정렬 -->
                 <span class="participant-count">
@@ -28,9 +27,8 @@
                 <i class="bi bi-fire participant-icon"></i> <!-- 불모양 아이콘 추가 -->
               </div>
             </div>
-
             <!-- X 버튼 -->
-            <button class="btn btn-danger btn-close" @click.stop="leaveChallenge(challenge.challenge_id)">
+            <button class="btn btn-danger btn-close" @click.stop="leaveChallenge(challenge.challengeId)">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -54,8 +52,8 @@
         <span class="close-btn" @click="closeModal">&times;</span>
         <h2>{{ modalChallenge.name }}</h2>
         <p>{{ modalChallenge.description }}</p>
-        <p><strong>시작일:</strong> {{ modalChallenge.startDate }}</p>
-        <p><strong>진행 상태:</strong> {{ modalChallenge.status }}</p>
+        <p><strong>시작일:</strong> {{ modalChallenge.durationStart }}</p>
+        <p><strong>마감일:</strong> {{ modalChallenge.durationEnd }}</p>
         <p><strong>참여자 수:</strong> {{ modalChallenge.participantCount }} 명</p>
       </div>
     </div>
@@ -66,12 +64,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, watch } from 'vue';
 import apiClient from '../api/apiClient';
+import eventBus from '@/eventBus'; 
 
 const challenges = ref([]);  // 내가 참여한 챌린지 목록
 const scrollContainer = ref(null);
+
+// sessionStorage에서 'user' 키로 객체를 가져오기
+const user = ref(JSON.parse(sessionStorage.getItem('user')));
+// 유저 데이터 처리
+const userId = ref(user.value ? user.value.userId : null);
 
 // 모달 상태 관리
 const isModalOpen = ref(false);
@@ -105,17 +108,25 @@ const fetchChallenges = async () => {
   }
 };
 
+// EventBus의 refreshChallenges가 true로 변경되면 데이터를 새로고침
+watch(() => eventBus.refreshChallenges, () => {
+  fetchChallenges(); // 챌린지 목록 새로 고침
+});
+
 // 참여한 챌린지를 떠나는 함수 (X 버튼)
 const leaveChallenge = async (challengeId) => {
   try {
     // 서버에 챌린지 탈퇴 요청
-    await apiClient.post('/api-challenge/leave', { challenge_id: challengeId });
-
+    await apiClient.post('/api-challenge/leave', {
+      challengeId,
+      userId: userId.value
+    });
     // 성공적으로 나갔으면 리스트에서 해당 챌린지 삭제
-    const index = challenges.value.findIndex(challenge => challenge.challenge_id === challengeId);
+    const index = challenges.value.findIndex(challenge => challenge.challengeId === challengeId);
     if (index !== -1) {
       challenges.value.splice(index, 1);  // 해당 항목 삭제
     }
+    fetchChallenges();
   } catch (error) {
     console.error('챌린지를 떠나지 못했습니다.', error);
   }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.workout.model.dao.ChallengeDao;
 import com.workout.model.dto.Challenge;
@@ -16,6 +17,7 @@ public class ChallengeServiceImpl implements ChallengeService{
 	private ChallengeDao dao;
 
 	@Override
+	@Transactional
 	public int registChallenge(Challenge challenge) {
 		int result = dao.insertChallenge(challenge);
 		if(result > 0) {
@@ -38,16 +40,13 @@ public class ChallengeServiceImpl implements ChallengeService{
 	}
 
 	@Override
+	@Transactional
 	public int modifyChallenge(Challenge challenge) {
 		return dao.modifyChallenge(challenge);
 	}
 
 	@Override
-	public int removeChallenge(Long challengeId) {
-		return dao.deleteChallenge(challengeId);
-	}
-
-	@Override
+	@Transactional
 	public int intoChallenge(Long challengeId, Long userId) {
 		dao.countUp(challengeId);
 		return dao.intoChallenge(userId, challengeId);
@@ -66,6 +65,13 @@ public class ChallengeServiceImpl implements ChallengeService{
 	@Override
 	public List<Challenge> getChallenges(long userId) {
 		return dao.selectChallenges(userId);
+	}
+
+	@Override
+	@Transactional
+	public int leaveChallenge(long challengeId, long userId) {
+		dao.countDown(challengeId);
+		return dao.leaveChallenge(userId, challengeId);
 	}
 
 }

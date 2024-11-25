@@ -71,15 +71,18 @@ public class ChallengeRestController {
 	}
 	
 	
-	// 챌린지 삭제
-	@DeleteMapping("/{challengeId}")
-	@Operation(summary = "챌린지 삭제", description = "특정 챌린지를 삭제합니다.")
-	public ResponseEntity<?> removeChallenge(@PathVariable Long challengeId){
-		int result = challengeService.removeChallenge(challengeId);
+	// 챌린지 떠나기
+	@PostMapping("/leave")
+	@Operation(summary = "챌린지 떠나기", description = "특정 챌린지를 탈퇴합니다.")
+	public ResponseEntity<?> removeChallenge(@RequestBody ChallengeRequest challengeRequest){
+		System.out.println(challengeRequest);
+		long challengeId = challengeRequest.getChallengeId();
+		long userId = challengeRequest.getUserId();
+		int result = challengeService.leaveChallenge(challengeId, userId);
 		if (result > 0) {
-            return ResponseEntity.ok("챌린지 삭제 성공");
+            return ResponseEntity.ok("챌린지 떠나기 성공");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("챌린지 삭제 실패");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("챌린지 떠나기 실패");
 	}
 	
 	
@@ -93,10 +96,6 @@ public class ChallengeRestController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("챌린지 참여 실패");
 	}
-	
-	
-	
-	
 	
 	// 챌린지 참여자 목록 조회
 	@GetMapping("/people/{challengeId}")
@@ -126,4 +125,25 @@ public class ChallengeRestController {
 		return ResponseEntity.ok(challenges);
 	}
 
+	public static class ChallengeRequest {
+		private long challengeId;
+		private long userId;
+		public long getChallengeId() {
+			return challengeId;
+		}
+		public void setChallengeId(long challengeId) {
+			this.challengeId = challengeId;
+		}
+		public long getUserId() {
+			return userId;
+		}
+		public void setUserId(long userId) {
+			this.userId = userId;
+		}
+		@Override
+		public String toString() {
+			return "ChallengeRequest [challengeId=" + challengeId + ", userId=" + userId + "]";
+		}
+	}
+	
 }

@@ -154,16 +154,17 @@ values
 ('근력 훈련 챌린지', 9, '근력 훈련으로 강한 몸 만들기', '2024-10-01', '2024-11-30', '헬스'),
 ('꾸준한 운동 습관 만들기', 10, '꾸준히 운동해서 좋은 습관 만들기', '2024-08-15', '2024-11-15', '헬스');
 
--- select * from challenges;
+select * from challenges;
 
 
 drop table if exists challenge_people;
 -- 5. 챌린지별 참여하고 있는 참여자 목록 저장
-create table challenge_people (
-    user_id BIGINT NOT NULL, -- 참여한 유저ID
-    challenge_id BIGINT NOT NULL, -- 참여한 챌린지ID
+CREATE TABLE challenge_people (
+    user_id BIGINT NOT NULL,  -- 참여한 유저ID
+    challenge_id BIGINT NOT NULL,  -- 참여한 챌린지ID
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE
+    FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE,
+    CONSTRAINT unique_user_challenge UNIQUE (user_id, challenge_id)  -- 유저와 챌린지의 조합에 유니크 제약 조건 추가
 );
 
 INSERT INTO challenge_people (user_id, challenge_id) VALUES
@@ -187,7 +188,8 @@ INSERT INTO challenge_people (user_id, challenge_id) VALUES
 (9, 18),
 (10, 19);
 
--- select * from challenge_people;
+select * from challenge_people
+ORDER BY user_id;
 
 -- -----------------------운동 일기 ----------------------------------------------
 -- 6. 운동
@@ -198,11 +200,7 @@ CREATE TABLE workouts (
     user_id BIGINT NOT NULL, -- 유저ID
     name VARCHAR(100) NOT NULL, -- 이름
     description TEXT, -- 설명
-<<<<<<< HEAD
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
-=======
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
->>>>>>> vue
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 

@@ -13,6 +13,7 @@ import ManagementView from '../views/ManagementView.vue'
 import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
 import DietModal from '@/components/feed/DietLogModal.vue'
+import MypageView from '@/views/MypageView.vue'
 
 
 
@@ -57,7 +58,7 @@ const router = createRouter({
         {
           path: 'my-page',
           name: 'my-page',
-          component: UserPage,
+          component: MypageView,
           meta: { requiresAuth: true }, // 인증 필요
         },
         {
@@ -101,6 +102,7 @@ const router = createRouter({
       component: DietModal,
       meta: { requiresAuth: true }, // 인증 필요
     },
+    
   ],
 })
 

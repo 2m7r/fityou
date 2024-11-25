@@ -7,7 +7,7 @@ public class Workout {
     private Long userId;
     private String description;
     private List<WorkoutExercise> exercises;
-    private List<String> photoUrls; // 사진 경로 리스트 추가
+    private String workoutImage;
     
     
 	public Long getWorkoutId() {
@@ -34,11 +34,21 @@ public class Workout {
 	public void setExercises(List<WorkoutExercise> exercises) {
 		this.exercises = exercises;
 	}
-	public List<String> getPhotoUrls() {
-		return photoUrls;
+	
+	
+	public String getWorkoutImage() {
+		return workoutImage;
 	}
-	public void setPhotoUrls(List<String> photoUrls) {
-		this.photoUrls = photoUrls;
+	public void setWorkoutImage(String workoutImage) {
+		this.workoutImage = workoutImage;
 	}
-
+	
+	@Override
+	public String toString() {
+		return "Workout [workoutId=" + workoutId + ", userId=" + userId + ", description=" + description
+				+ ", exercises=" + exercises + ", workoutImage=" + workoutImage + "]";
+	}
+	
+	
+	
 }

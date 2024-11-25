@@ -18,7 +18,7 @@ CREATE TABLE users (
     gym_name VARCHAR(255), -- 트레이너만 사용
     is_private_account BOOLEAN DEFAULT FALSE, -- 공개 / 비공개 계정
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    profile_image_url VARCHAR(255), -- 프로필 이미지 경로
+    profileImage VARCHAR(255), -- 프로필 이미지 경로
     security_question VARCHAR(255) NOT NULL, -- 본인 확인 질문
     security_answer VARCHAR(255) NOT NULL -- 본인 확인 답변
 );
@@ -37,13 +37,17 @@ VALUES
 ('유진', '1993-04-17', 'F', 'yujin@example.com', 'yujin93', 'yujinpasshash', 'USER', NULL, TRUE, '010-1111-3333', '가장 좋아하는 계절은 무엇인가요?', '봄'),
 ('이태웃씌', '1997-03-05', 'O', 'xodn@xodn.com', 'xodn', 'xodn', 'USER', NULL, TRUE, '010-2222-4444', '어린 시절 가장 좋아했던 TV 프로그램은 무엇인가요?', '딩동댕');
 
-SELECT * FROM users;
+ SELECT * FROM users;
 
 
 drop table IF EXISTS preferred_exercises;
 -- 선호 운동
 CREATE TABLE preferred_exercises (
     exercise_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3a2d423ccab3e823bb9022cfeee449d370edb60b
     user_id BIGINT NOT NULL,  -- 사용자 ID
     exercise_name VARCHAR(100) NOT NULL,  -- 운동 이름
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 생성 시간
@@ -52,7 +56,7 @@ CREATE TABLE preferred_exercises (
 
 );
 
-select * from preferred_exercises;
+-- select * from preferred_exercises;
 
 -- ------------------------- 식단일기 -----------------------------------
 DROP TABLE IF EXISTS diet;
@@ -68,12 +72,29 @@ CREATE TABLE diet (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     CONSTRAINT unique_record_date UNIQUE (user_id, record_date) -- user_id와 record_date가 복합적으로 유니크
 );
-insert into diet (user_id, record_date)
-values (1, '2024-11-19');
 
-SELECT * FROM diet
-WHERE user_id = 1
-ORDER BY record_date DESC;
+-- insert into diet (user_id, record_date)
+-- values (1, '2024-11-19');
+INSERT INTO diet (user_id, breakfast_image, lunch_image, dinner_image, content, record_date)
+VALUES 
+(3, 
+ 'images/breakfast_2024_11_24.jpg',  
+ 'images/lunch_2024_11_24.jpg',      
+ 'images/dinner_2024_11_24.jpg',     
+ '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
+ '2024-11-30'),(3, 
+ 'images/breakfast_2024_11_24.jpg',  
+ 'images/lunch_2024_11_24.jpg',      
+ 'images/dinner_2024_11_24.jpg',     
+ '2024년 11월 24일의 식단 기록입니다. 아침에는 오트밀과 과일을 먹었고, 점심에는 샐러드와 치킨, 저녁에는 고구마와 야채를 섭취했습니다.',  
+ '2024-11-02');
+ 
+ SELECT * FROM diet WHERE user_id = 3 AND record_date = '2024-11-22';
+
+
+-- SELECT * FROM diet
+-- WHERE user_id = 1
+-- ORDER BY record_date DESC;
 
 
 -- ------------------------- 팔로우 -----------------------------------
@@ -102,7 +123,7 @@ VALUES
 (6, 1),  -- '김민수'가 '지피티'를 팔로우
 (1, 11), (2, 11), (3, 11), (4, 11), (5, 11), (6, 11), (7, 11), (8, 11), (9, 11);
 
-SELECT * FROM follows;
+-- SELECT * FROM follows;
 
 
 -- --------------------------- 챌린지 -----------------------------------
@@ -143,7 +164,7 @@ values
 ('근력 훈련 챌린지', 9, '근력 훈련으로 강한 몸 만들기', '2024-10-01', '2024-11-30', '헬스'),
 ('꾸준한 운동 습관 만들기', 10, '꾸준히 운동해서 좋은 습관 만들기', '2024-08-15', '2024-11-15', '헬스');
 
-select * from challenges;
+-- select * from challenges;
 
 
 drop table if exists challenge_people;
@@ -176,7 +197,7 @@ INSERT INTO challenge_people (user_id, challenge_id) VALUES
 (9, 18),
 (10, 19);
 
-select * from challenge_people;
+-- select * from challenge_people;
 
 -- -----------------------운동 일기 ----------------------------------------------
 -- 6. 운동
@@ -188,7 +209,8 @@ CREATE TABLE workouts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
-SELECT * from workouts;
+
+-- SELECT * from workouts;
 
 -- 7. 운동일기 사진
 DROP TABLE IF EXISTS workout_photos;
@@ -199,7 +221,7 @@ CREATE TABLE workout_photos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE
 );
-SELECT * from workout_photos;
+-- SELECT * from workout_photos;
 
 -- 8. 운동 종류
 DROP TABLE IF EXISTS exercises;
@@ -245,7 +267,7 @@ values
     ('힙 스러스트', '하체'),
     ('카프 레이즈', '하체');
 
-SELECT * from exercises;
+-- SELECT * from exercises;
 
 -- 9. 운동 루틴
 DROP TABLE IF EXISTS workout_exercises;
@@ -259,7 +281,7 @@ CREATE TABLE workout_exercises (
     FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE,
     FOREIGN KEY (exercise_id) REFERENCES exercises(exercise_id) ON DELETE CASCADE
 );
-SELECT * from workout_exercises;
+-- SELECT * from workout_exercises;
 
 
 -- ------------------------- 댓글 -----------------------------------
@@ -274,10 +296,10 @@ CREATE TABLE comments (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
-insert into comments (target_id, target_type, user_id, content)
-values (4, 'workout', 1, '트레이너임?');
+-- insert into comments (target_id, target_type, user_id, content)
+-- values (4, 'workout', 1, '트레이너임?');
 
-SELECT * from comments;
+-- SELECT * from comments;
 
 
 -- ------------------------- 트레이너-회원관계 -----------------------------------
@@ -304,7 +326,7 @@ VALUES
 (9, 10, '체력 유지 및 유산소 운동 강화', '2024-11-05 13:00:00');
 
 
-SELECT * from trainer_clients;
+-- SELECT * from trainer_clients;
 
 -- -------------------------  -----------------------------------
 
@@ -313,16 +335,16 @@ SELECT * from trainer_clients;
 
 
 
-drop table IF EXISTS awards;
--- 수상경력
-CREATE TABLE awards (
-    award_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT NOT NULL, -- 트레이너의 ID
-    award_name VARCHAR(255) NOT NULL, -- 수상 경력 이름
-    award_year INT, -- 수상 연도
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+-- drop table IF EXISTS awards;
+-- -- 수상경력
+-- CREATE TABLE awards (
+--     award_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--     user_id BIGINT NOT NULL, -- 트레이너의 ID
+--     award_name VARCHAR(255) NOT NULL, -- 수상 경력 이름
+--     award_year INT, -- 수상 연도
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+-- );
 
 
 
@@ -330,14 +352,14 @@ CREATE TABLE awards (
 
 
 
-select * from trainer_clients;
-select * from records;
-select * from preferred_exercises;
-select * from likes;
-select * from follows;
-select * from diet;
-select * from comments;
-select * from challenges;
-select * from awards;
-select * from users;
-select * from workout;
+-- select * from trainer_clients;
+-- select * from records;
+-- select * from preferred_exercises;
+-- select * from likes;
+-- select * from follows;
+-- select * from diet;
+-- select * from comments;
+-- select * from challenges;
+-- select * from awards;
+-- select * from users;
+-- select * from workout;

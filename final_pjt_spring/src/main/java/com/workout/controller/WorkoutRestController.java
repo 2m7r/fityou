@@ -1,11 +1,13 @@
 package com.workout.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.workout.model.dto.Workout;
+import com.workout.model.dto.WorkoutExercise;
 import com.workout.model.service.WorkoutService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,45 +44,64 @@ public class WorkoutRestController {
 	}
 
 	// 운동일기 등록
-	@PostMapping("/create")
+	@PostMapping("/create/{userId}")
 	@Operation(summary = "운동일기 등록", description = "새로운 운동일기를 등록합니다.")
-	public ResponseEntity<?> registWorkout(@RequestParam(required = false) MultipartFile[] workoutImages,
-			@RequestBody Workout workout) {
-		// 파일 업로드 처리
-		if (workoutImages != null && workoutImages.length > 0) {
-			try {
-				List<String> uploadedPaths = new ArrayList<>();
-				for (MultipartFile image : workoutImages) {
-					if (!image.isEmpty()) {
-						String uploadedPath = uploadImage(image);
-						uploadedPaths.add(uploadedPath);
-					}
-				}
-				// 업로드된 이미지 경로를 Workout 객체에 추가
-				workout.setPhotoUrls(uploadedPaths);
-			} catch (IOException e) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패: " + e.getMessage());
+	public ResponseEntity<?> registWorkout(
+			@PathVariable long userId,
+			@RequestParam(required = false) MultipartFile workoutImage,
+			@RequestParam String description,
+			@RequestParam List<WorkoutExercise> exercises
+			) {
+		
+		String workoutImagePath = null;
+		
+		try {
+            // 파일 업로드 처리
+            if (workoutImage != null) {
+            	workoutImagePath = uploadImage(workoutImage);
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드 실패");
+        }
+		
+		Workout workout = new Workout();
+		workout.setUserId(userId);
+		workout.setDescription(description);
+		workout.setExercises(exercises);
+		if(workoutImagePath != null) workout.setWorkoutImage(workoutImagePath);
+		System.out.println(workout);
+		try {
+			int result = workoutService.registWorkout(workout);
+			if (result > 0) {
+				return ResponseEntity.status(HttpStatus.CREATED).body("운동일기 등록 성공");
 			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("운동일기 등록 실패");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("운동일기 등록 중 오류 발생");
 		}
-
-		int result = workoutService.registWorkout(workout);
-		if (result > 0) {
-			return ResponseEntity.status(HttpStatus.CREATED).body("운동일기 등록 성공");
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("운동일기 등록 실패");
 	}
 
 	private String uploadImage(MultipartFile image) throws IOException {
 		// 이미지 파일 저장 디렉토리
 		String uploadDir = "uploads/workout_images/";
 
+		File dir = new File(uploadDir);
+		if (!dir.exists()) {
+		    dir.mkdirs();  // 디렉토리가 없으면 생성
+		}
+		
 		// 파일명 처리 (중복 방지)
 		String originalFilename = image.getOriginalFilename();
-		String fileName = StringUtils.cleanPath(originalFilename);
+		String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(originalFilename);
 		Path targetPath = Paths.get(uploadDir + fileName);
 
-		// 파일 저장
-		Files.copy(image.getInputStream(), targetPath);
+		try {
+	        // 파일 저장
+	        Files.copy(image.getInputStream(), targetPath);
+	    } catch (IOException e) {
+	        System.out.println("이미지 업로드 실패: " + e.getMessage());
+	        throw e;  // 예외 다시 던지기
+	    }
 
 		// 업로드한 이미지의 파일 경로를 반환
 		return targetPath.toString();

@@ -48,16 +48,30 @@ export default {
 
     // 로그인 처리 함수
     const handleLogin = async () => {
+      console.log('로그인 요청 시작...'); // 요청 시작 로그
+
       try {
         // 로그인 요청 (아이디와 비밀번호를 서버에 전달)
+        console.log('전송할 데이터:', { username: id.value, password: password.value }); // 전송할 데이터 로그
         const response = await apiClient.post('/api-user/login', {
           username: id.value,
           password: password.value
         })
 
+        
+        console.log('서버 응답:', response.data); // 서버 응답 로그
+
         const result = response.data; // 서버에서 반환된 데이터
+        
         const token = result['access-token'];
         const loginUser = result['loginUser'];
+
+
+        if (!token) {
+          console.error('토큰이 반환되지 않았습니다.');
+          return;
+        }
+
 
         // 세션 스토리지에 토큰 및 사용자 정보 저장
         sessionStorage.setItem('access-token', token);
@@ -65,6 +79,8 @@ export default {
 
         userStore.setUser(loginUser); // 사용자 정보 스토어에 저장
         userStore.setToken(token);
+        console.log('------로그인 유저-----')
+        console.log(loginUser)
 
         // preferredExercises가 존재하는지 확인하고 처리
         if (loginUser && loginUser.preferredExercises.length > 0) {

@@ -3,7 +3,8 @@ package com.workout.model.dto;
 public class WorkoutExercise {
 	private long id;
     private long workoutId; // 외래키
-    private long exerciseId; // 운동 종류
+    private String name;
+    private String category;
     private int weight; // 무게
     private int reps;   // 횟수
     private int sets;   // 세트 수
@@ -21,11 +22,17 @@ public class WorkoutExercise {
 	public void setWorkoutId(long workoutId) {
 		this.workoutId = workoutId;
 	}
-	public long getExerciseId() {
-		return exerciseId;
+	public String getName() {
+		return name;
 	}
-	public void setExerciseId(long exerciseId) {
-		this.exerciseId = exerciseId;
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	public int getWeight() {
 		return weight;

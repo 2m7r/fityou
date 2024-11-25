@@ -35,8 +35,8 @@ public class DietServiceImpl implements DietService{
 	}
 
 	@Override
-	public int modifyDiet(Diet diet) {
-		return dietDao.updateDiet(diet);
+	public boolean modifyDiet(Long dietId, Diet diet) {
+		return dietDao.updateDiet(dietId, diet);
 	}
 
 	@Override

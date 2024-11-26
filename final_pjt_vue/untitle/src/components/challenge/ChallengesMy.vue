@@ -1,6 +1,6 @@
 <template>
   <div class="challenges-my-container">
-    <h2>내가 참여한 챌린지</h2>
+    <h2>나의 챌린지</h2>
 
     <!-- 챌린지 카드들이 들어있는 스크롤 영역 -->
     <div class="challenges-scroll-container" ref="scrollContainer">

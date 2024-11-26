@@ -1,5 +1,6 @@
 package com.workout.model.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,16 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<User> selectAllUsers() {
 		return dao.selectAllUsers();
+	}
+
+	@Override
+	public List<User> serchUser(List<Long> userIds) {
+		List<User> list = new ArrayList<>();
+		for (Long long1 : userIds) {
+			User user = dao.selectUserById(long1);
+			list.add(user);
+		}
+		return list;
 	}
 
 }

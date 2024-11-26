@@ -60,11 +60,14 @@
         <p><strong>시작일:</strong> {{ modalChallenge.durationStart }}</p>
         <p><strong>마감일:</strong> {{ modalChallenge.durationEnd }}</p>
         <p><strong>참여자 수:</strong> {{ modalChallenge.participantCount }} 명</p>
+      
+        <!-- 내가 만든 챌린지일 때만 수정 버튼이 보이게 -->
+        <div v-if="isCreator">
+          <button class="btn btn-primary" @click="editChallenge">수정하기</button>
+        </div>
       </div>
     </div>
-
-
-
+    
   </div>
 </template>
 
@@ -75,6 +78,17 @@ import eventBus from '@/eventBus';
 
 const challenges = ref([]);  // 내가 참여한 챌린지 목록
 const scrollContainer = ref(null);
+
+const props = defineProps({
+  userId: {
+    type: Number,
+    required: true,
+  },
+  challengeId: {
+    type: Number,
+    required: true,
+  },
+});
 
 // sessionStorage에서 'user' 키로 객체를 가져오기
 const user = ref(JSON.parse(sessionStorage.getItem('user')));

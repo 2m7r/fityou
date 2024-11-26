@@ -32,4 +32,6 @@ public interface UserService {
 	User selectUserById(Long userId);
 
 	List<User> selectAllUsers();
+
+	List<User> serchUser(List<Long> userIds);
 }

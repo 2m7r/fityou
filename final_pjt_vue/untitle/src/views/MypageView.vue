@@ -2,115 +2,133 @@
   <div>
     <div class="marginplz"></div>
     <div class="mp-container">
-    <div class="mp-profile">
-      <div class="profile-container">
-        <!-- 왼쪽: 사용자 프로필 사진 -->
-        <div class="profile">
-          <img :src="userProfileImage" class="profile-img" />
-        </div>
+      <div class="mp-profile">
+        <div class="profile-container">
+          <!-- 왼쪽: 사용자 프로필 사진 -->
+          <div class="profile">
+            <img :src="userProfileImage" class="profile-img" />
+          </div>
 
-        <!-- 중간: 사용자 이름과 설명 -->
-        <div class="user-info">
-          <h3 class="user-name">{{ userStore.userName || '이름 없음' }}</h3>
-          <p class="user-description">{{ userStore.userDescription || '설명 없음' }}</p>
-        </div>
+          <!-- 중간: 사용자 이름과 설명 -->
+          <div class="user-info">
+            <h3 class="user-name">{{ userStore.userName || '이름 없음' }}</h3>
+            <p class="user-description">{{ userStore.userDescription || '설명 없음' }}</p>
 
-        <!-- 문구 추가 -->
-        <div class="extra-st">
-          <p>FITYOU!</p>
-        </div>
-
-        <!-- 오른쪽: 내 정보 수정 버튼 -->
-        <div class="edit-button-container">
-          <button
-            class="btn btn-lg btn-edit my-2 d-flex align-items-center rounded-full"
-            @click="openEditModal"
-          >
-            <i class="bi bi-pencil-square"></i> 편집
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="next-container">
-      <!-- 왼쪽: UserGrass -->
-      <div class="usergrass">
-        <UserGrass @dateSelected="onDateSelected" />
-      </div>
-
-      <!-- 오른쪽: 선택된 날짜의 운동일기와 식단일기 -->
-      <div class="logs-container">
-        <div v-if="selectedDate">
-          <h3 class="slt-date">{{ selectedDate }}</h3>
-
-          <!-- 운동일기 -->
-          <div v-if="workoutLogsForSelectedDate" class="log-card">
-            <h4 class="card-title">운동일기</h4>
-            <div v-for="exercise in workoutLogsForSelectedDate.exercises" class="exc-content">
-              <strong>{{ exercise.exerciseName }}</strong>
-              {{ exercise.weight }} kg {{ exercise.reps }} 회
-              {{ exercise.sets }} 세트
+            <!-- 팔로워 수와 팔로잉 수 -->
+            <div class="follow-info">
+              <span class="follow-count" @click="openFollowerList">
+                팔로워: {{ followerCount }}
+              </span> |
+              <span class="follow-count" @click="openFollowingList">
+                팔로잉: {{ followingCount }}
+              </span>
             </div>
-            <p class="workout-content">{{ workoutLogsForSelectedDate.description }}</p>
-
           </div>
 
-          <!-- 식단일기 -->
-          <div v-if="dietLogsForSelectedDate" class="log-card">
-            <h4 class="card-title">식단일기</h4>
-            <div class="meal-images">
-              <img
-                :src="'http://localhost:8080/' + dietLogsForSelectedDate.breakfastImagePath"
-                alt="Breakfast Image"
-                class="meal-img"
-                width="50px"
-              />
-              <img
-                :src="'http://localhost:8080/' + dietLogsForSelectedDate.lunchImagePath"
-                alt="Lunch Image"
-                class="meal-img"
-                width="50px"
-              />
-              <img
-                :src="'http://localhost:8080/' + dietLogsForSelectedDate.dinnerImagePath"
-                alt="Dinner Image"
-                class="meal-img"
-                width="50px"
-              />
-            </div>
-            <p class="diet-content">{{ dietLogsForSelectedDate.content }}</p>
+          <!-- 문구 추가 -->
+          <div class="extra-st">
+            <p>FITYOU!</p>
           </div>
 
-          <!-- 기록이 없을 때만 "해당 날짜에 기록된 내용이 없습니다." 메시지 표시 -->
-          <div v-if="!workoutLogsForSelectedDate && !dietLogsForSelectedDate">
-            <p>해당 날짜에 기록된 내용이 없습니다.</p>
+          <!-- 오른쪽: 내 정보 수정 버튼 -->
+          <div class="edit-button-container">
+            <button
+              class="btn btn-lg btn-edit my-2 d-flex align-items-center rounded-full"
+              @click="openEditModal"
+            >
+              <i class="bi bi-pencil-square"></i> 편집
+            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 챌린지 부분 -->
-    <RouterLink :to="{ name: 'challenge' }">
-      <div class="challenge-box">
-        <img src="@/assets/challenge.png" alt="챌린지하세요" class="challenge-img" />
+      <!-- 팔로워와 팔로잉 목록 모달 -->
+      <FollowerListModal v-if="isFollowerListOpen" @close="closeFollowerList" :followers="followers" />
+      <FollowingListModal v-if="isFollowingListOpen" @close="closeFollowingList" :following="following" />
+
+      <div class="next-container">
+        <!-- 왼쪽: UserGrass -->
+        <div class="usergrass">
+          <UserGrass @dateSelected="onDateSelected" />
+        </div>
+
+        <!-- 오른쪽: 선택된 날짜의 운동일기와 식단일기 -->
+        <div class="logs-container">
+          <div v-if="selectedDate">
+            <h3 class="slt-date">{{ selectedDate }}</h3>
+
+            <!-- 운동일기 -->
+            <div v-if="workoutLogsForSelectedDate" class="log-card">
+              <h4 class="card-title">운동일기</h4>
+              <div v-for="exercise in workoutLogsForSelectedDate.exercises" class="exc-content">
+                <strong>{{ exercise.exerciseName }}</strong>
+                {{ exercise.weight }} kg {{ exercise.reps }} 회
+                {{ exercise.sets }} 세트
+              </div>
+              <p class="workout-content">{{ workoutLogsForSelectedDate.description }}</p>
+            </div>
+
+            <!-- 식단일기 -->
+            <div v-if="dietLogsForSelectedDate" class="log-card">
+              <h4 class="card-title">식단일기</h4>
+              <div class="meal-images">
+                <img
+                  :src="'http://localhost:8080/' + dietLogsForSelectedDate.breakfastImagePath"
+                  alt="Breakfast Image"
+                  class="meal-img"
+                  width="50px"
+                />
+                <img
+                  :src="'http://localhost:8080/' + dietLogsForSelectedDate.lunchImagePath"
+                  alt="Lunch Image"
+                  class="meal-img"
+                  width="50px"
+                />
+                <img
+                  :src="'http://localhost:8080/' + dietLogsForSelectedDate.dinnerImagePath"
+                  alt="Dinner Image"
+                  class="meal-img"
+                  width="50px"
+                />
+              </div>
+              <p class="diet-content">{{ dietLogsForSelectedDate.content }}</p>
+            </div>
+
+            <!-- 기록이 없을 때만 "해당 날짜에 기록된 내용이 없습니다." 메시지 표시 -->
+            <div v-if="!workoutLogsForSelectedDate && !dietLogsForSelectedDate">
+              <p>해당 날짜에 기록된 내용이 없습니다.</p>
+            </div>
+          </div>
+        </div>
       </div>
-    </RouterLink>
 
-    <!-- UserPage 모달 열기 -->
-    <UserPagecopy v-if="isEditModalOpen" @close="closeEditModal" />
+      <!-- 챌린지 부분 -->
+      <RouterLink :to="{ name: 'challenge' }">
+        <div class="challenge-box">
+          <img src="@/assets/challenge.png" alt="챌린지하세요" class="challenge-img" />
+        </div>
+      </RouterLink>
+
+      <!-- UserPage 모달 열기 -->
+      <UserPagecopy v-if="isEditModalOpen" @close="closeEditModal" />
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import UserGrass from "@/components/user/userGrass.vue";
 import defaultprofileImage from '@/assets/profile.jpg'
 import apiClient from "@/components/api/apiClient";
 import UserPagecopy from "@/components/user/UserPagecopy.vue";
+import FollowerListModal from "@/components/user/FollowerListModal.vue";
+import FollowingListModal from "@/components/user/FollowingListModal.vue";
 
 const isEditModalOpen = ref(false); // 모달 상태
+const isFollowerListOpen = ref(false); // 팔로워 목록 모달 상태
+const isFollowingListOpen = ref(false); // 팔로잉 목록 모달 상태
 
 // 사용자 상태
 const userStore = useUserStore();
@@ -127,6 +145,58 @@ const defaultImage = defaultprofileImage;
 const userProfileImage = userStore.userProfileImage && userStore.userProfileImage.trim()
   ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
   : defaultImage;
+
+// 팔로워 수와 팔로잉 수
+const followerCount = ref(0);
+const followingCount = ref(0);
+const followersId = ref([]);
+const followingsId = ref([]);
+const followers = ref([]);
+const following = ref([]);
+
+// 팔로워, 팔로잉 데이터 불러오기
+const fetchFollowData = async () => {
+  try {
+    const followerResponse = await apiClient.get(`/api-follow/followers/${userId.value}`);
+    followerCount.value = followerResponse.data.length;
+    followersId.value = followerResponse.data;
+    
+    if(followerResponse.data.length > 0){
+      const followerResponse2 = await apiClient.get('/api-user/search', {params:{userIds: followersId.value}})
+      followers.value = followerResponse2.data;
+    }
+
+    const followingResponse = await apiClient.get(`/api-follow/following/${userId.value}`);
+    followingCount.value = followingResponse.data.length;
+    followingsId.value = followingResponse.data;
+
+    if(followingResponse.data.length > 0){
+      const followingResponse2 = await apiClient.get('/api-user/search', {params:{userIds: followingsId.value}})
+      following.value = followingResponse2.data;
+    }
+  } catch (error) {
+    console.error("팔로워/팔로잉 데이터 불러오기 실패", error);
+  }
+};
+
+// 팔로워 목록 보기
+const openFollowerList = () => {
+  isFollowerListOpen.value = true;
+};
+
+// 팔로잉 목록 보기
+const openFollowingList = () => {
+  isFollowingListOpen.value = true;
+};
+
+// 모달 닫기
+const closeFollowerList = () => {
+  isFollowerListOpen.value = false;
+};
+
+const closeFollowingList = () => {
+  isFollowingListOpen.value = false;
+};
 
 // 모달 열기
 const openEditModal = () => {
@@ -183,6 +253,11 @@ const fetchLogsForSelectedDate = (date) => {
   fetchWorkoutLogs(date);
   fetchDietLogs(date);
 };
+
+// 컴포넌트가 마운트될 때 팔로워, 팔로잉 데이터 가져오기
+onMounted(() => {
+  fetchFollowData();
+});
 </script>
 
 <style scoped>

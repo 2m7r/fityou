@@ -231,6 +231,14 @@ public class UserRestController {
     	System.out.println(list);
     	return ResponseEntity.ok(list);
     }
+    
+    // 유저 상세 조회
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchUser(@RequestParam List<Long> userIds){
+    	List<User> list = us.serchUser(userIds);
+    	System.out.println(list);
+    	return ResponseEntity.ok(list);
+    }
 	
     // 유저 탈퇴
     @DeleteMapping("/delete/{userId}")

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.model.dto.Workout;
@@ -34,43 +35,55 @@ public class WorkoutRestController {
 		this.workoutService = workoutService;
 	}
 
+	@GetMapping("/date")
+	@Operation(summary = "특정 유저의 특정 날짜의 운동일기 조회", description = "특정 유저에 대한 특정 날짜의 운동일기를 조회합니다.")
+	public ResponseEntity<Workout> getWorkoutByUserIdAndDate(@RequestParam("date") String date, @RequestParam("userId") long userId) {
+	    System.out.println("운동일기 조회 들어옴");
+	    Workout workout = workoutService.getWorkoutByDate(date, userId);
+	    
+	    if (workout == null) {
+	        // 운동일기가 없을 경우 404 상태 코드 반환
+	        return ResponseEntity.notFound().build();
+	    }
+	    
+	    System.out.println(workout);
+	    return ResponseEntity.ok(workout);
+	}
+
 	@PostMapping("/create/{userId}")
 	@Operation(summary = "운동일기 등록", description = "새로운 운동일기를 등록합니다.")
-	public ResponseEntity<?> registWorkout(
-	        @PathVariable long userId,
-	        @RequestBody WorkoutRequest workoutRequest
-	) {
+	public ResponseEntity<?> registWorkout(@PathVariable long userId, @RequestBody WorkoutRequest workoutRequest) {
 
-	    // 운동 객체 생성 및 설정
-	    Workout workout = new Workout();
-	    workout.setUserId(userId);
-	    workout.setDescription(workoutRequest.getDescription());
-	    workout.setName(workoutRequest.getName());
-	    workout.setRecordDate(workoutRequest.getRecordDate());
+		// 운동 객체 생성 및 설정
+		Workout workout = new Workout();
+		workout.setUserId(userId);
+		workout.setDescription(workoutRequest.getDescription());
+		workout.setName(workoutRequest.getName());
+		workout.setRecordDate(workoutRequest.getRecordDate());
 
-	    // 운동 데이터를 기반으로 운동 루틴 생성
-	    List<WorkoutExercise> exercises = new ArrayList<>();
-	    for (int i = 0; i < workoutRequest.getExerciseNames().size(); i++) {
-	        WorkoutExercise exercise = new WorkoutExercise();
-	        exercise.setExerciseName(workoutRequest.getExerciseNames().get(i));
-	        exercise.setWeight(workoutRequest.getWeights().get(i));
-	        exercise.setReps(workoutRequest.getReps().get(i));
-	        exercise.setSets(workoutRequest.getSets().get(i));
-	        exercises.add(exercise);
-	    }
-	    workout.setExercises(exercises);
-	    
-	    System.out.println("운동일기 등록 = " + workout);
+		// 운동 데이터를 기반으로 운동 루틴 생성
+		List<WorkoutExercise> exercises = new ArrayList<>();
+		for (int i = 0; i < workoutRequest.getExerciseNames().size(); i++) {
+			WorkoutExercise exercise = new WorkoutExercise();
+			exercise.setExerciseName(workoutRequest.getExerciseNames().get(i));
+			exercise.setWeight(workoutRequest.getWeights().get(i));
+			exercise.setReps(workoutRequest.getReps().get(i));
+			exercise.setSets(workoutRequest.getSets().get(i));
+			exercises.add(exercise);
+		}
+		workout.setExercises(exercises);
 
-	    try {
-	        int result = workoutService.registWorkout(workout);
-	        if (result > 0) {
-	            return ResponseEntity.status(HttpStatus.CREATED).body("운동일기 등록 성공");
-	        }
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("운동일기 등록 실패");
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("운동일기 등록 중 오류 발생");
-	    }
+		System.out.println("운동일기 등록 = " + workout);
+
+		try {
+			int result = workoutService.registWorkout(workout);
+			if (result > 0) {
+				return ResponseEntity.status(HttpStatus.CREATED).body("운동일기 등록 성공");
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("운동일기 등록 실패");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("운동일기 등록 중 오류 발생");
+		}
 	}
 
 	// 운동일기 상세조회
@@ -118,7 +131,6 @@ public class WorkoutRestController {
 	@GetMapping("/feed/{userId}")
 	@Operation(summary = "특정 유저의 운동일기 목록 조회", description = "특정 유저에 대한 모든 운동일기 목록을 조회합니다.")
 	public ResponseEntity<List<Workout>> getDietsByUserId(@PathVariable Long userId) {
-		System.out.println("내 운동일기 목록조회 들어옴");
 		List<Workout> workouts = workoutService.getWorkoutsById(userId);
 		return ResponseEntity.ok(workouts);
 	}
@@ -130,59 +142,72 @@ public class WorkoutRestController {
 		List<Workout> workouts = workoutService.getFollowingWorkoutsByUserId(userId);
 		return ResponseEntity.ok(workouts);
 	}
-	
+
 	public static class WorkoutRequest {
-	    private String description;
-	    private String name;
-	    private String recordDate;
-	    private List<String> exerciseNames;
-	    private List<Integer> weights;
-	    private List<Integer> reps;
-	    private List<Integer> sets;
-	    
-	    
+		private String description;
+		private String name;
+		private String recordDate;
+		private List<String> exerciseNames;
+		private List<Integer> weights;
+		private List<Integer> reps;
+		private List<Integer> sets;
+
 		public String getName() {
 			return name;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
+
 		public String getDescription() {
 			return description;
 		}
+
 		public void setDescription(String description) {
 			this.description = description;
 		}
+
 		public String getRecordDate() {
 			return recordDate;
 		}
+
 		public void setRecordDate(String recordDate) {
 			this.recordDate = recordDate;
 		}
+
 		public List<String> getExerciseNames() {
 			return exerciseNames;
 		}
+
 		public void setExerciseNames(List<String> exerciseNames) {
 			this.exerciseNames = exerciseNames;
 		}
+
 		public List<Integer> getWeights() {
 			return weights;
 		}
+
 		public void setWeights(List<Integer> weights) {
 			this.weights = weights;
 		}
+
 		public List<Integer> getReps() {
 			return reps;
 		}
+
 		public void setReps(List<Integer> reps) {
 			this.reps = reps;
 		}
+
 		public List<Integer> getSets() {
 			return sets;
 		}
+
 		public void setSets(List<Integer> sets) {
 			this.sets = sets;
 		}
+
 		@Override
 		public String toString() {
 			return "WorkoutRequest [description=" + description + ", name=" + name + ", recordDate=" + recordDate

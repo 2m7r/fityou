@@ -23,5 +23,8 @@ public interface DietDao {
 	
 	// 식단일기 삭제
 	int deleteDiet(Long dietId);
+	
+	// 날짜로 식단일기 조회
+	Diet selectDietByDate(String date, long userId);
 
 }

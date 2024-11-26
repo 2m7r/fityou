@@ -24,4 +24,6 @@ public interface WorkoutService {
 	// 팔로우한 유저들의 운동일기 목록 조회
 	List<Workout> getFollowingWorkoutsByUserId(long userId);
 
+	Workout getWorkoutByDate(String date, long userId);
+
 }

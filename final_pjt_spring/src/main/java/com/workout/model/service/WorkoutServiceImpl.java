@@ -102,4 +102,16 @@ public class WorkoutServiceImpl implements WorkoutService {
 		return workouts;
 	}
 
+	@Override
+	public Workout getWorkoutByDate(String date, long userId) {
+		// 1. 운동일기 기본 정보 가져오기
+		Workout workout = dao.selectWorkoutByDate(date, userId);
+		
+		// 2. 각 운동일기에 운동 세부 정보 추가
+		List<WorkoutExercise> exercises = dao.selectWorkoutExercises(workout.getWorkoutId());
+		workout.setExercises(exercises); // 운동일기 객체에 운동 세부 정보 세팅
+		
+		return workout;
+	}
+
 }

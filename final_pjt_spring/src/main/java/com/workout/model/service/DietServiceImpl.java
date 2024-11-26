@@ -44,4 +44,9 @@ public class DietServiceImpl implements DietService{
 		return dietDao.deleteDiet(dietId);
 	}
 
+	@Override
+	public Diet getDietByDate(String date, long userId) {
+		return dietDao.selectDietByDate(date, userId);
+	}
+
 }

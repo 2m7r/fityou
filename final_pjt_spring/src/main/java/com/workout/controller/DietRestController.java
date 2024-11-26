@@ -40,6 +40,20 @@ public class DietRestController {
     public DietRestController(DietService dietService) {
         this.dietService = dietService;
     }
+    
+    @GetMapping("/date")
+    @Operation(summary = "특정 유저의 특정 날짜의 식단일기 조회", description = "특정 유저에 대한 특정 날짜의 식단일기를 조회합니다.")
+    public ResponseEntity<Diet> getDietByDate(@RequestParam("date") String date, @RequestParam("userId") long userId) {
+        Diet diet = dietService.getDietByDate(date, userId);
+        
+        if (diet == null) {
+	        // 운동일기가 없을 경우 404 상태 코드 반환
+	        return ResponseEntity.notFound().build();
+	    }
+	    
+	    System.out.println(diet);
+	    return ResponseEntity.ok(diet);
+    }
 
     @GetMapping("/feed/{userId}")
     @Operation(summary = "특정 유저의 식단일기 목록 조회", description = "특정 유저에 대한 모든 식단일기 목록을 조회합니다.")

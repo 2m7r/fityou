@@ -7,16 +7,8 @@
     </div>
     <div class="calendar-body">
       <div class="calendar-grid">
-        <!-- 날짜 출력 부분 -->
-        <div
-          v-for="(date, index) in calendarDates"
-          :key="index"
-          class="calendar-date"
-        >
-          <div
-            v-if="date !== ''"
-            :class="['calendar-date-item', getDayStatus(date)]"
-          >
+        <div v-for="(date, index) in calendarDates" :key="index" class="calendar-date">
+          <div v-if="date !== ''" :class="['calendar-date-item', getDayStatus(date)]" @click="onDateClick(date)">
             {{ date }}
           </div>
         </div>
@@ -45,6 +37,9 @@
 <script setup>
 import apiClient from "../api/apiClient"; // apiClient import
 import { ref, onMounted } from "vue";
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(); // 부모에게 이벤트를 전달
 
 // 상태 변수들
 const currentMonth = ref(""); // 현재 월
@@ -56,6 +51,44 @@ const dietData = ref([]); // 식단일기 작성된 날짜
 // sessionStorage에서 'user' 키에 저장된 유저 데이터를 가져옵니다.
 const userData = sessionStorage.getItem("user");
 const userId = ref(userData ? JSON.parse(userData).userId : null); // 유저 ID를 가져옵니다.
+
+// 날짜 클릭 시 해당 날짜를 부모에게 전달
+const onDateClick = (date) => {
+  const formattedDate = `${currentYear.value}-${currentMonth.value}-${date}`;
+  emit("dateSelected", formattedDate); // 부모에게 선택된 날짜 전달
+};
+
+const workoutLogsForSelectedDate = ref([]);  // 선택된 날짜의 운동일기 저장
+const dietLogsForSelectedDate = ref([]);     // 선택된 날짜의 식단일기 저장
+
+// 선택한 날짜의 운동일기 불러오기
+const getWorkoutLogsForDate = async (date) => {
+  try {
+    const response = await apiClient.get(`/api-workout/feed/${userId.value}`, {
+      params: { date: date } // 날짜를 쿼리 파라미터로 전달
+    });
+    workoutLogsForSelectedDate.value = response.data;
+    console.log("Selected Workout Logs:", workoutLogsForSelectedDate.value);
+  } catch (error) {
+    console.error("운동일기 가져오기 실패", error);
+  }
+};
+
+// 선택한 날짜의 식단일기 불러오기
+const getDietLogsForDate = async (date) => {
+  try {
+    const response = await apiClient.get('/api-diet/date', {
+      params: {
+         date: date,
+         userId: userId.value
+        }
+    });
+    dietLogsForSelectedDate.value = response.data;
+    console.log("Selected Diet Logs:", dietLogsForSelectedDate.value);
+  } catch (error) {
+    console.error("식단일기 가져오기 실패", error);
+  }
+};
 
 // API로부터 운동일기 날짜 데이터 가져오기
 const getWorkoutDates = async () => {

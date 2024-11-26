@@ -3,7 +3,7 @@
     <div class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <h2 class="modal-title">내 정보 수정</h2>
-        <form>
+        <form @keydown.enter="submitEdit">
           <!-- 이름 입력 -->
           <div class="input-group">
             <label for="name">이름</label>

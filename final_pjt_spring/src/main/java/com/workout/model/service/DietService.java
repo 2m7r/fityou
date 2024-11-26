@@ -23,4 +23,6 @@ public interface DietService {
 	
 	// 식단일기 삭제
 	int removeDiet(Long dietId);
+
+	Diet getDietByDate(String date, long userId);
 }

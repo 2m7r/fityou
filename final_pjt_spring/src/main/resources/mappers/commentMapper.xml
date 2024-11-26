@@ -4,8 +4,8 @@
 
     <!-- 댓글 등록 -->
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="commentId">
-        INSERT INTO comments (target_id, target_type, user_id, name, content, created_at)
-        VALUES (#{targetId}, #{targetType}, #{userId}, #{name}, #{content}, #{createdAt})
+        INSERT INTO comments (target_id, target_type, user_id, name, content)
+        VALUES (#{targetId}, #{targetType}, #{userId}, #{name}, #{content})
     </insert>
 
     <!-- 댓글 삭제 -->

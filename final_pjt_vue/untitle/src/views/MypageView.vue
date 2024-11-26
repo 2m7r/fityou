@@ -1,10 +1,8 @@
-마이페이지 뷰
 <template>
   <div>
     <div class="marginplz"></div>
     <div class="mp-profile">
       <div class="profile-container">
-
         <!-- 왼쪽: 사용자 프로필 사진 -->
         <div class="profile">
           <img :src="userProfileImage" class="profile-img" />
@@ -34,34 +32,91 @@
     </div>
 
     <div class="next-container">
-      <!-- 잔디!!!! -->
+      <!-- 왼쪽: UserGrass -->
       <div class="usergrass">
-        <UserGrass />
+        <UserGrass @dateSelected="onDateSelected" />
       </div>
-      <RouterLink 
-        :to="{ name: 'challenge' }" >
-        <div class="challenge-box">
-          <img src="@/assets/challenge.png" alt="챌린지하세요" class="challenge-img"/>
+
+      <!-- 오른쪽: 선택된 날짜의 운동일기와 식단일기 -->
+      <div class="logs-container">
+        <div v-if="selectedDate">
+          <h3>선택된 날짜: {{ selectedDate }}</h3>
+
+          <!-- 운동일기 -->
+          <div v-if="workoutLogsForSelectedDate" class="log-card">
+            <h4>운동일기</h4>
+            <p class="workout-content">{{ workoutLogsForSelectedDate.description }}</p>
+            <div v-for="exercise in workoutLogsForSelectedDate.exercises" class="exc-content">
+              <strong>{{ exercise.exerciseName }}</strong>
+              {{ exercise.weight }} kg {{ exercise.reps }} 회
+              {{ exercise.sets }} 세트
+            </div>
+          </div>
+
+          <!-- 식단일기 -->
+          <div v-if="dietLogsForSelectedDate" class="log-card">
+            <h4>식단일기</h4>
+            <div class="meal-images">
+              <img
+                :src="'http://localhost:8080/' + dietLogsForSelectedDate.breakfastImagePath"
+                alt="Breakfast Image"
+                class="meal-img"
+                width="50px"
+              />
+              <img
+                :src="'http://localhost:8080/' + dietLogsForSelectedDate.lunchImagePath"
+                alt="Lunch Image"
+                class="meal-img"
+                width="50px"
+              />
+              <img
+                :src="'http://localhost:8080/' + dietLogsForSelectedDate.dinnerImagePath"
+                alt="Dinner Image"
+                class="meal-img"
+                width="50px"
+              />
+            </div>
+            <p class="diet-content">{{ dietLogsForSelectedDate.content }}</p>
+          </div>
+
+          <!-- 기록이 없을 때만 "해당 날짜에 기록된 내용이 없습니다." 메시지 표시 -->
+          <div v-if="!workoutLogsForSelectedDate && !dietLogsForSelectedDate">
+            <p>해당 날짜에 기록된 내용이 없습니다.</p>
+          </div>
         </div>
-      </RouterLink>
+      </div>
     </div>
 
+    <!-- 챌린지 부분 -->
+    <RouterLink :to="{ name: 'challenge' }">
+      <div class="challenge-box">
+        <img src="@/assets/challenge.png" alt="챌린지하세요" class="challenge-img" />
+      </div>
+    </RouterLink>
+
     <!-- UserPage 모달 열기 -->
-    <UserPageCopy v-if="isEditModalOpen" @close="closeEditModal" />
+    <UserPagecopy v-if="isEditModalOpen" @close="closeEditModal" />
+
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import UserPageCopy from "@/components/user/UserPagecopy.vue";
 import UserGrass from "@/components/user/userGrass.vue";
 import defaultprofileImage from '@/assets/profile.jpg'
+import apiClient from "@/components/api/apiClient";
+import UserPagecopy from "@/components/user/UserPagecopy.vue";
 
 const isEditModalOpen = ref(false); // 모달 상태
 
 // 사용자 상태
 const userStore = useUserStore();
+
+// sessionStorage에서 'user' 키에 저장된 유저 데이터를 가져옵니다.
+const userData = sessionStorage.getItem("user");
+const userId = ref(userData ? JSON.parse(userData).userId : null); // 유저 ID를 가져옵니다.
+
 
 // 기본 이미지 경로 지정
 const defaultImage = defaultprofileImage;
@@ -80,10 +135,55 @@ const openEditModal = () => {
 const closeEditModal = () => {
   isEditModalOpen.value = false;
 };
+
+// 선택된 날짜
+const selectedDate = ref(null);
+const workoutLogsForSelectedDate = ref(null);  
+const dietLogsForSelectedDate = ref(null);    
+
+// 날짜가 선택되었을 때 해당 날짜의 기록을 가져오는 함수
+const onDateSelected = async (date) => {
+  selectedDate.value = date;
+  fetchLogsForSelectedDate(date);
+};
+
+// 해당 날짜의 운동일기 가져오기
+const fetchWorkoutLogs = async (date) => {
+  try {
+    const response = await apiClient.get('/api-workout/date', {
+      params: {
+        date: date,
+        userId: userId.value
+      }
+    });
+    workoutLogsForSelectedDate.value = response.data ? response.data : null; // 첫 번째 운동일기만 가져옴
+  } catch (error) {
+    workoutLogsForSelectedDate.value = null;
+    console.error("운동일기 가져오기 실패", error);
+  }
+};
+
+// 해당 날짜의 식단일기 가져오기
+const fetchDietLogs = async (date) => {
+  try {
+    const response = await apiClient.get('/api-diet/date', {
+      params: { date: date, userId: userId.value }
+    });
+    dietLogsForSelectedDate.value = response.data ? response.data : null; // 첫 번째 식단일기만 가져옴
+  } catch (error) {
+    dietLogsForSelectedDate.value = null;
+    console.error("식단일기 가져오기 실패", error);
+  }
+};
+
+// 날짜에 맞는 로그들 불러오기
+const fetchLogsForSelectedDate = (date) => {
+  fetchWorkoutLogs(date);
+  fetchDietLogs(date);
+};
 </script>
 
 <style scoped>
-
 /* 프로필 사진 크기 */
 .profile-img {
   width: 150px;
@@ -104,19 +204,14 @@ const closeEditModal = () => {
 /* 3개의 영역을 가로로 배치 (왼쪽, 중간, 오른쪽) */
 .profile-container {
   display: flex;
-  flex-wrap: wrap; /* 화면 크기에 맞춰서 줄 바꿈 가능 */
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 250px;
   max-width: 1500px;
-  padding: 20px; /* 상하 여백 20px */
-  padding-left: 60px; /* 좌측 여백 추가 */
-  padding-right: 60px; /* 우측 여백 추가 */
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  gap: 20px; /* 아이템 간격 설정 */
+  padding: 20px;
+  gap: 20px;
 }
 
 /* 왼쪽: 프로필 사진 */
@@ -125,7 +220,7 @@ const closeEditModal = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 150px; /* 최소 너비 설정 */
+  min-width: 150px;
 }
 
 /* 중간: 사용자 이름 및 설명 */
@@ -134,19 +229,8 @@ const closeEditModal = () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 230px; /* 최소 너비 설정 */
+  min-width: 230px;
   padding-left: 20px;
-}
-
-.user-name {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.user-description {
-  font-size: 1rem;
-  color: #555;
-  margin-top: 5px;
 }
 
 /* 문구 스타일 */
@@ -179,81 +263,85 @@ const closeEditModal = () => {
   margin-right: 8px;
 }
 
-
-/* 추가된 문구 스타일 */
-.extra-st {
-  flex: 1; /* 비율 맞추기 */
-  padding: 0 20px; /* 좌우 여백 */
-  text-align: center;
-  font-size: 4rem;
-  color: #8ea59b;
-  font-style: italic;
-  margin-top: 10px;
-  margin-right: 100px;
-  font-weight: bold;
-  font-family: 'Bold';
-  letter-spacing: 15px;
-}
-
-
-
-
-.my-2 {
-  margin-top: 15px;
-}
-
-.btn-lg {
-  font-size: 16px;
-  padding: 12px 20px;
+/* 일기 표시 영역 */
+.next-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 3%;
-  margin-bottom: 10%;
-  height: 50px;
+  justify-content: space-between;
+  margin-top: 30px;
 }
-
-.btn-edit {
-  background-color: #54a673;
-  color: white;
-  max-width: 150px;
-}
-
-.btn-edit:hover {
-  background-color: #4a8e5c;
-}
-
-.rounded-full {
-  border-radius: 50px !important;
-}
-
-.my-3 {
-  margin-top: 20px;
-}
-
-.marginplz {
-  margin-top: 180px;
-}
-
 
 .usergrass {
-  width: 500px;
-  margin: 10px 0;
+  width: 40%;
 }
 
-
-.next-container {
-  margin-top: 50px;
+.logs-container {
+  width: 55%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 20px;
 }
 
-.challenge-img {
-  width: 900px;
-  height: 500px;
-  margin-left: 20px;
+/* 로그 카드 */
+.log-card {
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
+h3 {
+  font-size: 1.6rem;
+}
+
+h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.workout-content,
+.diet-content {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.exc-content {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.meal-img {
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+/* 챌린지 박스 */
+.challenge-box {
+  margin-top: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+.challenge-img {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 1024px) {
+  .next-container {
+    flex-direction: column;
+  }
+
+  .usergrass {
+    width: 100%;
+  }
+
+  .logs-container {
+    width: 100%;
+  }
+}
 </style>

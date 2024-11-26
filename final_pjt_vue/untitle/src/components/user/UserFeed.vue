@@ -2,20 +2,25 @@
   <div class="user-view">
     <!-- 검색창 추가 -->
     <div class="search-bar">
-      <input 
-        type="text" 
-        v-model="searchUserId" 
-        placeholder="유저 ID를 입력하세요"
-        @keyup.enter="searchUser"
-        @focus="showRecommendedUsers = true" 
-      />
-      <button @click="searchUser">검색</button>
-      <!-- 초기화 버튼 추가 -->
-      <button @click="resetSearch">초기화</button>
+      <div class="search-box">
+        <input 
+          type="text" 
+          v-model="searchUserId" 
+          placeholder="유저 ID를 입력하세요"
+          @keyup.enter="searchUser"
+        />
+        <button @click="searchUser">
+          <i class="bi bi-search"></i> <!-- 검색 아이콘 -->
+        </button>
+        <button @click="resetSearch">
+          <i class="bi bi-arrow-clockwise"></i> <!-- 초기화 아이콘 -->
+        </button>
+      </div>
     </div>
 
     <!-- 검색된 유저 목록 -->
     <div v-if="searchedUsers.length > 0" class="user-list">
+      <h3>검색된 유저</h3>
       <div 
         v-for="user in searchedUsers" 
         :key="user.userId" 
@@ -28,14 +33,16 @@
           <button 
             v-if="!isFollowing(user.userId)"
             @click="followUser(user)"
+            class="follow-btn"
           >
-            팔로우
+            <i class="bi bi-plus"></i> <!-- 팔로우 버튼을 + 아이콘으로 -->
           </button>
           <button 
             v-if="isFollowing(user.userId)"
             @click="unfollowUser(user)"
+            class="follow-btn"
           >
-            팔로우 취소
+            <i class="bi bi-check"></i> <!-- 팔로우 취소 버튼 -->
           </button>
         </div>
       </div>
@@ -67,81 +74,100 @@
       </div>
     </div>
 
-    <div class="tabs">
-      <button 
-        :class="{ active: currentTab === 'diet' }" 
-        @click="selectTab('diet')"
-      >
-        식단일기
-      </button>
-      <button 
-        :class="{ active: currentTab === 'workout' }" 
-        @click="selectTab('workout')"
-      >
-        운동일기
-      </button>
-    </div>
+  
+    <!-- 탭 버튼 -->
+   
+<div class="tabs">
+  <input type="radio" id="diet-tab" v-model="currentTab" value="diet" class="tab-toggle" />
+  <label for="diet-tab" class="tab-label">
+    <i class="bi tab-icon">🥗</i>
+  </label>
+  
+  <input type="radio" id="workout-tab" v-model="currentTab" value="workout" class="tab-toggle" />
+  <label for="workout-tab" class="tab-label">
+    <i class="bi tab-icon">🏃</i>
+  </label>
+</div>
+
+
 
     <!-- 식단일기 탭 -->
     <div v-if="currentTab === 'diet'" class="diet-tab">
       <!-- 나의 최근 식단일기 하나만 출력 -->
-      <div v-if="myDietLogs.length > 0" class="log-card">
-        <h3>{{ myDietLogs[0].name }}님의 최근 식단일기</h3>
-    
-        <!-- 날짜 -->
-        <p><strong>{{ myDietLogs[0].recordDate }}</strong></p>
-    
-        <!-- 내용 -->
-        <p>{{ myDietLogs[0].content }}</p>
-    
-        <!-- 이미지 (아침, 점심, 저녁) -->
-        <div class="meal-images">
-          <div v-if="myDietLogs[0].breakfastImagePath">
-            <p>아침</p>
-            <img :src="'http://localhost:8080/'+myDietLogs[0].breakfastImagePath" alt="Breakfast Image" />
+      <div class="my-diet">
+        <div v-if="myDietLogs.length > 0" class="log-card">
+          <h3>{{ myDietLogs[0].name }}님의 최근 식단일기</h3>
+          <p class="diet-date">{{ myDietLogs[0].recordDate }}</p>
+          
+
+          
+           <!-- 식사 이미지 탭 -->
+           <div class="meal-tabs">
+            <input type="radio" id="breakfast-tab" v-model="mealTab" value="breakfast" class="meal-toggle" />
+            <label for="breakfast-tab" class="meal-label">아침</label>
+
+            <input type="radio" id="lunch-tab" v-model="mealTab" value="lunch" class="meal-toggle" />
+            <label for="lunch-tab" class="meal-label">점심</label>
+
+            <input type="radio" id="dinner-tab" v-model="mealTab" value="dinner" class="meal-toggle" />
+            <label for="dinner-tab" class="meal-label">저녁</label>
           </div>
-          <div v-if="myDietLogs[0].lunchImagePath">
-            <p>점심</p>
-            <img :src="'http://localhost:8080/'+myDietLogs[0].lunchImagePath" alt="Lunch Image" />
+
+          <!-- 아침 이미지 -->
+          <div v-if="mealTab === 'breakfast' && myDietLogs[0].breakfastImagePath">
+            <img :src="'http://localhost:8080/'+myDietLogs[0].breakfastImagePath" alt="Breakfast Image" class="meal-img" />
           </div>
-          <div v-if="myDietLogs[0].dinnerImagePath">
-            <p>저녁</p>
-            <img :src="'http://localhost:8080/'+myDietLogs[0].dinnerImagePath" alt="Dinner Image" />
+
+          <!-- 점심 이미지 -->
+          <div v-if="mealTab === 'lunch' && myDietLogs[0].lunchImagePath">
+            <img :src="'http://localhost:8080/'+myDietLogs[0].lunchImagePath" alt="Lunch Image" class="meal-img" />
           </div>
+
+          <!-- 저녁 이미지 -->
+          <div v-if="mealTab === 'dinner' && myDietLogs[0].dinnerImagePath">
+            <img :src="'http://localhost:8080/'+myDietLogs[0].dinnerImagePath" alt="Dinner Image" class="meal-img" />
+          </div>
+
+
+          <p class="diet-content">{{ myDietLogs[0].content }}</p>
+
+
+          <!-- <button @click="openDietLogModal(myDietLogs[0])" class="edit-btn">수정</button> -->
         </div>
-        <!-- 수정 버튼 추가 -->
-        <button @click="openDietLogModal(myDietLogs[0])">수정</button>
-      </div>
       <div v-else>
         <hr>
         <h3>최근 식단일기가 없습니다.... 다이어트 안하셨나요..?</h3>
       </div>
       <hr>
-      <!-- 팔로우한 유저들의 식단일기 -->
       <div v-for="log in dietLogs" :key="log.diet_id" class="log-card">
         <!-- 이름 -->
         <h3>{{log.name}}</h3>
-        
-        <!-- 날짜 -->
         <p><strong>{{ log.recordDate }}</strong></p>
-        
-        <!-- 내용 -->
         <div>{{ log.content }}</div>
-        
-        <!-- 이미지 (아침, 점심, 저녁) -->
-        <div class="meal-images">
-          <div v-if="log.breakfastImagePath">
-            <p>아침</p>
-            <img :src="'http://localhost:8080/'+log.breakfastImagePath" alt="Breakfast Image" />
-          </div>
-          <div v-if="log.lunchImagePath">
-            <p>점심</p>
-            <img :src="'http://localhost:8080/'+log.lunchImagePath" alt="Lunch Image" />
-          </div>
-          <div v-if="log.dinnerImagePath">
-            <p>저녁</p>
-            <img :src="'http://localhost:8080/'+log.dinnerImagePath" alt="Dinner Image" />
-          </div>
+        <div class="meal-tabs">
+          <input type="radio" id="breakfast-tab-{{ log.diet_id }}" v-model="mealTab" value="breakfast" class="meal-toggle" />
+          <label for="breakfast-tab-{{ log.diet_id }}" class="meal-label">아침</label>
+
+          <input type="radio" id="lunch-tab-{{ log.diet_id }}" v-model="mealTab" value="lunch" class="meal-toggle" />
+          <label for="lunch-tab-{{ log.diet_id }}" class="meal-label">점심</label>
+
+          <input type="radio" id="dinner-tab-{{ log.diet_id }}" v-model="mealTab" value="dinner" class="meal-toggle" />
+          <label for="dinner-tab-{{ log.diet_id }}" class="meal-label">저녁</label>
+        </div>
+
+        <!-- 아침 이미지 -->
+        <div v-if="mealTab === 'breakfast' && log.breakfastImagePath">
+          <img :src="'http://localhost:8080/'+log.breakfastImagePath" alt="Breakfast Image" class="meal-img" />
+        </div>
+
+        <!-- 점심 이미지 -->
+        <div v-if="mealTab === 'lunch' && log.lunchImagePath">
+          <img :src="'http://localhost:8080/'+log.lunchImagePath" alt="Lunch Image" class="meal-img" />
+        </div>
+
+        <!-- 저녁 이미지 -->
+        <div v-if="mealTab === 'dinner' && log.dinnerImagePath">
+          <img :src="'http://localhost:8080/'+log.dinnerImagePath" alt="Dinner Image" class="meal-img" />
         </div>
 
         <!-- 식단일기 또는 운동일기에서 댓글 추가 및 표시 -->
@@ -308,6 +334,10 @@ const unfollowUser = async (user) => {
   }
 };
 
+
+
+
+
 // 탭 선택 함수
 const selectTab = (tab) => {
   currentTab.value = tab;
@@ -401,6 +431,9 @@ const resetSearch = () => {
   fetchLogs(currentTab.value);  // 현재 탭에 해당하는 내 로그 불러오기
 };
 
+
+
+
 // 식단일기 수정 모달 열기
 const openDietLogModal = (dietLog) => {
   selectedDietLog.value = dietLog;
@@ -411,6 +444,12 @@ const openDietLogModal = (dietLog) => {
 const closeDietLogModal = () => {
   isDietLogModalOpen.value = false;
 };
+
+
+
+const mealTab = ref('breakfast'); // 식사 이미지 탭
+
+
 
 onMounted(() => {
   // 컴포넌트가 마운트될 때 기본 탭의 로그를 불러옵니다.
@@ -454,6 +493,51 @@ onMounted(() => {
 .tabs {
   display: flex;
   gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.tab-toggle {
+  display: none; /* radio input을 숨깁니다. */
+}
+
+.tab-label {
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 50px;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  color: #333;
+}
+
+.tab-toggle:checked + .tab-label {
+  background-color: #54a673;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+/* 슬라이드 효과 */
+.tab-toggle:checked + .tab-label {
+  background-color: #54a673;
+  color: white;
+}
+
+
+.my-diet {
+  padding: 15px 40px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px; /* 모서리 둥글게 */
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.diet-tab .log-card {
+  margin-bottom: 30px; /* 카드 간격 추가 */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
 }
 
 button {
@@ -468,16 +552,17 @@ button.active {
 }
 
 .log-card {
-  border: 1px solid #ddd;
-  padding: 15px;
-  margin: 10px 0;
+  padding: 20px;
+  margin: 20px 0; /* 카드 바깥쪽에 여백 추가 */
   border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.meal-images {
-  display: flex;
-  gap: 15px;
-}
+
 
 img {
   max-width: 200px;
@@ -488,40 +573,212 @@ img {
 /* 검색창 스타일 */
 .search-bar {
   display: flex;
-  gap: 10px;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-.search-bar input {
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: transparent; /* 배경 투명 */
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 200px;
+  border-radius: 20px;
+  border: 1px solid #ddd; /* 테두리 */
 }
 
-.search-bar button {
+.search-box input {
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  width: 400px;
+}
+
+.search-box button {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.search-box button i {
+  font-size: 20px;
+  color: #54a673;
+}
+
+
+.user-list {
+  margin-top: 20px;
+  border-radius: 20px; /* 유저 목록 박스 둥글게 */
+  border: 1px solid #ddd;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+
+
+/* 팔로우 버튼 */
+.follow-btn {
+  background: transparent;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.follow-btn i {
+  font-size: 20px;
+  color: #54a673;
+}
+
+/* 탭 스타일 */
+.tabs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+button {
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+button.active {
   background-color: #54a673;
   color: white;
 }
 
-/* 검색된 유저 목록 스타일 */
-.user-list {
-  margin-top: 20px;
+.tab-icon {
+    font-size: 1.2rem; /* 이모지 크기 조정 */
+    padding: 10px;   /* 테두리와 이모지 사이 여백 */
+    display: inline-block; /* 이모지가 한 줄에 표시되게 */
+    text-align: center;
+    line-height: 1; /* 이모지 세로 정렬 */
+    transition: all 0.3s ease; /* 호버 효과 부드럽게 */
+    font-style: normal;
+  }
+
+  /* 추가 스타일 (선택적) */
+  .tab-label {
+    cursor: pointer;
+  }
+
+/* 일기 스타일 */
+.log-card {
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+
+.meal-images {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.meal-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: center;
+  margin-top: -65px;
+}
+
+.meal-toggle {
+  display: none; /* radio input을 숨깁니다. */
+}
+
+.meal-label {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+}
+
+.meal-toggle:checked + .meal-label {
+  background-color: #54a673;
+  color: white;
+}
+
+.meal-img-container {
+  width: 100%; /* 부모 컨테이너가 전체 너비를 차지하도록 */
+  display: flex;
+  justify-content: center; /* 이미지를 가로 가운데로 배치 */
+  align-items: center; /* 세로로도 가운데 배치 */
+  max-width: 800px; /* 최대 너비 제한 */
+  margin: 0 auto; /* 가로 가운데 정렬 */
+}
+
+.meal-img {
+  width: 100%; /* 부모 너비를 100%로 채우기 */
+  height: 1000px;
+  max-width: 100%; /* 최대 너비를 부모에 맞춤 */
+  max-height: 100%;
+  object-fit: cover; /* 이미지가 부모 컨테이너를 꽉 채우되 비율 유지 */
+  border-radius: 20px;
+}
+
+/* 수정 버튼 */
+.edit-btn {
+  background-color: #54a673;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  align-self: flex-end; /* 오른쪽 정렬 */
+  margin-top: 15px; /* 버튼과 내용 사이에 여백 추가 */
+}
+
+.edit-btn:hover {
+  background-color: #4a9d62; /* 호버 시 색상 변경 */
+}
+
+
+/* 유저 카드 스타일 */
 .user-card {
+  display: flex;
+  justify-content: space-between; /* 유저 ID와 버튼을 양 끝에 배치 */
   padding: 10px;
   border: 1px solid #ddd;
   margin: 5px 0;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 15px; /* 더 둥근 테두리 */
   background-color: #f9f9f9;
 }
 
-.user-card:hover {
-  background-color: #f0f0f0;
+.user-card p {
+  margin: 0;
+  margin-top: 7px;
+  margin-left: 13px;
+  flex-grow: 1; /* 유저 ID가 공간을 차지하도록 설정 */
 }
+
+.user-card button {
+  background: transparent;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.diet-date {
+  margin-top: -15px;
+  font-size: 1rem;
+}
+
+.diet-content {
+  font-family: 'Medium';
+  font-size: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 150px;
+  box-shadow: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+}
+
+
 </style>

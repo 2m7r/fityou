@@ -85,9 +85,9 @@ const router = useRouter();
 const weather = ref(null);
 
 // userProfileImage 계산 로직
-const userProfileImage = userStore.userProfileImage.trim()
+const userProfileImage = (userStore.userProfileImage.trim()!== '')
   ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
-  : null;
+  : defaultprofileImage;
 
 // 모달 상태 관리
 const isDietLogModalOpen = ref(false);
@@ -228,7 +228,7 @@ const getWeatherDescription = (code) => {
 }
 
 .user-name {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -276,6 +276,7 @@ const getWeatherDescription = (code) => {
 .btn-exercise {
   background-color: #54a673;
   color: white;
+  font-size: 1.1rem;
 }
 
 .btn-diet:hover,

@@ -1,7 +1,7 @@
 <template>
   <div class="calendar">
     <div class="calendar-header">
-      <h4>< {{ currentYear }} {{ currentMonth }} ></h4>
+      <h4> {{ currentYear }} {{ currentMonth }} </h4>
     </div>
     <div class="calendar-body">
       <div class="calendar-grid">
@@ -86,7 +86,7 @@ onMounted(() => {
 
 .calendar-header {
   font-size: 20px;
-  font-weight: bold !important; /* 글씨 두껍게 */
+  font-family: 'Bold';
   margin-bottom: 10px;
 }
 

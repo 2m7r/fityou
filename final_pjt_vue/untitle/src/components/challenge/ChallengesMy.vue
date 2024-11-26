@@ -181,9 +181,9 @@ onMounted(() => {
 }
 
 h2 {
-  font-size: 2rem;
-  font-weight: bold;
+  font-family: 'Bold';
   margin-bottom: 20px;
+
 }
 
 .challenges-scroll-container {
@@ -230,7 +230,7 @@ h2 {
 }
 
 .card-body {
-  padding: 15px;
+  padding: 20px;
   height: 100%;
   overflow: hidden;
 }
@@ -238,6 +238,7 @@ h2 {
 .card-title {
   font-size: 1.2rem;
   font-weight: bold;
+  font-family: 'Light',sans-serif;
 }
 
 .card-text {
@@ -247,6 +248,7 @@ h2 {
   text-overflow: ellipsis;
   height: 3.0em;
   line-height: 1.5;
+  font-family: 'Light',sans-serif;
 }
 
 .card:hover {
@@ -282,6 +284,7 @@ h2 {
 
 .participant-count {
   font-size: 0.9rem;
+  font-family: 'Light',sans-serif;
   color: #555;
   margin-right: 5px;
 }

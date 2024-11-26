@@ -11,9 +11,6 @@ public class User {
     private String email; // 이메일
     private String username; // 사용자 이름 (아이디)
     private String password; // 비밀번호
-    private String role; // USER 또는 TRAINER
-    private String gymName; // 헬스장 이름 (트레이너일 경우)
-    private List<String> awards; // 수상 경력 리스트
     private List<String> preferredExercises = new ArrayList<>(); // 빈 리스트로 초기화 // 선호 운동 리스트
     private boolean isPrivateAccount; // 공개/비공개 계정 여부
     private String profileImage;
@@ -100,24 +97,6 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	public String getGymName() {
-		return gymName;
-	}
-	public void setGymName(String gymName) {
-		this.gymName = gymName;
-	}
-	public List<String> getAwards() {
-		return awards;
-	}
-	public void setAwards(List<String> awards) {
-		this.awards = awards;
-	}
 	public List<String> getPreferredExercises() {
 		return preferredExercises;
 	}
@@ -133,11 +112,10 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", name=" + name + ", birthDate=" + birthDate + ", gender=" + gender
-				+ ", email=" + email + ", username=" + username + ", password=" + password + ", role=" + role
-				+ ", gymName=" + gymName + ", awards=" + awards + ", preferredExercises=" + preferredExercises
-				+ ", isPrivateAccount=" + isPrivateAccount + ", profileImage=" + profileImage + ", phoneNum=" + phoneNum
-				+ ", userDescription=" + userDescription + ", securityQuestion=" + securityQuestion
-				+ ", securityAnswer=" + securityAnswer + "]";
+				+ ", email=" + email + ", username=" + username + ", password=" + password + ", preferredExercises="
+				+ preferredExercises + ", isPrivateAccount=" + isPrivateAccount + ", profileImage=" + profileImage
+				+ ", phoneNum=" + phoneNum + ", userDescription=" + userDescription + ", securityQuestion="
+				+ securityQuestion + ", securityAnswer=" + securityAnswer + "]";
 	}
 	
 }

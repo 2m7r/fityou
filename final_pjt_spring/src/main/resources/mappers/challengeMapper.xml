@@ -7,9 +7,9 @@
 	<insert id="insertChallenge" parameterType="Challenge"
 		useGeneratedKeys="true" keyProperty="challengeId">
 		INSERT INTO challenges (name,
-		creator_user_id, description, duration_start, duration_end,
+		creator_user_id, creator_user_name, description, duration_start, duration_end,
 		exercise_type)
-		values (#{name}, #{creatorUserId}, #{description},
+		values (#{name}, #{creatorUserId}, #{creatorUsername}, #{description},
 		#{durationStart}, #{durationEnd}, #{exerciseType})
 	</insert>
 
@@ -24,13 +24,8 @@
 	<update id="modifyChallenge" parameterType="Challenge">
 		UPDATE challenges
 		SET
-		name = #{name},
 		description = #{description},
-		duration_start =
-		#{durationStart},
 		duration_end = #{durationEnd},
-		exercise_type =
-		#{exerciseType}
 		WHERE challenge_id = #{challengeId}
 	</update>
 

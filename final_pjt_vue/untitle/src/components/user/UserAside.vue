@@ -2,11 +2,11 @@
   <div class="user-aside">
     <!-- 사용자 프로필 사진 -->
     <RouterLink
-    :to="{ name: 'my-page'}">
-    <div class="profile">
-      <img :src="userProfileImage || defaultprofileImage" alt="User Profile" class="profile-img" />
-    </div>
-  </RouterLink>
+      :to="{ name: 'my-page'}">
+      <div class="profile">
+        <img :src="userProfileImage || defaultprofileImage" alt="User Profile" class="profile-img" />
+      </div>
+    </RouterLink>
 
     <!-- 사용자 이름 -->
     <h4 class="user-name">{{ userStore.userName }}님, FITYOU!</h4>
@@ -30,19 +30,26 @@
       <i class="bi bi-bicycle me-2"></i>운동일기 작성
     </button>
 
+    <!-- 챌린지 등록 버튼 -->
+    <button
+      class="btn btn-lg btn-challenge d-flex align-items-center rounded-full"
+      @click="openChallengeLogModal"
+    >
+      <i class="bi bi-trophy me-2"></i>챌린지 등록
+    </button>
+
     <!-- 현재 날씨 아이콘과 정보 -->
     <div class="weather-info">
-  <div v-if="weather">
-    <span class="weather-description">
-      <!-- 날씨 아이콘 표시 -->
-      <i :class="weatherIcon" class="weather-icon me-2"></i> 
-      {{ weather.weatherDescription }} 
-    </span>
-  </div>
-  <div v-else>
-    <p>날씨 정보를 불러오는 중...</p>
-  </div>
-</div>
+      <div v-if="weather">
+        <span class="weather-description">
+          <i :class="weatherIcon" class="weather-icon me-2"></i> 
+          {{ weather.weatherDescription }} 
+        </span>
+      </div>
+      <div v-else>
+        <p>날씨 정보를 불러오는 중...</p>
+      </div>
+    </div>
 
     <!-- 운동일기 작성과 캘린더 사이 여백 추가 -->
     <div class="my-3"></div>
@@ -63,14 +70,23 @@
       @close="closeWorkoutLogModal"
       :userId="userStore.user?.userId"
     />
+
+    <!-- 챌린지 등록 모달 -->
+    <ChallengeLogModal
+      v-if="isChallengeLogModalOpen"
+      @close="closeChallengeLogModal"
+      :userId="userStore.user?.userId"
+    />
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted,computed } from "vue";
 import { fetchWeather } from "@/services/weatherService"; // 날씨 서비스 함수 가져오기
 import DietLogModal from "@/components/feed/DietLogModal.vue";
 import WorkoutLogModal from "../feed/WorkoutLogModal.vue";
+import ChallengeLogModal from "../challenge/ChallengeLogModal.vue";
 import UserCalender from "@/components/user/UserCalender.vue";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
@@ -99,6 +115,7 @@ const userProfileImage = (userStore.userProfileImage.trim()!== '')
 // 모달 상태 관리
 const isDietLogModalOpen = ref(false);
 const isWorkoutLogModalOpen = ref(false);
+const isChallengeLogModalOpen = ref(false);
 
 // 식단일기 작성 모달 열기
 const openDietLogModal = () => {
@@ -136,9 +153,22 @@ const closeWorkoutLogModal = () => {
   }
 };
 
-// 운동일기 작성 페이지로 이동
-const goToExerciseLog = () => {
-  router.push("/exercise/create");
+// 챌린지 등록 모달 열기
+const openChallengeLogModal = () => {
+  if (!isChallengeLogModalOpen.value) {
+    isChallengeLogModalOpen.value = true;
+    if (typeof props.showOverlay === "function") {
+      props.showOverlay(true); // 오버레이 표시 요청
+    }
+  }
+};
+
+// 챌린지 등록 모달 닫기
+const closeChallengeLogModal = () => {
+  isChallengeLogModalOpen.value = false;
+  if (typeof props.showOverlay === "function") {
+    props.showOverlay(false); // 오버레이 숨기기 요청
+  }
 };
 
 // 로그아웃 처리
@@ -222,7 +252,16 @@ const weatherIcon = computed(() => {
   font-size: 1.2rem;
 }
 
+/* 챌린지 버튼 스타일 */
+.btn-challenge {
+  background-color: #f4b400; /* 챌린지 버튼의 배경색 */
+  color: white;
+  font-size: 1.1rem;
+}
 
+.btn-challenge:hover {
+  background-color: #e0a300; /* 호버 시 배경색 */
+}
 
 .user-aside {
   position: relative;

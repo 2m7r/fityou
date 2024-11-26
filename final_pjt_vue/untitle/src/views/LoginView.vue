@@ -1,4 +1,8 @@
 <template>
+  <div class="marginplz"></div>
+  <div class="logo-container">
+      <img src="@/assets/logo.png" alt="Logo" class="logo" />
+    </div>
   <div class="login-page">
     <h1>로그인</h1>
     <form @submit.prevent="handleLogin">
@@ -37,6 +41,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'; // Pinia 스토어 불러오기
 import apiClient from '@/components/api/apiClient' // axios 클라이언트를 임포트
+
 
 export default {
   name: 'UserLogin',
@@ -117,10 +122,23 @@ export default {
 </script>
 
 <style scoped>
+.marginplz {
+  margin-top: 15%;
+}
+
+
+.logo-container {
+  height: 120px;
+  max-width: auto;
+  display: flex;  
+  justify-content: center;
+  margin: 0 auto;
+}
+
+
 .login-page {
   max-width: 400px;
   margin: 0 auto;
-  margin-top: 5%;
   padding: 20px;
   border-radius: 8px;
   box-sizing: border-box;

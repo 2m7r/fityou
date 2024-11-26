@@ -9,7 +9,6 @@ import HomeView from '../views/HomeView.vue'
 import FeedView from '../views/FeedView.vue'
 import LoginView from '../views/LoginView.vue'
 import ChallengeView from '../views/ChallengeView.vue'
-import ManagementView from '../views/ManagementView.vue'
 import SignupPreferredExerciseView from '@/views/SignupPreferredExerciseView.vue'
 
 import DietModal from '@/components/feed/DietLogModal.vue'
@@ -89,12 +88,6 @@ const router = createRouter({
       component: ChallengeView,
       meta: { requiresAuth: true }, // 인증 필요
       
-    },
-    {
-      path: '/management',
-      name: 'management',
-      component: ManagementView,
-      meta: { requiresAuth: true }, // 인증 필요
     },
     {
       path: '/diet/create/:date',

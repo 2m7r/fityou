@@ -6,7 +6,7 @@
         <div class="profile-container">
           <!-- 왼쪽: 사용자 프로필 사진 -->
           <div class="profile">
-            <img :src="userProfileImage" class="profile-img" />
+            <img :src="userProfileImage" alt="User Profile" class="profile-img" />
           </div>
 
           <!-- 중간: 사용자 이름과 설명 -->
@@ -117,7 +117,7 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import UserGrass from "@/components/user/userGrass.vue";
 import defaultprofileImage from '@/assets/profile.jpg'
@@ -141,39 +141,31 @@ const userId = ref(userData ? JSON.parse(userData).userId : null); // 유저 ID�
 // 기본 이미지 경로 지정
 const defaultImage = defaultprofileImage;
 
-// userProfileImage 계산 로직
-const userProfileImage = userStore.userProfileImage && userStore.userProfileImage.trim()
-  ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
-  : defaultImage;
+const userProfileImage = computed(() => {
+  const profileImage = userStore.user?.profileImage; // userStore에 있는 프로필 정보
+  if (profileImage && profileImage.trim() !== '') {
+    return 'http://localhost:8080/' + profileImage.replace(/\\/g, '/');
+  }
+  return defaultprofileImage; // 프로필 이미지가 없으면 기본 이미지 반환
+});
 
 // 팔로워 수와 팔로잉 수
 const followerCount = ref(0);
 const followingCount = ref(0);
-const followersId = ref([]);
-const followingsId = ref([]);
 const followers = ref([]);
 const following = ref([]);
 
 // 팔로워, 팔로잉 데이터 불러오기
 const fetchFollowData = async () => {
   try {
-    const followerResponse = await apiClient.get(`/api-follow/followers/${userId.value}`);
+    const followerResponse = await apiClient.get(`/api-follow/follower`, {params: {userId: userId.value}});
     followerCount.value = followerResponse.data.length;
-    followersId.value = followerResponse.data;
-    
-    if(followerResponse.data.length > 0){
-      const followerResponse2 = await apiClient.get('/api-user/search', {params:{userIds: followersId.value}})
-      followers.value = followerResponse2.data;
-    }
+    followers.value = followerResponse.data;
 
-    const followingResponse = await apiClient.get(`/api-follow/following/${userId.value}`);
+    const followingResponse = await apiClient.get(`/api-follow/following`, {params: {userId: userId.value}});
     followingCount.value = followingResponse.data.length;
-    followingsId.value = followingResponse.data;
+    following.value = followingResponse.data;
 
-    if(followingResponse.data.length > 0){
-      const followingResponse2 = await apiClient.get('/api-user/search', {params:{userIds: followingsId.value}})
-      following.value = followingResponse2.data;
-    }
   } catch (error) {
     console.error("팔로워/팔로잉 데이터 불러오기 실패", error);
   }

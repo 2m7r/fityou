@@ -3,6 +3,7 @@ package com.workout.model.dao;
 import java.util.List;
 
 import com.workout.model.dto.Follow;
+import com.workout.model.dto.User;
 
 public interface FollowDao {
 
@@ -17,5 +18,8 @@ public interface FollowDao {
 
 	// 특정 사용자의 팔로워 목록 조회
 	List<Long> selectFollowersByUserId(Long followingId);
+	
+	List<User> selectFollowings(Long followerId);
+	List<User> selectFollowers(Long follwingId);
 
 }

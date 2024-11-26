@@ -4,7 +4,7 @@
     <RouterLink
       :to="{ name: 'my-page'}">
       <div class="profile">
-        <img :src="userProfileImage || defaultprofileImage" alt="User Profile" class="profile-img" />
+        <img :src="userProfileImage" alt="User Profile" class="profile-img" />
       </div>
     </RouterLink>
 
@@ -107,10 +107,13 @@ const router = useRouter();
 // 날씨 정보 관리
 const weather = ref(null);
 
-// userProfileImage 계산 로직
-const userProfileImage = (userStore.userProfileImage.trim()!== '')
-  ? 'http://localhost:8080/' + userStore.userProfileImage.replace(/\\/g, '/') 
-  : defaultprofileImage;
+const userProfileImage = computed(() => {
+  const profileImage = userStore.user?.profileImage; // userStore에 있는 프로필 정보
+  if (profileImage && profileImage.trim() !== '') {
+    return 'http://localhost:8080/' + profileImage.replace(/\\/g, '/');
+  }
+  return defaultprofileImage; // 프로필 이미지가 없으면 기본 이미지 반환
+});
 
 // 모달 상태 관리
 const isDietLogModalOpen = ref(false);
@@ -242,8 +245,6 @@ const weatherIcon = computed(() => {
       return "bi bi-cloud"; // 기본적으로 구름 아이콘
   }
 });
-
-
 
 </script>
 

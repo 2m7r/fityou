@@ -33,5 +33,5 @@ public interface UserService {
 
 	List<User> selectAllUsers();
 
-	List<User> serchUser(List<Long> userIds);
+	List<User> searchUser(Long[] userIds);
 }

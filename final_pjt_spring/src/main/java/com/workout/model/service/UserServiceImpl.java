@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> serchUser(List<Long> userIds) {
+	public List<User> searchUser(Long[] userIds) {
 		List<User> list = new ArrayList<>();
 		for (Long long1 : userIds) {
 			User user = dao.selectUserById(long1);

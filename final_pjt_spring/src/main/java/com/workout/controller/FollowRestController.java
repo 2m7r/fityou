@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.workout.model.dto.Follow;
+import com.workout.model.dto.User;
 import com.workout.model.service.FollowService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,6 +73,18 @@ public class FollowRestController {
 	public ResponseEntity<List<Long>> getFollowersByUserId(@PathVariable Long followingId) {
 		List<Long> followersList = followService.getFollowersByUserId(followingId);
 		return ResponseEntity.ok(followersList);
+	}
+	
+	@GetMapping("/following")
+	public ResponseEntity<List<User>> getFollowing(@RequestParam long userId){
+		List<User> list = followService.getFollowing(userId);
+		return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping("/follower")
+	public ResponseEntity<List<User>> getFollower(@RequestParam long userId){
+		List<User> list = followService.getFollower(userId);
+		return ResponseEntity.ok(list);
 	}
 
 }

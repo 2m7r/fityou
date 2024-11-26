@@ -89,7 +89,9 @@ export default {
 
         // preferredExercises가 존재하는지 확인하고 처리
         if (loginUser && loginUser.preferredExercises.length > 0) {
-          router.push({ name: 'home' });
+          router.push({ name: 'home' }).then(() => {
+            location.reload(); // home으로 이동한 후 새로고침
+          });
         } else {
           router.push({ name: 'preferredExercise' });
         }

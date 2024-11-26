@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.workout.model.dao.FollowDao;
 import com.workout.model.dto.Follow;
+import com.workout.model.dto.User;
 
 @Service
 public class FollowServiceImpl implements FollowService{
@@ -32,6 +33,16 @@ public class FollowServiceImpl implements FollowService{
 	@Override
 	public List<Long> getFollowersByUserId(Long followingId) {
 		return followDao.selectFollowersByUserId(followingId);
+	}
+
+	@Override
+	public List<User> getFollowing(long userId) {
+		return followDao.selectFollowings(userId);
+	}
+
+	@Override
+	public List<User> getFollower(long userId) {
+		return followDao.selectFollowers(userId);
 	}
 
 }

@@ -122,13 +122,15 @@ export default {
   margin: 0 auto;
   margin-top: 5%;
   padding: 20px;
-  border: 1px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box;
+  border: 1px solid #ccc;
 }
 
 h1 {
   text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
 }
 
 form {

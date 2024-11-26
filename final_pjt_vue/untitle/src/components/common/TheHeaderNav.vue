@@ -22,11 +22,11 @@
         class="tab-link" 
         :class="{ active: isActive('challenge') }"
         @click="setActive('challenge')">CHALLENGE</RouterLink>
-      <RouterLink 
+      <!-- <RouterLink 
         :to="{ name: 'management' }" 
         class="tab-link" 
         :class="{ active: isActive('management') }"
-        @click="setActive('management')">MEMBERS</RouterLink>
+        @click="setActive('management')">MEMBERS</RouterLink> -->
       <RouterLink 
         :to="{ name: 'my-page' }" 
         class="tab-link" 
@@ -74,7 +74,7 @@ const setActive = (tab) => {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 300px; /* 그라데이션의 높이를 조정 */
+  height: 250px; /* 그라데이션의 높이를 조정 */
   background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1),rgba(255, 255, 255, 0));
   z-index: -1; /* 네비게이션 바 뒤에 배경을 설정 */
   pointer-events: none; /* 그라데이션 영역에서 마우스 이벤트를 비활성화 */
@@ -107,7 +107,7 @@ const setActive = (tab) => {
   overflow: hidden;
   position: relative;
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 /* 탭 항목 스타일 */

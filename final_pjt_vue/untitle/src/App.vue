@@ -1,13 +1,16 @@
 <template>
-  <!-- 로그인, 회원가입, 선호 운동, 아이디 찾기, 비밀번호 찾기 페이지 제외 -->
-  <TheHeaderNav v-if="!excludedPages.includes(route.name)" />
-  
-  <!-- 전역 오버레이 -->
-  <div v-if="isOverlayVisible" class="overlay" @click="closeOverlay"></div>
-  
-  <!-- RouterView에 showOverlay prop 전달 -->
-  <RouterView :showOverlay="showOverlayHandler" class="main-content" />
-</template>
+  <div class="all">
+
+    <!-- 로그인, 회원가입, 선호 운동, 아이디 찾기, 비밀번호 찾기 페이지 제외 -->
+    <TheHeaderNav v-if="!excludedPages.includes(route.name)" />
+    
+    <!-- 전역 오버레이 -->
+    <div v-if="isOverlayVisible" class="overlay" @click="closeOverlay"></div>
+    
+    <!-- RouterView에 showOverlay prop 전달 -->
+    <RouterView :showOverlay="showOverlayHandler" class="main-content" />
+  </div>
+  </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
@@ -46,6 +49,11 @@ watch(route, () => {
 </script>
 
 <style scoped>
+
+*{
+  font-family: 'Medium',sans-serif;
+}
+
 .main-content {
   margin: 3% 5%; /* 네비게이션 바 높이에 맞게 여백 추가 */
   margin-top: 80px;

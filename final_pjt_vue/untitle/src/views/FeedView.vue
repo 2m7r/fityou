@@ -36,12 +36,13 @@ import UserFeed from '@/components/user/UserFeed.vue';
   margin-left: 350px; /* UserAside 너비만큼 왼쪽 여백 */
   padding-top: 20px;
   padding-left: 20px;
-  padding-right: 20px;
+  padding-right: 50px;
   overflow-x: auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: calc(100% - 350px);
+  margin-top: 30px;
 }
 
 /* 작은 화면에서 레이아웃 조정 */

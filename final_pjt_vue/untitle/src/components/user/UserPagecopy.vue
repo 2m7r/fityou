@@ -108,17 +108,6 @@
             </div>
           </div>
 
-          <!-- 트레이너일 경우 체육관 이름 입력 -->
-          <div v-if="role === 'TRAINER'" class="input-group">
-            <label for="gymName">체육관 이름</label>
-            <input
-              type="text"
-              id="gymName"
-              v-model="gymName"
-              placeholder="체육관 이름을 입력하세요"
-            />
-          </div>
-
           <!-- 공개/비공개 설정 -->
           <div class="input-group privacy-group">
             <label for="isPrivateAccount" class="privacy-label">
@@ -167,8 +156,6 @@ export default {
       userProfileImage: null, // 사용자 프로필 이미지 URL (기본값은 빈 문자열)
       defaultImage: defaultprofileImage,
       userDescription: "",
-      role: "USER", // 기본값은 USER
-      gymName: "",
       isPrivateAccount: false, // 기본값은 공개로 설정
     };
   },
@@ -189,11 +176,7 @@ export default {
     this.email = userData.email;
     this.phoneNum = userData.phoneNum;
     this.gender = userData.gender;
-    this.role = userData.role;
     this.isPrivateAccount = userData.isPrivateAccount !== undefined ? userData.isPrivateAccount : false;
-    if (this.role === "TRAINER") {
-      this.gymName = userData.gymName;
-    }
     this.userDescription = userData.userDescription;
   },
   methods: {
@@ -254,7 +237,6 @@ export default {
         formData.append("profileImage", this.userProfileImage.split("/").pop());
       }
 
-      formData.append("gymName", this.gymName);
       formData.append("userDescription", this.userDescription);
       try {
         const userId = userStore.user.userId;

@@ -75,8 +75,7 @@ public class UserRestController {
 			@RequestParam("gender") String gender, 
 			@RequestParam("isPrivateAccount") boolean isPrivateAccount,
 			@RequestParam(required = false) MultipartFile profileImage,
-			@RequestParam("userDescription") String userDescription,
-			@RequestParam("gymName") String gymName) {
+			@RequestParam("userDescription") String userDescription) {
 
 		User user = new User();
 		user.setUserId(userId);
@@ -87,7 +86,6 @@ public class UserRestController {
 		user.setGender(gender);
 		user.setPrivateAccount(isPrivateAccount);
 		user.setUserDescription(userDescription);
-		user.setGymName(gymName);
 		System.out.println(user);
 
 		// 프로필 이미지 처리

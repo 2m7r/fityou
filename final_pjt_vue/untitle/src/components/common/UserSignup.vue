@@ -18,7 +18,14 @@
       <div class="input-group">
         <label for="confirmPassword">비밀번호 확인</label>
         <input type="password" id="confirmPassword" v-model="confirmPassword" required placeholder="비밀번호를 다시 입력하세요" />
+        <!-- 실시간 비밀번호 확인 메시지 -->
+        <div v-if="password && confirmPassword" class="password-message">
+          <span :class="isPasswordMatch ? 'match' : 'mismatch'">
+            {{ isPasswordMatch ? '비밀번호가 일치합니다' : '비밀번호가 일치하지 않습니다' }}
+          </span>
+        </div>
       </div>
+
 
       <!-- 이름 입력 -->
       <div class="input-group">
@@ -62,29 +69,21 @@
         </select>
       </div>
 
-      <!-- 역할 선택 -->
-      <div class="input-group">
-        <label for="role">회원 유형</label>
-        <select id="role" v-model="role" required>
-          <option value="USER">일반유저</option>
-          <option value="TRAINER">트레이너</option>
-        </select>
-      </div>
-
-      <!-- 트레이너일 경우 체육관 이름 입력 -->
-      <div v-if="role === 'TRAINER'" class="input-group">
-        <label for="gymName">체육관 이름</label>
-        <input type="text" id="gymName" v-model="gymName" placeholder="체육관 이름을 입력하세요" />
-      </div>
-
       <!-- 보안 질문 선택 -->
       <div class="input-group">
         <label for="securityQuestion">보안 질문</label>
         <select id="securityQuestion" v-model="securityQuestion" required>
           <option value="" disabled>보안 질문을 선택하세요</option>
-          <option value="어렸을 때 가장 좋아한 과일은?">어렸을 때 가장 좋아한 과일은?</option>
-          <option value="첫 번째 애완동물의 이름은?">첫 번째 애완동물의 이름은?</option>
-          <option value="어릴 적 가장 기억에 남는 여행지는?">어릴 적 가장 기억에 남는 여행지는?</option>
+          <option value="어렸을 때 좋아했던 음식은 무엇인가요?">어렸을 때 좋아했던 음식은 무엇인가요?</option>
+          <option value="첫 번째 애완동물의 이름은 무엇인가요?">첫 번째 애완동물의 이름은 무엇인가요?</option>
+          <option value="가장 기억에 남는 여행지는 어디인가요?">가장 기억에 남는 여행지는 어디인가요?</option>
+          <option value="당신의 첫 번째 학교 이름은 무엇인가요?">당신의 첫 번째 학교 이름은 무엇인가요?</option>
+          <option value="부모님의 결혼 기념일은 언제인가요?">부모님의 결혼 기념일은 언제인가요?</option>
+          <option value="당신의 첫 번째 친구의 이름은 무엇인가요?">당신의 첫 번째 친구의 이름은 무엇인가요?</option>
+          <option value="가장 좋아하는 영화 제목은 무엇인가요?">가장 좋아하는 영화 제목은 무엇인가요?</option>
+          <option value="첫 번째 차의 모델은 무엇인가요?">첫 번째 차의 모델은 무엇인가요?</option>
+          <option value="어린 시절 살았던 도시 이름은 무엇인가요?">어린 시절 살았던 도시 이름은 무엇인가요?</option>
+          <option value="가장 좋아하는 스포츠 팀은 무엇인가요?">가장 좋아하는 스포츠 팀은 무엇인가요?</option>
         </select>
       </div>
 
@@ -118,22 +117,26 @@ export default {
       confirmPassword: '',
       name: '',
       birthDate: '',
-      gender: 'M', 
+      gender: 'M',
       email: '',
       phoneNum: '',
-      role: 'USER',
-      gymName: '',
-      securityQuestion: '',  // 보안 질문
-      securityAnswer: '',    // 보안 질문 답변
+      securityQuestion: '',
+      securityAnswer: '',
     };
+  },
+  computed: {
+    // 비밀번호 확인이 일치하는지 여부를 판단하는 computed property
+    isPasswordMatch() {
+      return this.password === this.confirmPassword;
+    }
   },
   methods: {
     async signup() {
+      // 비밀번호가 일치하지 않으면 회원가입을 진행하지 않음
       if (this.password !== this.confirmPassword) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
       }
-
 
       // 회원가입 폼 데이터 구성
       const formData = new FormData();
@@ -144,12 +147,8 @@ export default {
       formData.append('gender', this.gender);
       formData.append('email', this.email);
       formData.append('phoneNum', this.phoneNum);
-      formData.append('role', this.role);
-      formData.append('securityQuestion', this.securityQuestion);  // 보안 질문 추가
-      formData.append('securityAnswer', this.securityAnswer);      // 보안 답변 추가
-      if (this.role === 'TRAINER') {
-        formData.append('gymName', this.gymName);
-      }
+      formData.append('securityQuestion', this.securityQuestion);
+      formData.append('securityAnswer', this.securityAnswer);
 
       try {
         // 서버에 회원가입 요청
@@ -159,7 +158,6 @@ export default {
           },
         });
         alert('회원가입 성공');
-        console.log('리디렉숀!!!!!!!!!!!!!!')
         // 회원가입 후 선호 운동 선택 페이지로 리디렉션
         this.$router.replace({ name: 'login' });
       } catch (error) {
@@ -196,6 +194,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 h2 {
   text-align: center;
   margin-bottom: 30px;
@@ -245,5 +244,19 @@ button:hover {
 
 .link:hover {
   text-decoration: underline;
+}
+
+/* 비밀번호 확인 메시지 스타일 */
+.password-message {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.match {
+  color: green;
+}
+
+.mismatch {
+  color: red;
 }
 </style>

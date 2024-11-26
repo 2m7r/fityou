@@ -195,9 +195,15 @@
               `${myDietLogs[0].dietId}_diet`
             ]?.slice(0, 3)"
             :key="comment.commentId"
+            class="comment-box-container"
           >
-            <strong>{{ comment.name }}</strong> {{ comment.content }}
-            <span>{{ getRelativeTime(comment.createdAt) }}</span>
+            <div class="comment-box">
+              <strong>{{ comment.name }}</strong>
+              <span>{{ getRelativeTime(comment.createdAt) }}</span>
+              <div>
+                {{ comment.content }}
+              </div>
+            </div>
           </div>
 
           <!-- 전체 댓글 보여주기 (상위 3개 외) -->
@@ -210,22 +216,30 @@
                 `${myDietLogs[0].dietId}_diet`
               ]?.slice(3)"
               :key="comment.commentId"
+              class="comment-box-container"
             >
-              <p>
-                <strong>{{ comment.name }}</strong> {{ comment.content }}
-              </p>
-              <span>{{ getRelativeTime(comment.createdAt) }}</span>
+              <div class="comment-box">
+                <strong>{{ comment.name }}</strong>
+                <span>{{ getRelativeTime(comment.createdAt) }}</span>
+                <div>
+                  {{ comment.content }}
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- 댓글 입력창 -->
-          <div class="comment-box">
+          <div class="comment-input-container">
             <input
               v-model="newComment[myDietLogs[0].dietId]"
               placeholder="댓글을 입력하세요"
+              class="comment-input"
             />
-            <button class="cmt-btn" @click="addComment(myDietLogs[0].dietId, 'diet')">
-              댓글 추가
+            <button
+              class="cmt-btn"
+              @click="addComment(myDietLogs[0].dietId, 'diet')"
+            >
+              <i class="bi bi-chat-dots"></i>
             </button>
           </div>
         </div>
@@ -318,9 +332,16 @@
             3
           )"
           :key="comment.commentId"
+          class="comment-box-container"
         >
-          <strong>{{ comment.name }}</strong> {{ comment.content }}
-          <span>{{ getRelativeTime(comment.createdAt) }}</span>
+          <div class="comment-box">
+            <strong>{{ comment.name }}</strong>
+            <span>{{ getRelativeTime(comment.createdAt) }}</span>
+
+            <div>
+              {{ comment.content }}
+            </div>
+          </div>
         </div>
 
         <!-- 전체 댓글 보여주기 (상위 3개 외) -->
@@ -328,21 +349,28 @@
           <div
             v-for="(comment, index) in comments[`${log.dietId}_diet`]?.slice(3)"
             :key="comment.commentId"
+            class="comment-box-container"
           >
-            <p>
-              <strong>{{ comment.name }}</strong> {{ comment.content }}
-            </p>
-            <span>{{ getRelativeTime(comment.createdAt) }}</span>
+            <div class="comment-box">
+              <strong>{{ comment.name }}</strong>
+              <span>{{ getRelativeTime(comment.createdAt) }}</span>
+              <div>
+                {{ comment.content }}
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- 댓글 입력창 -->
-        <div class="comment-box">
+        <div class="comment-input-container">
           <input
             v-model="newComment[log.dietId]"
             placeholder="댓글을 입력하세요"
+            class="comment-input"
           />
-          <button class="cmt-btn" @click="addComment(log.dietId, 'diet')">댓글 추가</button>
+          <button class="cmt-btn" @click="addComment(log.dietId, 'diet')">
+            <i class="bi bi-chat-dots"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -368,56 +396,71 @@
             {{ exercise.weight }} kg {{ exercise.reps }} 회
             {{ exercise.sets }} 세트
           </div>
-
-
           <!-- 댓글 아이콘 -->
-          <button
-            @click="toggleComments(myWorkoutLogs[0].workoutId, 'workout')"
-            class="comment-btn"
-          >
-            💬
-            <!-- 댓글 아이콘 -->
-          </button>
-  
-          <!-- 댓글창 토글 -->
+        <button
+          @click="toggleComments(myWorkoutLogs[0].workoutId, 'workout')"
+          class="comment-btn"
+        >
+          💬
+        </button>
+
+        <!-- 댓글창 토글 -->
+        <div
+          v-for="(comment, index) in comments[
+            `${myWorkoutLogs[0].workoutId}_workout`
+          ]?.slice(0, 3)"
+          :key="comment.commentId"
+          class="comment-box-container"
+        >
+          <div class="comment-box">
+            <!-- <strong>{{ comment.name }}</strong> 
+        {{ comment.content }}
+        <span>{{ getRelativeTime(comment.createdAt) }}</span> -->
+
+            <strong>{{ comment.name }}</strong>
+            <span>{{ getRelativeTime(comment.createdAt) }}</span>
+            <div>
+              {{ comment.content }}
+            </div>
+          </div>
+        </div>
+
+        <!-- 전체 댓글 보여주기 (상위 3개 외) -->
+        <div
+          v-if="showComments[`${myWorkoutLogs[0].workoutId}_workout`]"
+          class="all-comments"
+        >
           <div
             v-for="(comment, index) in comments[
               `${myWorkoutLogs[0].workoutId}_workout`
-            ]?.slice(0, 3)"
+            ]?.slice(3)"
             :key="comment.commentId"
+            class="comment-box-container"
           >
-            <strong>{{ comment.name }}</strong> {{ comment.content }}
-            <span>{{ getRelativeTime(comment.createdAt) }}</span>
-          </div>
-  
-          <!-- 전체 댓글 보여주기 (상위 3개 외) -->
-          <div
-            v-if="showComments[`${myWorkoutLogs[0].workoutId}_workout`]"
-            class="all-comments"
-          >
-            <div
-              v-for="(comment, index) in comments[
-                `${myWorkoutLogs[0].workoutId}_workout`
-              ]?.slice(3)"
-              :key="comment.commentId"
-            >
-              <p>
-                <strong>{{ comment.name }}</strong> {{ comment.content }}
-              </p>
+            <div class="comment-box">
+              <strong>{{ comment.name }}</strong>
               <span>{{ getRelativeTime(comment.createdAt) }}</span>
+              <div>
+                {{ comment.content }}
+              </div>
             </div>
           </div>
-  
-          <!-- 댓글 입력창 -->
-          <div class="comment-box">
-            <input
-              v-model="newComment[myWorkoutLogs[0].workoutId]"
-              placeholder="댓글을 입력하세요"
-            />
-            <button class="cmt-btn" @click="addComment(myWorkoutLogs[0].workoutId, 'workout')">
-              댓글 추가
-            </button>
-          </div>
+        </div>
+
+        <!-- 댓글 입력창 -->
+        <div class="comment-input-container">
+          <input
+            v-model="newComment[myWorkoutLogs[0].workoutId]"
+            placeholder="댓글을 입력하세요"
+            class="comment-input"
+          />
+          <button
+            class="cmt-btn"
+            @click="addComment(myWorkoutLogs[0].workoutId, 'workout')"
+          >
+            <i class="bi bi-chat-dots"></i>
+          </button>
+        </div>
         </div>
 
         <div v-else>
@@ -425,23 +468,26 @@
           <h3>최근 운동일기가 없습니다.... 운동... 안하셨나요..?</h3>
         </div>
 
+        
       </div>
 
       <hr />
 
       <!-- 팔로우한 유저들의 운동일기 -->
+      <div class="my-workout">
+
+      
       <div v-for="log in workoutLogs" :key="log.workoutId" class="log-card">
         <h3>{{ log.name }}</h3>
-        <p>
-          <strong>{{ log.recordDate }}</strong>
+        <p class="diet-date">
+         {{ log.recordDate }}
         </p>
-        <p>{{ log.description }}</p>
-        <div v-for="exercise in log.exercises" :key="exercise.id">
+        <p class="workout-content">{{ log.description }}</p>
+        <div v-for="exercise in log.exercises" :key="exercise.id" class="exc-content"> 
           <strong>{{ exercise.exerciseName }}</strong>
           {{ exercise.weight }} kg {{ exercise.reps }} 회
           {{ exercise.sets }} 세트
         </div>
-
         <!-- 댓글 아이콘 -->
         <button
           @click="toggleComments(log.workoutId, 'workout')"
@@ -457,11 +503,16 @@
             `${log.workoutId}_workout`
           ]?.slice(0, 3)"
           :key="comment.commentId"
+          class="comment-box-container"
         >
-          <strong>{{ comment.name }}</strong> {{ comment.content }}
-          <span>{{ getRelativeTime(comment.createdAt) }}</span>
+          <div class="comment-box">
+            <strong>{{ comment.name }}</strong>
+            <span>{{ getRelativeTime(comment.createdAt) }}</span>
+            <div>
+              {{ comment.content }}
+            </div>
+          </div>
         </div>
-
         <!-- 전체 댓글 보여주기 (상위 3개 외) -->
         <div
           v-if="showComments[`${log.workoutId}_workout`]"
@@ -472,25 +523,32 @@
               `${log.workoutId}_workout`
             ]?.slice(3)"
             :key="comment.commentId"
+            class="comment-box-container"
           >
-            <p>
-              <strong>{{ comment.name }}</strong> {{ comment.content }}
-            </p>
-            <span>{{ getRelativeTime(comment.createdAt) }}</span>
+            <div class="comment-box">
+              <strong>{{ comment.name }}</strong>
+              <span>{{ getRelativeTime(comment.createdAt) }}</span>
+              <div>
+                {{ comment.content }}
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- 댓글 입력창 -->
-        <div class="comment-box">
+        <div class="comment-input-container">
           <input
             v-model="newComment[log.workoutId]"
             placeholder="댓글을 입력하세요"
+            class="comment-input"
           />
-          <button @click="addComment(log.workoutId, 'workout')">
-            댓글 추가
+          <button class="cmt-btn" @click="addComment(log.workoutId, 'workout')">
+            <i class="bi bi-chat-dots"></i>
           </button>
         </div>
+        
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -769,52 +827,97 @@ onMounted(() => {
 
 
 <style scoped>
+/* 댓글 아이콘 버튼 가운데 정렬 */
 .comment-btn {
+  display: block;
+  margin: 0 auto;
+  font-size: 2rem;
   background: none;
   border: none;
-  font-size: 16px;
   cursor: pointer;
+}
+
+/* 댓글 박스 스타일 */
+.comment-box-container {
+  margin-bottom: 1rem;
 }
 
 .comment-box {
-  margin-top: 10px;
+  background-color: #ffffff;
+  padding: 10px 15px;
+  border-radius: 20px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
+  display: inline-block; /* 내용에 맞춰 크기 조정 */
+  max-width: 80%; /* 최대 너비 제한 (원하는 만큼 설정 가능) */
+  word-wrap: break-word; /* 긴 단어나 URL을 다음 줄로 감싸도록 설정 */
+  width: auto; /* 내용에 맞게 자동으로 크기 조정 */
 }
 
-.comment-box input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 80%;
+.comment-box strong {
+  font-weight: bold;
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
+
+.comment-box span {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.comment-box div {
+  font-size: 1.1rem;
+}
+
+/* 전체 댓글 박스 */
+.all-comments {
+  margin-top: 20px;
+}
+
+/* 댓글 입력창 */
+.comment-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .comment-input {
-  margin-top: 10px;
+  flex-grow: 1;
+  padding: 15px 20px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 1.1rem;
+  margin-right: 10px;
 }
 
-.comment-input input {
-  width: 80%;
-  padding: 5px;
+.comment-input::placeholder {
+  color: #aaa;
 }
 
-.comment-input button {
-  padding: 5px 10px;
-}
-
-.comment-box button {
-  padding: 8px;
-  border-radius: 5px;
-  background-color: #54a673;
-  color: white;
-  cursor: pointer;
-}
-
-.comment-box button:hover {
+.cmt-btn:hover {
   background-color: #457f4e;
 }
 
-.comment-box input:focus {
-  outline: none;
-  border-color: #54a673;
+/* 댓글 추가 버튼 (원형 버튼) */
+.cmt-btn {
+  width: 55px; /* 버튼의 너비 */
+  height: 55px; /* 버튼의 높이 */
+  background-color: #54a673;
+  border: none;
+  border-radius: 50%; /* 원형 버튼 */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.cmt-btn i {
+  font-size: 1.3rem;
+  margin-left: 2.2px;
 }
 
 .tabs {
@@ -850,8 +953,7 @@ onMounted(() => {
   color: white;
 }
 
-
-.my-diet {
+.diet-tab {
   padding: 15px 40px;
   background-color: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -860,12 +962,32 @@ onMounted(() => {
   margin: 0 auto;
 }
 
+.workout-tab {
+  padding: 15px 40px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px; /* 모서리 둥글게 */
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+
+
 .diet-tab .log-card {
   margin-bottom: 30px; /* 카드 간격 추가 */
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 15px;
 }
+
+.my-workout .log-card {
+  margin-bottom: 30px; /* 카드 간격 추가 */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  
+}
+
 
 button {
   padding: 10px;
@@ -882,7 +1004,7 @@ button.active {
   padding: 20px;
   margin: 20px 0; /* 카드 바깥쪽에 여백 추가 */
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: #f9f9f9;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -1108,4 +1230,16 @@ button.active {
 }
 
 
+.exc-content {
+  margin: 0 5px;
+  font-size: 1.3rem;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.cmt-btn {
+  border: 1px solid white;
+  border-radius: 50px;
+}
 </style>

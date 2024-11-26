@@ -37,9 +37,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-const activeTab = ref('home')
+const route = useRoute()
+const activeTab = ref(route.name) // 초기 활성화된 탭을 현재 경로로 설정
+
+
+// 경로가 변경될 때마다 activeTab을 업데이트
+watch(() => route.name, (newRoute) => {
+  activeTab.value = newRoute
+})
+
 
 const isActive = (tab) => {
   return activeTab.value === tab

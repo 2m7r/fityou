@@ -118,6 +118,7 @@ public class WorkoutRestController {
 	@GetMapping("/feed/{userId}")
 	@Operation(summary = "특정 유저의 운동일기 목록 조회", description = "특정 유저에 대한 모든 운동일기 목록을 조회합니다.")
 	public ResponseEntity<List<Workout>> getDietsByUserId(@PathVariable Long userId) {
+		System.out.println("내 운동일기 목록조회 들어옴");
 		List<Workout> workouts = workoutService.getWorkoutsById(userId);
 		return ResponseEntity.ok(workouts);
 	}

@@ -33,6 +33,7 @@ import com.workout.jwt.JwtUtil;
 import com.workout.model.dto.FindIdRequest;
 import com.workout.model.dto.SelectPreferredExercisesRequest;
 import com.workout.model.dto.User;
+import com.workout.model.service.FollowService;
 import com.workout.model.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,10 +46,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserRestController {
 
 	private final UserService us;
+	private final FollowService fs;
 	private final JwtUtil jwtUtil;
 
-	public UserRestController(UserService us, JwtUtil jwtUtil) {
+	public UserRestController(UserService us, FollowService fs, JwtUtil jwtUtil) {
 		this.us = us;
+		this.fs = fs;
 		this.jwtUtil = jwtUtil;
 	}
 
@@ -241,21 +244,32 @@ public class UserRestController {
     	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 탈퇴 실패");
     }
     
-    // 유저 추천
     @GetMapping("/recommend")
     public ResponseEntity<List<User>> recommendUsers(@RequestParam Long userId) {
-    	System.out.println("추천 들어옴");
-    	User curruser = us.selectUserById(userId);
-    	System.out.println(curruser);
-    	List<String> preferredExercises = curruser.getPreferredExercises();
-    	if (preferredExercises == null) {
-    		preferredExercises = new ArrayList<>();
-    	}
-    	List<User> allUsers = us.selectAllUsers();
-    	List<UserRecommendation> recommendations = new ArrayList<>();
-    	// 3. 선호 운동이 겹치는 유저 찾기
+        System.out.println("추천 들어옴");
+        
+        // 현재 유저 정보 가져오기
+        User currUser = us.selectUserById(userId);
+        System.out.println(currUser);
+        
+        // 현재 유저의 선호 운동 목록 가져오기
+        List<String> preferredExercises = currUser.getPreferredExercises();
+        if (preferredExercises == null) {
+            preferredExercises = new ArrayList<>();
+        }
+
+        // 모든 유저 목록 가져오기
+        List<User> allUsers = us.selectAllUsers();
+
+        // 현재 유저가 팔로우한 유저 목록을 가져오기 (팔로우 관계 확인)
+        List<Long> followedUserIds = fs.getFollowingByUserId(userId);  // 팔로우 서비스에서 팔로우한 유저 아이디 목록 가져오기
+
+        List<UserRecommendation> recommendations = new ArrayList<>();
+
+        // 3. 선호 운동이 겹치는 유저 찾기
         for (User user : allUsers) {
-            if (!user.getUserId().equals(userId)) {
+            // 현재 유저는 제외하고 팔로우한 유저도 제외
+            if (!user.getUserId().equals(userId) && !followedUserIds.contains(user.getUserId())) {
                 long commonExercises = preferredExercises.stream()
                     .filter(exercise -> user.getPreferredExercises().contains(exercise))
                     .count();

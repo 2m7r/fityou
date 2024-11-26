@@ -60,6 +60,7 @@ public class CommentRestController {
 	@Operation(summary = "댓글 조회", description = "특정 대상(식단일기 또는 운동일기)에 달린 댓글을 조회합니다.")
 	public ResponseEntity<List<Comment>> getCommentsByTarget(@RequestParam long targetId,
 			@RequestParam String targetType) {
+		System.out.println("댓글조회 들어옴");
 		List<Comment> comments = commentService.getCommentsByTarget(targetId, targetType);
 		return ResponseEntity.ok(comments);
 	}

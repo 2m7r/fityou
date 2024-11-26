@@ -258,6 +258,7 @@ CREATE TABLE comments (
     target_id BIGINT NOT NULL, -- 댓글이 속한 대상의 ID
     target_type ENUM('diet', 'workout') NOT NULL, -- 댓글이 연결된 유형 (식단 or 운동)
     user_id BIGINT NOT NULL, -- 댓글 작성자 ID
+    name VARCHAR(100) NOT NULL, -- 이름
     content TEXT NOT NULL, -- 댓글 내용
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE

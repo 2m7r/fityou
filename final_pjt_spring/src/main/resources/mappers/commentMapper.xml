@@ -4,8 +4,8 @@
 
     <!-- 댓글 등록 -->
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="commentId">
-        INSERT INTO comments (target_id, target_type, user_id, content)
-        VALUES (#{targetId}, #{targetType}, #{userId}, #{content})
+        INSERT INTO comments (target_id, target_type, user_id, name, content, created_at)
+        VALUES (#{targetId}, #{targetType}, #{userId}, #{name}, #{content}, #{createdAt})
     </insert>
 
     <!-- 댓글 삭제 -->
@@ -15,7 +15,7 @@
 
     <!-- 특정 대상(운동일기 또는 식단일기)에 달린 댓글 조회 -->
     <select id="selectCommentsByTarget" resultType="com.workout.model.dto.Comment">
-        SELECT comment_id, target_id, target_type, user_id, content, created_at
+        SELECT *
         FROM comments
         WHERE target_id = #{targetId} AND target_type = #{targetType}
         ORDER BY created_at DESC

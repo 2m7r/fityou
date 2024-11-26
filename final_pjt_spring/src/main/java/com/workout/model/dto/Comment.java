@@ -7,10 +7,18 @@ public class Comment {
     private long targetId; // 댓글이 속한 대상 ID (운동일기나 식단일기 ID)
     private String targetType; // 댓글이 속한 유형 ('diet' 또는 'workout')
     private long userId; // 댓글 작성자 ID
+    private String name; // 댓글 작성자 이름
     private String content; // 댓글 내용
     private LocalDateTime createdAt; // 댓글 작성일시
     
     
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public long getCommentId() {
 		return commentId;
 	}
@@ -47,5 +55,9 @@ public class Comment {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-    
+	@Override
+	public String toString() {
+		return "Comment [commentId=" + commentId + ", targetId=" + targetId + ", targetType=" + targetType + ", userId="
+				+ userId + ", name=" + name + ", content=" + content + ", createdAt=" + createdAt + "]";
+	}
 }

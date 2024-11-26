@@ -62,6 +62,7 @@ public class FollowRestController {
 	@Operation(summary = "팔로잉 목록 조회", description = "특정 사용자가 팔로우하는 모든 사용자를 조회합니다.")
 	public ResponseEntity<List<Long>> getFollowingByUserId(@PathVariable Long followerId) {
 		List<Long> followingList = followService.getFollowingByUserId(followerId);
+		System.out.println(followingList);
 		return ResponseEntity.ok(followingList);
 	}
 

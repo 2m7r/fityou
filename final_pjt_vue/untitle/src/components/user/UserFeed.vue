@@ -58,7 +58,7 @@
           >
             팔로우
           </button>
-          <button 
+        <button 
             v-if="isFollowing(user.userId)"
             @click="unfollowUser(user)"
           >
@@ -145,17 +145,17 @@
         </div>
 
         <!-- 식단일기 또는 운동일기에서 댓글 추가 및 표시 -->
-        <div v-if="log.comments">
-          <div v-for="comment in log.comments" :key="comment.id">
+        <div v-if="comments.length > 0">
+          <div v-for="comment in comments" :key="comment.comment_id">
             <p>{{ comment.username }}: {{ comment.content }}</p>
           </div>
         </div>
 
-          <!-- 댓글 입력창 -->
-          <div class="comment-box">
-            <input v-model="newComment" placeholder="댓글을 입력하세요" />
-            <button @click="addComment(log)">댓글 추가</button>
-          </div>
+        <!-- 댓글 입력창 -->
+        <div class="comment-box">
+          <input v-model="newComment" placeholder="댓글을 입력하세요" />
+          <button @click="addComment(log)">댓글 추가</button>
+        </div>
       </div>
     </div>
 
@@ -204,6 +204,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import apiClient from '@/components/api/apiClient';
@@ -240,6 +241,7 @@ const addComment = async (log) => {
   if (newComment.value.trim() === '') {
     return;
   }
+  console.log(log)
 
   try {
     const response = await apiClient.post('/api-comment/create', {

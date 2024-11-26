@@ -30,7 +30,7 @@
     <!-- 현재 날씨 아이콘과 정보 -->
     <div class="weather-info">
       <div v-if="weather">
-        <span class="weather-description">{{ weather.weatherDescription }}</span>
+        <span class="weather-description">현재 날씨 {{ weather.weatherDescription }}</span>
       </div>
       <div v-else>
         <p>날씨 정보를 불러오는 중...</p>

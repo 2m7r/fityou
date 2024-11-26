@@ -65,7 +65,7 @@
           >
             팔로우
           </button>
-          <button 
+        <button 
             v-if="isFollowing(user.userId)"
             @click="unfollowUser(user)"
           >
@@ -74,22 +74,18 @@
       </div>
     </div>
 
-  
     <!-- 탭 버튼 -->
-   
-<div class="tabs">
-  <input type="radio" id="diet-tab" v-model="currentTab" value="diet" class="tab-toggle" />
-  <label for="diet-tab" class="tab-label">
-    <i class="bi tab-icon">🥗</i>
-  </label>
-  
-  <input type="radio" id="workout-tab" v-model="currentTab" value="workout" class="tab-toggle" />
-  <label for="workout-tab" class="tab-label">
-    <i class="bi tab-icon">🏃</i>
-  </label>
-</div>
-
-
+    <div class="tabs">
+      <input type="radio" id="diet-tab" v-model="currentTab" value="diet" class="tab-toggle" />
+      <label for="diet-tab" class="tab-label">
+        <i class="bi tab-icon">🥗</i>
+      </label>
+      
+      <input type="radio" id="workout-tab" v-model="currentTab" value="workout" class="tab-toggle" />
+      <label for="workout-tab" class="tab-label">
+        <i class="bi tab-icon">🏃</i>
+      </label>
+    </div>
 
     <!-- 식단일기 탭 -->
     <div v-if="currentTab === 'diet'" class="diet-tab">
@@ -98,11 +94,9 @@
         <div v-if="myDietLogs.length > 0" class="log-card">
           <h3>{{ myDietLogs[0].name }}님의 최근 식단일기</h3>
           <p class="diet-date">{{ myDietLogs[0].recordDate }}</p>
-          
 
-          
-           <!-- 식사 이미지 탭 -->
-           <div class="meal-tabs">
+          <!-- 식사 이미지 탭 -->
+          <div class="meal-tabs">
             <input type="radio" id="breakfast-tab" v-model="mealTab" value="breakfast" class="meal-toggle" />
             <label for="breakfast-tab" class="meal-label">아침</label>
 
@@ -128,102 +122,72 @@
             <img :src="'http://localhost:8080/'+myDietLogs[0].dinnerImagePath" alt="Dinner Image" class="meal-img" />
           </div>
 
-
           <p class="diet-content">{{ myDietLogs[0].content }}</p>
-
-
-          <!-- <button @click="openDietLogModal(myDietLogs[0])" class="edit-btn">수정</button> -->
         </div>
-      <div v-else>
+        <div v-else>
+          <hr>
+          <h3>최근 식단일기가 없습니다.... 다이어트 안하셨나요..?</h3>
+        </div>
+
         <hr>
-        <h3>최근 식단일기가 없습니다.... 다이어트 안하셨나요..?</h3>
-      </div>
-      <hr>
-      <div v-for="log in dietLogs" :key="log.diet_id" class="log-card">
-        <!-- 이름 -->
-        <h3>{{log.name}}</h3>
-        <p><strong>{{ log.recordDate }}</strong></p>
-        <div>{{ log.content }}</div>
-        <div class="meal-tabs">
-          <input type="radio" id="breakfast-tab-{{ log.diet_id }}" v-model="mealTab" value="breakfast" class="meal-toggle" />
-          <label for="breakfast-tab-{{ log.diet_id }}" class="meal-label">아침</label>
+        <div v-for="log in dietLogs" :key="log.diet_id" class="log-card">
+          <h3>{{log.name}}</h3>
+          <p><strong>{{ log.recordDate }}</strong></p>
+          <div>{{ log.content }}</div>
 
-          <input type="radio" id="lunch-tab-{{ log.diet_id }}" v-model="mealTab" value="lunch" class="meal-toggle" />
-          <label for="lunch-tab-{{ log.diet_id }}" class="meal-label">점심</label>
+          <!-- 식사 이미지 탭 -->
+          <div class="meal-tabs">
+            <input type="radio" id="breakfast-tab-{{ log.diet_id }}" v-model="mealTab" value="breakfast" class="meal-toggle" />
+            <label for="breakfast-tab-{{ log.diet_id }}" class="meal-label">아침</label>
 
-          <input type="radio" id="dinner-tab-{{ log.diet_id }}" v-model="mealTab" value="dinner" class="meal-toggle" />
-          <label for="dinner-tab-{{ log.diet_id }}" class="meal-label">저녁</label>
-        </div>
+            <input type="radio" id="lunch-tab-{{ log.diet_id }}" v-model="mealTab" value="lunch" class="meal-toggle" />
+            <label for="lunch-tab-{{ log.diet_id }}" class="meal-label">점심</label>
 
-        <!-- 아침 이미지 -->
-        <div v-if="mealTab === 'breakfast' && log.breakfastImagePath">
-          <img :src="'http://localhost:8080/'+log.breakfastImagePath" alt="Breakfast Image" class="meal-img" />
-        </div>
-
-        <!-- 점심 이미지 -->
-        <div v-if="mealTab === 'lunch' && log.lunchImagePath">
-          <img :src="'http://localhost:8080/'+log.lunchImagePath" alt="Lunch Image" class="meal-img" />
-        </div>
-
-        <!-- 저녁 이미지 -->
-        <div v-if="mealTab === 'dinner' && log.dinnerImagePath">
-          <img :src="'http://localhost:8080/'+log.dinnerImagePath" alt="Dinner Image" class="meal-img" />
-        </div>
-
-        <!-- 식단일기 또는 운동일기에서 댓글 추가 및 표시 -->
-        <div v-if="log.comments">
-          <div v-for="comment in log.comments" :key="comment.id">
-            <p>{{ comment.username }}: {{ comment.content }}</p>
+            <input type="radio" id="dinner-tab-{{ log.diet_id }}" v-model="mealTab" value="dinner" class="meal-toggle" />
+            <label for="dinner-tab-{{ log.diet_id }}" class="meal-label">저녁</label>
           </div>
-        </div>
+
+          <!-- 아침 이미지 -->
+          <div v-if="mealTab === 'breakfast' && log.breakfastImagePath">
+            <img :src="'http://localhost:8080/'+log.breakfastImagePath" alt="Breakfast Image" class="meal-img" />
+          </div>
+
+          <!-- 점심 이미지 -->
+          <div v-if="mealTab === 'lunch' && log.lunchImagePath">
+            <img :src="'http://localhost:8080/'+log.lunchImagePath" alt="Lunch Image" class="meal-img" />
+          </div>
+
+          <!-- 저녁 이미지 -->
+          <div v-if="mealTab === 'dinner' && log.dinnerImagePath">
+            <img :src="'http://localhost:8080/'+log.dinnerImagePath" alt="Dinner Image" class="meal-img" />
+          </div>
+
+          <!-- 댓글 표시 -->
+          <div v-if="log.comments">
+            <div v-for="comment in log.comments" :key="comment.id">
+              <p>{{ comment.username }}: {{ comment.content }}</p>
+            </div>
+          </div>
 
           <!-- 댓글 입력창 -->
-          <div class="comment-box">
-            <input v-model="newComment" placeholder="댓글을 입력하세요" />
-            <button @click="addComment(log)">댓글 추가</button>
+          <div v-if="isLoggedIn">
+            <input v-model="newComment" placeholder="댓글을 작성하세요..." />
+            <button @click="postComment(log.diet_id)">댓글 작성</button>
           </div>
+        </div>
       </div>
     </div>
 
     <!-- 운동일기 탭 -->
     <div v-if="currentTab === 'workout'" class="workout-tab">
-      <!-- 나의 최근 운동일기 하나만 출력 -->
-      <div v-if="myWorkoutLogs.length > 0" class="log-card">
-        <h3>{{ myWorkoutLogs[0].name }}의 최근 운동일기</h3>
-
-        <!-- 날짜 -->
-        <p><strong>{{ myWorkoutLogs[0].recordDate }}</strong></p>
-    
-        <p>{{ myWorkoutLogs[0].description }}</p>
-
-        <div v-for="exercise in myWorkoutLogs[0].exercises" :key="exercise.id">
-          <strong>{{ exercise.exerciseName }}</strong>
-          {{ exercise.weight }} kg
-          {{ exercise.reps }} 회
-          {{ exercise.sets }} 세트
-        </div>
-      </div>
-      <div v-else>
-        <hr>
-        <h3>최근 운동일기가 없습니다.... 운동 안하셨나요..?</h3>
-      </div>
-      <hr>
-      <!-- 팔로우한 유저들의 운동일기 -->
       <div v-for="log in workoutLogs" :key="log.workout_id" class="log-card">
-        <!-- 이름 -->
-        <h3>{{ log.name }}</h3>
-
-        <!-- 날짜 -->
+        <h3>{{log.name}}</h3>
         <p><strong>{{ log.recordDate }}</strong></p>
+        <div>{{ log.content }}</div>
 
-        <!-- 내용 -->
-        <p>{{ log.description }}</p>
-        
-        <div v-for="exercise in log.exercises" :key="exercise.id">
-          <strong>{{ exercise.exerciseName }}</strong>
-          {{ exercise.weight }} kg
-          {{ exercise.reps }} 회
-          {{ exercise.sets }} 세트
+        <!-- 운동 이미지 -->
+        <div v-if="log.workoutImagePath">
+          <img :src="'http://localhost:8080/'+log.workoutImagePath" alt="Workout Image" class="meal-img" />
         </div>
       </div>
     </div>

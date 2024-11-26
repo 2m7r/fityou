@@ -10,7 +10,7 @@ export const fetchWeather = async (nx, ny, baseDate, baseTime) => {
     const response = await axios.get(WEATHER_API_URL, {
       params: {
         serviceKey: SERVICE_KEY,
-        numOfRows: 10, // 충분한 데이터 수 요청
+        numOfRows: 10,
         pageNo: 1,
         dataType: "JSON",
         base_date: baseDate,

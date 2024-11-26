@@ -7,8 +7,7 @@
         v-model="searchUserId" 
         placeholder="유저 ID를 입력하세요"
         @keyup.enter="searchUser"
-        @focus="showRecommendedUsers = true"  
-        @blur="showRecommendedUsers = false"
+        @focus="showRecommendedUsers = true" 
       />
       <button @click="searchUser">검색</button>
       <!-- 초기화 버튼 추가 -->

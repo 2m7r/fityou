@@ -1,3 +1,4 @@
+마이페이지 뷰
 <template>
   <div>
     <div class="marginplz"></div>
@@ -185,12 +186,12 @@ const closeEditModal = () => {
   padding: 0 20px; /* 좌우 여백 */
   text-align: center;
   font-size: 4rem;
-  color: #6c757d;
+  color: #8ea59b;
   font-style: italic;
   margin-top: 10px;
   margin-right: 100px;
   font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Bold';
   letter-spacing: 15px;
 }
 
@@ -251,7 +252,7 @@ const closeEditModal = () => {
 
 .challenge-img {
   width: 900px;
-  height: 430px;
+  height: 500px;
   margin-left: 20px;
 }
 

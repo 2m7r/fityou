@@ -1,9 +1,12 @@
 <template>
   <div class="user-aside">
     <!-- 사용자 프로필 사진 -->
+    <RouterLink
+    :to="{ name: 'my-page'}">
     <div class="profile">
       <img :src="userProfileImage || defaultprofileImage" alt="User Profile" class="profile-img" />
     </div>
+  </RouterLink>
 
     <!-- 사용자 이름 -->
     <h4 class="user-name">{{ userStore.userName }}님, FITYOU!</h4>
@@ -29,13 +32,17 @@
 
     <!-- 현재 날씨 아이콘과 정보 -->
     <div class="weather-info">
-      <div v-if="weather">
-        <span class="weather-description">현재 날씨 {{ weather.weatherDescription }}</span>
-      </div>
-      <div v-else>
-        <p>날씨 정보를 불러오는 중...</p>
-      </div>
-    </div>
+  <div v-if="weather">
+    <span class="weather-description">
+      <!-- 날씨 아이콘 표시 -->
+      <i :class="weatherIcon" class="weather-icon me-2"></i> 
+      {{ weather.weatherDescription }} 
+    </span>
+  </div>
+  <div v-else>
+    <p>날씨 정보를 불러오는 중...</p>
+  </div>
+</div>
 
     <!-- 운동일기 작성과 캘린더 사이 여백 추가 -->
     <div class="my-3"></div>
@@ -60,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted,computed } from "vue";
 import { fetchWeather } from "@/services/weatherService"; // 날씨 서비스 함수 가져오기
 import DietLogModal from "@/components/feed/DietLogModal.vue";
 import WorkoutLogModal from "../feed/WorkoutLogModal.vue";
@@ -185,9 +192,38 @@ const getWeatherDescription = (code) => {
   return descriptions[code] || "정보 없음";
 };
 
+// 날씨 정보 처리 부분
+const weatherIcon = computed(() => {
+  if (!weather.value) return ''; // 날씨 정보가 없으면 빈 문자열 반환
+
+  // 날씨 코드에 따른 아이콘 클래스 반환
+  const code = weather.value.weatherCode;
+  switch (code) {
+    case "0":
+      return "bi bi-sun"; // 맑음
+    case "1":
+    case "2":
+      return "bi bi-cloud-rain"; // 비 또는 비/눈
+    case "3":
+      return "bi bi-snow"; // 눈
+    case "4":
+      return "bi bi-cloud-sun"; // 소나기
+    default:
+      return "bi bi-cloud"; // 기본적으로 구름 아이콘
+  }
+});
+
+
+
 </script>
 
 <style scoped>
+.weather-description {
+  font-size: 1.2rem;
+}
+
+
+
 .user-aside {
   position: relative;
   top: 20px;

@@ -2,7 +2,7 @@
   <div class="home-container">
     <div class="row justify-content-center">
       <div class="col-12 text-center">
-        <h2>매일 성장하는 나의 기록</h2>
+        <h2>F I T   Y O U  ——————   W I T H   Y O U</h2>
       </div>
     </div>
   </div>
@@ -26,7 +26,6 @@
 h2 {
   font-size: 30px;
   color: #333;
-  font-weight: bold;
 }
 </style>
 

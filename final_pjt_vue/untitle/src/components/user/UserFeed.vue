@@ -3,18 +3,20 @@
     <!-- 검색창 추가 -->
     <div class="search-bar">
       <div class="search-box">
-        <input 
-          type="text" 
+        <input
+          type="text"
           v-model="searchUserId"
           placeholder="유저 ID를 입력하세요"
           @keyup.enter="searchUser"
-          @focus="showRecommendedUsers = true" 
+          @focus="showRecommendedUsers = true"
         />
         <button @click="searchUser">
-          <i class="bi bi-search"></i> <!-- 검색 아이콘 -->
+          <i class="bi bi-search"></i>
+          <!-- 검색 아이콘 -->
         </button>
         <button @click="resetSearch">
-          <i class="bi bi-arrow-clockwise"></i> <!-- 초기화 아이콘 -->
+          <i class="bi bi-arrow-clockwise"></i>
+          <!-- 초기화 아이콘 -->
         </button>
       </div>
     </div>
@@ -22,70 +24,90 @@
     <!-- 검색된 유저 목록 -->
     <div v-if="searchedUsers.length > 0" class="user-list">
       <h3>검색된 유저</h3>
-      <div 
-        v-for="user in searchedUsers" 
-        :key="user.userId" 
-        class="user-card" 
+      <div
+        v-for="user in searchedUsers"
+        :key="user.userId"
+        class="user-card"
         @click="selectUser(user)"
       >
         <p>{{ user.username }}</p>
         <!-- 팔로우 버튼 표시 (내 자신을 제외) -->
-        <div v-if="user.userId !== userId"> <!-- 내 자신을 제외하는 조건 -->
-          <button 
+        <div v-if="user.userId !== userId">
+          <!-- 내 자신을 제외하는 조건 -->
+          <button
             v-if="!isFollowing(user.userId)"
             @click="followUser(user)"
             class="follow-btn"
           >
-            <i class="bi bi-plus"></i> <!-- 팔로우 버튼을 + 아이콘으로 -->
+            <i class="bi bi-plus"></i>
+            <!-- 팔로우 버튼을 + 아이콘으로 -->
           </button>
-          <button 
+          <button
             v-if="isFollowing(user.userId)"
             @click="unfollowUser(user)"
             class="follow-btn"
           >
-            <i class="bi bi-check"></i> <!-- 팔로우 취소 버튼 -->
+            <i class="bi bi-check"></i>
+            <!-- 팔로우 취소 버튼 -->
           </button>
         </div>
       </div>
     </div>
 
     <!-- 선호운동이 겹치는 추천 유저들 -->
-    <div v-if="showRecommendedUsers && recommendedUsers.length > 0" class="recommended-users">
-      <hr>
+    <div
+      v-if="showRecommendedUsers && recommendedUsers.length > 0"
+      class="recommended-users"
+    >
+      <hr />
       <h3>추천 유저</h3>
-      <div 
-        v-for="user in recommendedUsers" 
-        :key="user.userId" 
+      <div
+        v-for="user in recommendedUsers"
+        :key="user.userId"
         class="user-card"
         @click="selectUser(user)"
-        @focus="showRecommendedUsers = false" 
+        @focus="showRecommendedUsers = false"
       >
         <p>{{ user.username }}</p>
-        <button 
+        <button
           v-if="!isFollowing(user.userId)"
-            @click="followUser(user)"
-            class="follow-btn"
-          >
-            <i class="bi bi-plus"></i> <!-- 팔로우 버튼을 + 아이콘으로 -->
-          </button>
-          <button 
-            v-if="isFollowing(user.userId)"
-            @click="unfollowUser(user)"
-            class="follow-btn"
-          >
-            <i class="bi bi-check"></i> <!-- 팔로우 취소 버튼 -->
+          @click="followUser(user)"
+          class="follow-btn"
+        >
+          <i class="bi bi-plus"></i>
+          <!-- 팔로우 버튼을 + 아이콘으로 -->
+        </button>
+        <button
+          v-if="isFollowing(user.userId)"
+          @click="unfollowUser(user)"
+          class="follow-btn"
+        >
+          <i class="bi bi-check"></i>
+          <!-- 팔로우 취소 버튼 -->
         </button>
       </div>
     </div>
 
     <!-- 탭 버튼 -->
     <div class="tabs">
-      <input type="radio" id="diet-tab" v-model="currentTab" value="diet" class="tab-toggle" />
+      <input
+        type="radio"
+        id="diet-tab"
+        v-model="currentTab"
+        value="diet"
+        class="tab-toggle"
+      />
       <label for="diet-tab" class="tab-label">
         <i class="bi tab-icon">🥗</i>
       </label>
-      
-      <input type="radio" id="workout-tab" v-model="currentTab" value="workout" class="tab-toggle" />
+
+      <input
+        type="radio"
+        id="workout-tab"
+        v-model="currentTab"
+        value="workout"
+        class="tab-toggle"
+      />
       <label for="workout-tab" class="tab-label">
         <i class="bi tab-icon">🏃</i>
       </label>
@@ -101,241 +123,419 @@
 
           <!-- 식사 이미지 탭 -->
           <div class="meal-tabs">
-            <input type="radio" id="breakfast-tab" v-model="mealTab" value="breakfast" class="meal-toggle" />
+            <input
+              type="radio"
+              id="breakfast-tab"
+              v-model="mealTab"
+              value="breakfast"
+              class="meal-toggle"
+            />
             <label for="breakfast-tab" class="meal-label">아침</label>
 
-            <input type="radio" id="lunch-tab" v-model="mealTab" value="lunch" class="meal-toggle" />
+            <input
+              type="radio"
+              id="lunch-tab"
+              v-model="mealTab"
+              value="lunch"
+              class="meal-toggle"
+            />
             <label for="lunch-tab" class="meal-label">점심</label>
 
-            <input type="radio" id="dinner-tab" v-model="mealTab" value="dinner" class="meal-toggle" />
+            <input
+              type="radio"
+              id="dinner-tab"
+              v-model="mealTab"
+              value="dinner"
+              class="meal-toggle"
+            />
             <label for="dinner-tab" class="meal-label">저녁</label>
           </div>
 
-          <!-- 이미지 표시 -->
-          <div v-if="mealTab === 'breakfast' && myDietLogs[0].breakfastImagePath">
-            <img :src="'http://localhost:8080/'+myDietLogs[0].breakfastImagePath" alt="Breakfast Image" class="meal-img" />
+          <!-- 아침 이미지 -->
+          <div
+            v-if="mealTab === 'breakfast' && myDietLogs[0].breakfastImagePath"
+          >
+            <img
+              :src="'http://localhost:8080/' + myDietLogs[0].breakfastImagePath"
+              alt="Breakfast Image"
+              class="meal-img"
+            />
           </div>
 
           <div v-if="mealTab === 'lunch' && myDietLogs[0].lunchImagePath">
-            <img :src="'http://localhost:8080/'+myDietLogs[0].lunchImagePath" alt="Lunch Image" class="meal-img" />
+            <img
+              :src="'http://localhost:8080/' + myDietLogs[0].lunchImagePath"
+              alt="Lunch Image"
+              class="meal-img"
+            />
           </div>
 
           <div v-if="mealTab === 'dinner' && myDietLogs[0].dinnerImagePath">
-            <img :src="'http://localhost:8080/'+myDietLogs[0].dinnerImagePath" alt="Dinner Image" class="meal-img" />
+            <img
+              :src="'http://localhost:8080/' + myDietLogs[0].dinnerImagePath"
+              alt="Dinner Image"
+              class="meal-img"
+            />
           </div>
 
           <p class="diet-content">{{ myDietLogs[0].content }}</p>
 
           <!-- 댓글 아이콘 -->
-          <button @click="toggleComments(myDietLogs[0].dietId, 'diet')" class="comment-btn">
-            💬 <!-- 댓글 아이콘 -->
+          <button
+            @click="toggleComments(myDietLogs[0].dietId, 'diet')"
+            class="comment-btn"
+          >
+            💬
+            <!-- 댓글 아이콘 -->
           </button>
 
           <!-- 댓글창 토글 -->
-          <div v-for="(comment, index) in comments[`${myDietLogs[0].dietId}_diet`]?.slice(0, 3)" :key="comment.commentId">
+          <div
+            v-for="(comment, index) in comments[
+              `${myDietLogs[0].dietId}_diet`
+            ]?.slice(0, 3)"
+            :key="comment.commentId"
+          >
             <strong>{{ comment.name }}</strong> {{ comment.content }}
             <span>{{ getRelativeTime(comment.createdAt) }}</span>
           </div>
 
           <!-- 전체 댓글 보여주기 (상위 3개 외) -->
-          <div v-if="showComments[`${myDietLogs[0].dietId}_diet`]" class="all-comments">
-            <div v-for="(comment, index) in comments[`${myDietLogs[0].dietId}_diet`]?.slice(3)" :key="comment.commentId">
-              <p><strong>{{ comment.name }}</strong> {{ comment.content }}</p>
+          <div
+            v-if="showComments[`${myDietLogs[0].dietId}_diet`]"
+            class="all-comments"
+          >
+            <div
+              v-for="(comment, index) in comments[
+                `${myDietLogs[0].dietId}_diet`
+              ]?.slice(3)"
+              :key="comment.commentId"
+            >
+              <p>
+                <strong>{{ comment.name }}</strong> {{ comment.content }}
+              </p>
               <span>{{ getRelativeTime(comment.createdAt) }}</span>
             </div>
           </div>
 
           <!-- 댓글 입력창 -->
           <div class="comment-box">
-            <input v-model="newComment[myDietLogs[0].dietId]" placeholder="댓글을 입력하세요" />
-            <button @click="addComment(myDietLogs[0].dietId, 'diet')">댓글 추가</button>
+            <input
+              v-model="newComment[myDietLogs[0].dietId]"
+              placeholder="댓글을 입력하세요"
+            />
+            <button @click="addComment(myDietLogs[0].dietId, 'diet')">
+              댓글 추가
+            </button>
           </div>
         </div>
       </div>
       <div v-else>
-        <hr>
+        <hr />
         <h3>최근 식단일기가 없습니다.... 다이어트 안하셨나요..?</h3>
       </div>
 
       <!-- 다른 식단일기 리스트 -->
       <div v-for="log in dietLogs" :key="log.dietId" class="log-card">
         <h3>{{ log.name }}</h3>
-        <p><strong>{{ log.recordDate }}</strong></p>
+        <p>
+          <strong>{{ log.recordDate }}</strong>
+        </p>
 
         <!-- 식사 이미지 탭 -->
         <div class="meal-tabs">
-          <input type="radio" id="breakfast-tab-{{ log.dietId }}" v-model="mealTab" value="breakfast" class="meal-toggle" />
-          <label for="breakfast-tab-{{ log.dietId }}" class="meal-label">아침</label>
+          <input
+            type="radio"
+            id="breakfast-tab-{{ log.dietId }}"
+            v-model="mealTab"
+            value="breakfast"
+            class="meal-toggle"
+          />
+          <label for="breakfast-tab-{{ log.dietId }}" class="meal-label"
+            >아침</label
+          >
 
-          <input type="radio" id="lunch-tab-{{ log.dietId }}" v-model="mealTab" value="lunch" class="meal-toggle" />
-          <label for="lunch-tab-{{ log.dietId }}" class="meal-label">점심</label>
+          <input
+            type="radio"
+            id="lunch-tab-{{ log.dietId }}"
+            v-model="mealTab"
+            value="lunch"
+            class="meal-toggle"
+          />
+          <label for="lunch-tab-{{ log.dietId }}" class="meal-label"
+            >점심</label
+          >
 
-          <input type="radio" id="dinner-tab-{{ log.dietId }}" v-model="mealTab" value="dinner" class="meal-toggle" />
-          <label for="dinner-tab-{{ log.dietId }}" class="meal-label">저녁</label>
+          <input
+            type="radio"
+            id="dinner-tab-{{ log.dietId }}"
+            v-model="mealTab"
+            value="dinner"
+            class="meal-toggle"
+          />
+          <label for="dinner-tab-{{ log.dietId }}" class="meal-label"
+            >저녁</label
+          >
         </div>
 
         <!-- 이미지 표시 -->
         <div v-if="mealTab === 'breakfast' && log.breakfastImagePath">
-          <img :src="'http://localhost:8080/'+log.breakfastImagePath" alt="Breakfast Image" class="meal-img" />
+          <img
+            :src="'http://localhost:8080/' + log.breakfastImagePath"
+            alt="Breakfast Image"
+            class="meal-img"
+          />
         </div>
 
         <div v-if="mealTab === 'lunch' && log.lunchImagePath">
-          <img :src="'http://localhost:8080/'+log.lunchImagePath" alt="Lunch Image" class="meal-img" />
+          <img
+            :src="'http://localhost:8080/' + log.lunchImagePath"
+            alt="Lunch Image"
+            class="meal-img"
+          />
         </div>
 
         <div v-if="mealTab === 'dinner' && log.dinnerImagePath">
-          <img :src="'http://localhost:8080/'+log.dinnerImagePath" alt="Dinner Image" class="meal-img" />
+          <img
+            :src="'http://localhost:8080/' + log.dinnerImagePath"
+            alt="Dinner Image"
+            class="meal-img"
+          />
         </div>
 
         <p class="diet-content">{{ log.content }}</p>
 
         <!-- 댓글 아이콘 -->
         <button @click="toggleComments(log.dietId, 'diet')" class="comment-btn">
-          💬 <!-- 댓글 아이콘 -->
+          💬
+          <!-- 댓글 아이콘 -->
         </button>
 
         <!-- 댓글창 토글 -->
-        <div v-for="(comment, index) in comments[`${log.dietId}_diet`]?.slice(0, 3)" :key="comment.commentId">
+        <div
+          v-for="(comment, index) in comments[`${log.dietId}_diet`]?.slice(
+            0,
+            3
+          )"
+          :key="comment.commentId"
+        >
           <strong>{{ comment.name }}</strong> {{ comment.content }}
           <span>{{ getRelativeTime(comment.createdAt) }}</span>
         </div>
 
         <!-- 전체 댓글 보여주기 (상위 3개 외) -->
         <div v-if="showComments[`${log.dietId}_diet`]" class="all-comments">
-          <div v-for="(comment, index) in comments[`${log.dietId}_diet`]?.slice(3)" :key="comment.commentId">
-            <p><strong>{{ comment.name }}</strong> {{ comment.content }}</p>
+          <div
+            v-for="(comment, index) in comments[`${log.dietId}_diet`]?.slice(3)"
+            :key="comment.commentId"
+          >
+            <p>
+              <strong>{{ comment.name }}</strong> {{ comment.content }}
+            </p>
             <span>{{ getRelativeTime(comment.createdAt) }}</span>
           </div>
         </div>
-        
+
         <!-- 댓글 입력창 -->
         <div class="comment-box">
-          <input v-model="newComment[log.dietId]" placeholder="댓글을 입력하세요" />
+          <input
+            v-model="newComment[log.dietId]"
+            placeholder="댓글을 입력하세요"
+          />
           <button @click="addComment(log.dietId, 'diet')">댓글 추가</button>
         </div>
       </div>
     </div>
-    
+
     <!-- 운동일기 탭 -->
     <div v-if="currentTab === 'workout'" class="workout-tab">
-      <div v-if="myWorkoutLogs.length > 0" class="log-card">
-        <h3>{{ myWorkoutLogs[0].name }}의 최근 운동일기</h3>
-        <p><strong>{{ myWorkoutLogs[0].recordDate }}</strong></p>
-        <p>{{ myWorkoutLogs[0].description }}</p>
+      <div class="my-workout">
+        <!-- 나의 최근 운동일기 하나만 출력 -->
+        <div v-if="myWorkoutLogs.length > 0" class="log-card">
+          <h3>{{ myWorkoutLogs[0].name }}의 최근 운동일기</h3>
 
-        <div v-for="exercise in myWorkoutLogs[0].exercises" :key="exercise.id">
-          <strong>{{ exercise.exerciseName }}</strong>
-          {{ exercise.weight }} kg
-          {{ exercise.reps }} 회
-          {{ exercise.sets }} 세트
+          <!-- 날짜 -->
+          <p class="diet-date">{{ myWorkoutLogs[0].recordDate }}</p>
+
+          <p class="workout-content">{{ myWorkoutLogs[0].description }}</p>
+
+          <div
+            v-for="exercise in myWorkoutLogs[0].exercises"
+            :key="exercise.id"
+            class="exc-content"
+          >
+            <strong>{{ exercise.exerciseName }}</strong>
+            {{ exercise.weight }} kg {{ exercise.reps }} 회
+            {{ exercise.sets }} 세트
+          </div>
+        </div>
+
+        <div v-else>
+          <hr />
+          <h3>최근 운동일기가 없습니다.... 운동... 안하셨나요..?</h3>
         </div>
 
         <!-- 댓글 아이콘 -->
-        <button @click="toggleComments(myWorkoutLogs[0].workoutId, 'workout')" class="comment-btn">
-            💬 <!-- 댓글 아이콘 -->
+        <button
+          @click="toggleComments(myWorkoutLogs[0].workoutId, 'workout')"
+          class="comment-btn"
+        >
+          💬
+          <!-- 댓글 아이콘 -->
         </button>
 
         <!-- 댓글창 토글 -->
-        <div v-for="(comment, index) in comments[`${myWorkoutLogs[0].workoutId}_workout`]?.slice(0, 3)" :key="comment.commentId">
+        <div
+          v-for="(comment, index) in comments[
+            `${myWorkoutLogs[0].workoutId}_workout`
+          ]?.slice(0, 3)"
+          :key="comment.commentId"
+        >
           <strong>{{ comment.name }}</strong> {{ comment.content }}
           <span>{{ getRelativeTime(comment.createdAt) }}</span>
         </div>
 
         <!-- 전체 댓글 보여주기 (상위 3개 외) -->
-        <div v-if="showComments[`${myWorkoutLogs[0].workoutId}_workout`]" class="all-comments">
-          <div v-for="(comment, index) in comments[`${myWorkoutLogs[0].workoutId}_workout`]?.slice(3)" :key="comment.commentId">
-            <p><strong>{{ comment.name }}</strong> {{ comment.content }}</p>
+        <div
+          v-if="showComments[`${myWorkoutLogs[0].workoutId}_workout`]"
+          class="all-comments"
+        >
+          <div
+            v-for="(comment, index) in comments[
+              `${myWorkoutLogs[0].workoutId}_workout`
+            ]?.slice(3)"
+            :key="comment.commentId"
+          >
+            <p>
+              <strong>{{ comment.name }}</strong> {{ comment.content }}
+            </p>
             <span>{{ getRelativeTime(comment.createdAt) }}</span>
           </div>
         </div>
-      
+
         <!-- 댓글 입력창 -->
         <div class="comment-box">
-          <input v-model="newComment[myWorkoutLogs[0].workoutId]" placeholder="댓글을 입력하세요" />
-          <button @click="addComment(myWorkoutLogs[0].workoutId, 'workout')">댓글 추가</button>
+          <input
+            v-model="newComment[myWorkoutLogs[0].workoutId]"
+            placeholder="댓글을 입력하세요"
+          />
+          <button @click="addComment(myWorkoutLogs[0].workoutId, 'workout')">
+            댓글 추가
+          </button>
         </div>
       </div>
-      <div v-else>
-        <hr>
-        <h3>최근 운동일기가 없습니다.... 운동... 안하셨나요..?</h3>
-      </div>
-      <hr>
 
+      <hr />
       <!-- 팔로우한 유저들의 운동일기 -->
-      <div v-for="log in workoutLogs" :key="log.workoutId" class="log-card">
-        <h3>{{ log.name }}</h3>
-        <p><strong>{{ log.recordDate }}</strong></p>
-        <p>{{ log.description }}</p>
-        <div v-for="exercise in log.exercises" :key="exercise.id">
-          <strong>{{ exercise.exerciseName }}</strong>
-          {{ exercise.weight }} kg
-          {{ exercise.reps }} 회
-          {{ exercise.sets }} 세트
+      <div class="my-workout">
+        <div v-for="log in workoutLogs" :key="log.workout_id" class="log-card">
+          <!-- 이름 -->
+          <h3>{{ log.name }}</h3>
+
+          <!-- 날짜 -->
+          <p class="diet-date">
+            {{ log.recordDate }}
+          </p>
+
+          <!-- 내용 -->
+          <p class="workout-content">{{ log.description }}</p>
+
+          <div
+            v-for="exercise in log.exercises"
+            :key="exercise.id"
+            class="exc-content"
+          >
+            <strong>{{ exercise.exerciseName }}</strong>
+            {{ exercise.weight }} kg {{ exercise.reps }} 회
+            {{ exercise.sets }} 세트
+          </div>
         </div>
 
         <!-- 댓글 아이콘 -->
-        <button @click="toggleComments(log.workoutId, 'workout')" class="comment-btn">
-          💬 <!-- 댓글 아이콘 -->
+        <button
+          @click="toggleComments(log.workoutId, 'workout')"
+          class="comment-btn"
+        >
+          💬
+          <!-- 댓글 아이콘 -->
         </button>
 
         <!-- 댓글창 토글 -->
-        <div v-for="(comment, index) in comments[`${log.workoutId}_workout`]?.slice(0, 3)" :key="comment.commentId">
+        <div
+          v-for="(comment, index) in comments[
+            `${log.workoutId}_workout`
+          ]?.slice(0, 3)"
+          :key="comment.commentId"
+        >
           <strong>{{ comment.name }}</strong> {{ comment.content }}
           <span>{{ getRelativeTime(comment.createdAt) }}</span>
         </div>
 
         <!-- 전체 댓글 보여주기 (상위 3개 외) -->
-        <div v-if="showComments[`${log.workoutId}_workout`]" class="all-comments">
-          <div v-for="(comment, index) in comments[`${log.workoutId}_workout`]?.slice(3)" :key="comment.commentId">
-            <p><strong>{{ comment.name }}</strong> {{ comment.content }}</p>
+        <div
+          v-if="showComments[`${log.workoutId}_workout`]"
+          class="all-comments"
+        >
+          <div
+            v-for="(comment, index) in comments[
+              `${log.workoutId}_workout`
+            ]?.slice(3)"
+            :key="comment.commentId"
+          >
+            <p>
+              <strong>{{ comment.name }}</strong> {{ comment.content }}
+            </p>
             <span>{{ getRelativeTime(comment.createdAt) }}</span>
           </div>
         </div>
-        
+
         <!-- 댓글 입력창 -->
         <div class="comment-box">
-          <input v-model="newComment[log.workoutId]" placeholder="댓글을 입력하세요" />
-          <button @click="addComment(log.workoutId, 'workout')">댓글 추가</button>
+          <input
+            v-model="newComment[log.workoutId]"
+            placeholder="댓글을 입력하세요"
+          />
+          <button @click="addComment(log.workoutId, 'workout')">
+            댓글 추가
+          </button>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
-
 <script setup>
-import { onMounted, ref, watch, computed } from 'vue';
-import apiClient from '@/components/api/apiClient';
+import { onMounted, ref, watch, computed } from "vue";
+import apiClient from "@/components/api/apiClient";
 
 // sessionStorage에서 'user' 키로 객체를 가져오기
-const user = ref(JSON.parse(sessionStorage.getItem('user')));
+const user = ref(JSON.parse(sessionStorage.getItem("user")));
 
 // 현재 선택된 탭
-const currentTab = ref('diet');
+const currentTab = ref("diet");
 
 // 유저 데이터 처리
 const userId = ref(user.value ? user.value.userId : null);
 const name = ref(user.value ? user.value.name : null);
 
-const searchUserId = ref('');  // 검색한 userId
-const searchedUsers = ref([]);  // 검색된 유저 목록
-const recommendedUsers = ref([]);  // 선호운동이 겹치는 추천 유저 목록
-const showRecommendedUsers = ref(false);  // 추천 유저 목록 표시 여부
+const searchUserId = ref(""); // 검색한 userId
+const searchedUsers = ref([]); // 검색된 유저 목록
+const recommendedUsers = ref([]); // 선호운동이 겹치는 추천 유저 목록
+const showRecommendedUsers = ref(false); // 추천 유저 목록 표시 여부
 
-const dietLogs = ref([]);  // 팔로우한 유저들의 식단일기 배열
-const myDietLogs = ref([]);  // 내 식단일기 배열
-const workoutLogs = ref([]);  // 팔로우한 유저들의 운동일기 배열
-const myWorkoutLogs = ref([]);  // 내 운동일기 배열
+const dietLogs = ref([]); // 팔로우한 유저들의 식단일기 배열
+const myDietLogs = ref([]); // 내 식단일기 배열
+const workoutLogs = ref([]); // 팔로우한 유저들의 운동일기 배열
+const myWorkoutLogs = ref([]); // 내 운동일기 배열
 
 // 각 일기 항목에 대한 댓글 관리
-const comments = ref({});  // {logId_logType: [댓글들]}
+const comments = ref({}); // {logId_logType: [댓글들]}
 const showComments = ref({}); // 각 logId에 대한 댓글창 표시 여부
 
-const selectedDietLog = ref(null);  // 선택한 식단일기
-const isDietLogModalOpen = ref(false);  // 모달 열림 여부
+const selectedDietLog = ref(null); // 선택한 식단일기
+const isDietLogModalOpen = ref(false); // 모달 열림 여부
 
-const newComment = ref({});  // 새로 추가할 댓글 내용
+const newComment = ref({}); // 새로 추가할 댓글 내용
 
 // 메서드 작성 (computed나 method로)
 const getRelativeTime = (createdAt) => {
@@ -348,7 +548,7 @@ const getRelativeTime = (createdAt) => {
   const diffInDays = Math.floor(diffInHours / 24); // 일 단위 차이
 
   if (diffInMinutes < 1) {
-    return '방금 전'; // 1분 이내
+    return "방금 전"; // 1분 이내
   } else if (diffInMinutes < 60) {
     return `${diffInMinutes}분 전`; // 1시간 미만
   } else if (diffInHours < 24) {
@@ -360,36 +560,36 @@ const getRelativeTime = (createdAt) => {
 
 // 댓글 추가 함수
 const addComment = async (logId, logType) => {
-  if (!newComment.value[logId]) return;  // 입력값이 없으면 리턴
+  if (!newComment.value[logId]) return; // 입력값이 없으면 리턴
 
   try {
-    const response = await apiClient.post('/api-comment/create', {
-      targetId: logId,  
-      userId: userId.value,  
+    const response = await apiClient.post("/api-comment/create", {
+      targetId: logId,
+      userId: userId.value,
       name: name.value,
-      content: newComment.value[logId],  
+      content: newComment.value[logId],
       targetType: logType,
-      createdAt: new Date().toISOString()  // 현재 시간을 ISO 형식으로 추가
+      createdAt: new Date().toISOString(), // 현재 시간을 ISO 형식으로 추가
     });
 
     // 댓글 추가 후 댓글 목록 업데이트
     fetchComments(logId, logType);
-    newComment.value[logId] = '';  // 댓글 입력창 초기화
+    newComment.value[logId] = ""; // 댓글 입력창 초기화
     toggleComments(logId, logType);
   } catch (error) {
-    console.error('댓글 추가 실패', error);
+    console.error("댓글 추가 실패", error);
   }
 };
 
 // 댓글 불러오기 함수
 const fetchComments = async (logId, logType) => {
   try {
-    const response = await apiClient.get('/api-comment/comment', {
-      params: { targetId: logId, targetType: logType }
+    const response = await apiClient.get("/api-comment/comment", {
+      params: { targetId: logId, targetType: logType },
     });
-    comments.value[`${logId}_${logType}`] = response.data; 
+    comments.value[`${logId}_${logType}`] = response.data;
   } catch (error) {
-    console.error('댓글 불러오기 실패', error);
+    console.error("댓글 불러오기 실패", error);
   }
 };
 
@@ -419,10 +619,12 @@ const isFollowing = computed(() => {
 // 팔로우 목록 불러오기
 const fetchFollowingUsers = async () => {
   try {
-    const response = await apiClient.get(`/api-follow/following/${userId.value}`); // 팔로우 목록 API 호출
+    const response = await apiClient.get(
+      `/api-follow/following/${userId.value}`
+    ); // 팔로우 목록 API 호출
     followingUsers.value = response.data; // 팔로우한 유저들의 userId만 배열로 저장
   } catch (error) {
-    console.error('팔로우 목록 불러오기 실패', error);
+    console.error("팔로우 목록 불러오기 실패", error);
   }
 };
 
@@ -430,38 +632,38 @@ const fetchFollowingUsers = async () => {
 const followUser = async (user) => {
   try {
     // 팔로우 API 호출
-    await apiClient.post('/api-follow/follow', {
+    await apiClient.post("/api-follow/follow", {
       followerId: userId.value,
-      followingId: user.userId
+      followingId: user.userId,
     });
 
     // 팔로우 후 팔로우 목록 갱신
-    await fetchFollowingUsers();  // 팔로우 목록을 다시 불러오기
+    await fetchFollowingUsers(); // 팔로우 목록을 다시 불러오기
 
     resetSearch();
     window.location.reload();
   } catch (error) {
-    console.error('팔로우 실패', error);
+    console.error("팔로우 실패", error);
   }
 };
 
 // 팔로우 취소하기
 const unfollowUser = async (user) => {
   try {
-    await apiClient.delete('/api-follow/unfollow', {
+    await apiClient.delete("/api-follow/unfollow", {
       params: {
         followerId: userId.value,
-        followingId: user.userId
-      }
+        followingId: user.userId,
+      },
     });
 
     // 팔로우 취소 후 팔로우 목록 갱신
-    await fetchFollowingUsers();  // 팔로우 목록을 다시 불러오기
+    await fetchFollowingUsers(); // 팔로우 목록을 다시 불러오기
 
     resetSearch();
     window.location.reload();
   } catch (error) {
-    console.error('팔로우 취소 실패', error);
+    console.error("팔로우 취소 실패", error);
   }
 };
 
@@ -475,10 +677,12 @@ const selectTab = (tab) => {
 const searchUser = async () => {
   if (searchUserId.value) {
     try {
-      const response = await apiClient.get(`/api-user/search/${searchUserId.value}`);
+      const response = await apiClient.get(
+        `/api-user/search/${searchUserId.value}`
+      );
       searchedUsers.value = response.data;
     } catch (error) {
-      console.error('유저 검색 실패', error);
+      console.error("유저 검색 실패", error);
     }
   }
 };
@@ -486,14 +690,14 @@ const searchUser = async () => {
 // 선호운동이 겹치는 유저 추천 함수
 const recommendUsers = async () => {
   try {
-    const response = await apiClient.get('/api-user/recommend', {
+    const response = await apiClient.get("/api-user/recommend", {
       params: {
-        userId: userId.value
-      }
+        userId: userId.value,
+      },
     });
     recommendedUsers.value = response.data;
   } catch (error) {
-    console.error('추천 유저 불러오기 실패', error);
+    console.error("추천 유저 불러오기 실패", error);
   }
 };
 
@@ -513,41 +717,54 @@ const fetchLogs = async (tab) => {
       return;
     }
 
-    if (tab === 'diet') {
+    if (tab === "diet") {
       const response = await apiClient.get(`/api-diet/follow/${userId.value}`);
       dietLogs.value = response.data;
       const myresponse = await apiClient.get(`/api-diet/feed/${userId.value}`);
       myDietLogs.value = myresponse.data;
-    } else if (tab === 'workout') {
-      const response = await apiClient.get(`/api-workout/follow/${userId.value}`);
+    } else if (tab === "workout") {
+      const response = await apiClient.get(
+        `/api-workout/follow/${userId.value}`
+      );
       workoutLogs.value = response.data;
-      const myresponse = await apiClient.get(`/api-workout/feed/${userId.value}`);
+      const myresponse = await apiClient.get(
+        `/api-workout/feed/${userId.value}`
+      );
       myWorkoutLogs.value = myresponse.data;
     }
   } catch (error) {
-    console.error('로그 불러오기 실패', error);
+    console.error("로그 불러오기 실패", error);
   }
 };
 
-watch(() => userId.value, (newUserId) => {
-  if (newUserId) {
-    fetchLogs(currentTab.value);
+watch(
+  () => userId.value,
+  (newUserId) => {
+    if (newUserId) {
+      fetchLogs(currentTab.value);
+    }
   }
-});
+);
 
-watch(() => showRecommendedUsers.value, (newValue) => {
-  if (newValue) {
-    recommendUsers();
+watch(
+  () => showRecommendedUsers.value,
+  (newValue) => {
+    if (newValue) {
+      recommendUsers();
+    }
   }
-});
+);
 
-watch(() => currentTab.value, (newTab) => {
-  fetchLogs(newTab);
-});
+watch(
+  () => currentTab.value,
+  (newTab) => {
+    fetchLogs(newTab);
+  }
+);
 
 // 검색 초기화 함수
 const resetSearch = () => {
-  searchUserId.value = '';
+  searchUserId.value = "";
   searchedUsers.value = [];
   userId.value = user.value.userId;
   showRecommendedUsers.value = false;
@@ -565,7 +782,7 @@ const closeDietLogModal = () => {
   isDietLogModalOpen.value = false;
 };
 
-const mealTab = ref('breakfast'); // 식사 이미지 탭
+const mealTab = ref("breakfast"); // 식사 이미지 탭
 
 onMounted(() => {
   if (userId.value) {
@@ -574,8 +791,6 @@ onMounted(() => {
   }
 });
 </script>
-
-
 
 <style scoped>
 .comment-btn {
@@ -659,7 +874,6 @@ onMounted(() => {
   color: white;
 }
 
-
 .my-diet {
   padding: 15px 40px;
   background-color: #ffffff;
@@ -669,7 +883,23 @@ onMounted(() => {
   margin: 0 auto;
 }
 
+.workout-tab {
+  padding: 15px 40px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px; /* 모서리 둥글게 */
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
 .diet-tab .log-card {
+  margin-bottom: 30px; /* 카드 간격 추가 */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+}
+
+.my-workout .log-card {
   margin-bottom: 30px; /* 카드 간격 추가 */
   padding: 20px;
   background-color: #f9f9f9;
@@ -697,8 +927,6 @@ button.active {
   flex-direction: column;
   gap: 20px;
 }
-
-
 
 img {
   max-width: 200px;
@@ -742,7 +970,6 @@ img {
   color: #54a673;
 }
 
-
 .user-list {
   margin-top: 20px;
   border-radius: 20px; /* 유저 목록 박스 둥글게 */
@@ -750,8 +977,6 @@ img {
   padding: 20px;
   background-color: #ffffff;
 }
-
-
 
 /* 팔로우 버튼 */
 .follow-btn {
@@ -786,19 +1011,19 @@ button.active {
 }
 
 .tab-icon {
-    font-size: 1.2rem; /* 이모지 크기 조정 */
-    padding: 10px;   /* 테두리와 이모지 사이 여백 */
-    display: inline-block; /* 이모지가 한 줄에 표시되게 */
-    text-align: center;
-    line-height: 1; /* 이모지 세로 정렬 */
-    transition: all 0.3s ease; /* 호버 효과 부드럽게 */
-    font-style: normal;
-  }
+  font-size: 1.2rem; /* 이모지 크기 조정 */
+  padding: 10px; /* 테두리와 이모지 사이 여백 */
+  display: inline-block; /* 이모지가 한 줄에 표시되게 */
+  text-align: center;
+  line-height: 1; /* 이모지 세로 정렬 */
+  transition: all 0.3s ease; /* 호버 효과 부드럽게 */
+  font-style: normal;
+}
 
-  /* 추가 스타일 (선택적) */
-  .tab-label {
-    cursor: pointer;
-  }
+/* 추가 스타일 (선택적) */
+.tab-label {
+  cursor: pointer;
+}
 
 /* 일기 스타일 */
 .log-card {
@@ -808,7 +1033,6 @@ button.active {
   background-color: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-
 
 .meal-images {
   display: flex;
@@ -874,7 +1098,6 @@ button.active {
   background-color: #4a9d62; /* 호버 시 색상 변경 */
 }
 
-
 /* 유저 카드 스타일 */
 .user-card {
   display: flex;
@@ -907,7 +1130,7 @@ button.active {
 }
 
 .diet-content {
-  font-family: 'Medium';
+  font-family: "Medium";
   font-size: 1.5rem;
   background-color: #ffffff;
   border-radius: 20px;
@@ -916,5 +1139,21 @@ button.active {
   padding: 20px;
 }
 
+.workout-content {
+  font-family: "Medium";
+  font-size: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 150px;
+  box-shadow: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+}
 
+.exc-content {
+  margin: 0 5px;
+  font-size: 1.3rem;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 20px;
+}
 </style>

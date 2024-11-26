@@ -75,8 +75,9 @@
      <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <span class="close-btn" @click="closeModal">&times;</span>
-        <h2>{{ modalChallenge.name }}</h2>
+        <h2 class="modal-title">{{ modalChallenge.name }}</h2>
         <p>{{ modalChallenge.description }}</p>
+        <p><strong>등록유저:</strong> {{ modalChallenge.creatorUsername }}</p>
         <p><strong>시작일:</strong> {{ modalChallenge.durationStart }}</p>
         <p><strong>마감일:</strong> {{ modalChallenge.durationEnd }}</p>
         <p><strong>참여자 수:</strong> {{ modalChallenge.participantCount }} 명</p>
@@ -212,6 +213,15 @@ onMounted(() => {
 
 
 <style scoped>
+/* 제목 스타일 */
+.modal-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
   .closed-badge {
     position: absolute;
     top: 10px;

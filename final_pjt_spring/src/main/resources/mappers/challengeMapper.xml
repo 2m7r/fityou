@@ -83,6 +83,7 @@
 		SELECT
 			c.challenge_id,
 			c.name,
+			c.creator_user_name,
 			c.description,
 			c.duration_start,
 			c.duration_end,
@@ -106,6 +107,7 @@
 		SELECT
 		c.challenge_id,
 		c.name,
+		c.creator_user_name,
 		c.description,
 		c.duration_start,
 		c.duration_end,

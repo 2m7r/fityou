@@ -1,0 +1,67 @@
+@startuml
+left to right direction
+
+actor "User" as user
+actor "Admin" as admin
+
+package "Authentication" {
+  usecase "로그인" as UC_Login
+  usecase "로그아웃" as UC_Logout
+  usecase "회원가입" as UC_SignUp
+}
+
+package "User Management" {
+  usecase "유저 정보 확인" as UC_UserInfo
+  usecase "유저 정보 수정" as UC_UpdateUser
+}
+
+package "Diary Management" {
+  usecase "식단 일기 조회" as UC_DietQuery
+  usecase "운동 일기 조회" as UC_WorkoutQuery
+  usecase "식단 일기 등록" as UC_RegisterDiet
+  usecase "운동 일기 등록" as UC_RegisterWorkout
+}
+
+package "Social Features" {
+  usecase "팔로우하기" as UC_Follow
+  usecase "팔로우 취소" as UC_Unfollow
+  usecase "팔로잉/팔로워 조회" as UC_ViewFollow
+  usecase "팔로우 여부 확인" as UC_CheckFollow
+}
+
+package "Challenge Features" {
+  usecase "챌린지 등록" as UC_AddChallenge
+  usecase "챌린지 조회" as UC_ChallengeQuery
+  usecase "챌린지 참여/나가기" as UC_ChallengeParticipation
+}
+
+package "Comments" {
+  usecase "댓글 등록" as UC_AddComment
+  usecase "댓글 조회" as UC_ViewComments
+}
+
+user --> UC_Login
+user --> UC_Logout
+user --> UC_SignUp
+
+user --> UC_UserInfo
+user --> UC_UpdateUser
+
+user --> UC_DietQuery
+user --> UC_WorkoutQuery
+user --> UC_RegisterDiet
+user --> UC_RegisterWorkout
+
+user --> UC_Follow
+user --> UC_Unfollow
+user --> UC_ViewFollow
+user --> UC_CheckFollow
+
+user --> UC_AddChallenge
+user --> UC_ChallengeQuery
+user --> UC_ChallengeParticipation
+
+user --> UC_AddComment
+user --> UC_ViewComments
+
+@enduml

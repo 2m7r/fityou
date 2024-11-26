@@ -4,6 +4,7 @@ public class Challenge {
 	private Long challengeId;
     private String name;
     private Long creatorUserId; // 생성자 ID
+    private String creatorUsername;
     private String description;
     private int participantCount;
     private String durationStart; // 시작 날짜 (YYYY-MM-DD)
@@ -11,6 +12,12 @@ public class Challenge {
     private String exerciseType;
     
     
+	public String getCreatorUsername() {
+		return creatorUsername;
+	}
+	public void setCreatorUsername(String creatorUsername) {
+		this.creatorUsername = creatorUsername;
+	}
 	public Long getChallengeId() {
 		return challengeId;
 	}
@@ -59,15 +66,11 @@ public class Challenge {
 	public void setExerciseType(String exerciseType) {
 		this.exerciseType = exerciseType;
 	}
-	
-	
 	@Override
 	public String toString() {
 		return "Challenge [challengeId=" + challengeId + ", name=" + name + ", creatorUserId=" + creatorUserId
-				+ ", description=" + description + ", participantCount=" + participantCount + ", durationStart="
-				+ durationStart + ", durationEnd=" + durationEnd + ", exerciseType=" + exerciseType + "]";
+				+ ", creatorUsername=" + creatorUsername + ", description=" + description + ", participantCount="
+				+ participantCount + ", durationStart=" + durationStart + ", durationEnd=" + durationEnd
+				+ ", exerciseType=" + exerciseType + "]";
 	}
-	
-	
-    
 }

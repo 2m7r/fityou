@@ -409,6 +409,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  max-width: 80px;
 }
 
 .upload-btn:hover {
@@ -527,12 +528,12 @@ button:hover {
 }
 
 .btn-danger {
-  background-color: #e74c3c; /* 빨간색 */
+  background-color: #ffd5d5; /* 빨간색 */
   color: white;
 }
 
 .btn-danger:hover {
-  background-color: #c0392b; /* 어두운 빨간색 */
+  background-color: #e74c3c; /* 어두운 빨간색 */
 }
 
 </style>

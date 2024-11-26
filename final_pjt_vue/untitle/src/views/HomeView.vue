@@ -17,7 +17,7 @@
   flex-direction: column;
   justify-content: center; /* 수직 중앙 정렬 */
   align-items: center; /* 수평 중앙 정렬 */
-  height: 60vh; 
+  height: 90vh; 
   background-color: #ffffff;
   padding: 0 20px; /* 좌우 여백 */
 }

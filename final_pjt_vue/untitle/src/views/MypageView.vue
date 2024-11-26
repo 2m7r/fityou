@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="marginplz"></div>
+    <div class="mp-container">
     <div class="mp-profile">
       <div class="profile-container">
         <!-- 왼쪽: 사용자 프로필 사진 -->
@@ -40,22 +41,23 @@
       <!-- 오른쪽: 선택된 날짜의 운동일기와 식단일기 -->
       <div class="logs-container">
         <div v-if="selectedDate">
-          <h3>선택된 날짜: {{ selectedDate }}</h3>
+          <h3 class="slt-date">{{ selectedDate }}</h3>
 
           <!-- 운동일기 -->
           <div v-if="workoutLogsForSelectedDate" class="log-card">
-            <h4>운동일기</h4>
-            <p class="workout-content">{{ workoutLogsForSelectedDate.description }}</p>
+            <h4 class="card-title">운동일기</h4>
             <div v-for="exercise in workoutLogsForSelectedDate.exercises" class="exc-content">
               <strong>{{ exercise.exerciseName }}</strong>
               {{ exercise.weight }} kg {{ exercise.reps }} 회
               {{ exercise.sets }} 세트
             </div>
+            <p class="workout-content">{{ workoutLogsForSelectedDate.description }}</p>
+
           </div>
 
           <!-- 식단일기 -->
           <div v-if="dietLogsForSelectedDate" class="log-card">
-            <h4>식단일기</h4>
+            <h4 class="card-title">식단일기</h4>
             <div class="meal-images">
               <img
                 :src="'http://localhost:8080/' + dietLogsForSelectedDate.breakfastImagePath"
@@ -96,7 +98,7 @@
 
     <!-- UserPage 모달 열기 -->
     <UserPagecopy v-if="isEditModalOpen" @close="closeEditModal" />
-
+    </div>
   </div>
 </template>
 
@@ -184,6 +186,15 @@ const fetchLogsForSelectedDate = (date) => {
 </script>
 
 <style scoped>
+.mp-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+
+
 /* 프로필 사진 크기 */
 .profile-img {
   width: 150px;
@@ -204,14 +215,19 @@ const fetchLogsForSelectedDate = (date) => {
 /* 3개의 영역을 가로로 배치 (왼쪽, 중간, 오른쪽) */
 .profile-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* 화면 크기에 맞춰서 줄 바꿈 가능 */
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 250px;
   max-width: 1500px;
-  padding: 20px;
-  gap: 20px;
+  padding: 20px; /* 상하 여백 20px */
+  padding-left: 60px; /* 좌측 여백 추가 */
+  padding-right: 60px; /* 우측 여백 추가 */
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  gap: 20px; /* 아이템 간격 설정 */
 }
 
 /* 왼쪽: 프로필 사진 */
@@ -220,7 +236,7 @@ const fetchLogsForSelectedDate = (date) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 150px;
+  min-width: 150px; /* 최소 너비 설정 */
 }
 
 /* 중간: 사용자 이름 및 설명 */
@@ -229,8 +245,19 @@ const fetchLogsForSelectedDate = (date) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 230px;
+  min-width: 230px; /* 최소 너비 설정 */
   padding-left: 20px;
+}
+
+.user-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.user-description {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 5px;
 }
 
 /* 문구 스타일 */
@@ -263,85 +290,225 @@ const fetchLogsForSelectedDate = (date) => {
   margin-right: 8px;
 }
 
-/* 일기 표시 영역 */
-.next-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
+
+/* 추가된 문구 스타일 */
+.extra-st {
+  flex: 1; /* 비율 맞추기 */
+  padding: 0 20px; /* 좌우 여백 */
+  text-align: center;
+  font-size: 4rem;
+  color: #8ea59b;
+  font-style: italic;
+  margin-top: 10px;
+  margin-right: 100px;
+  font-weight: bold;
+  font-family: 'Bold';
+  letter-spacing: 15px;
 }
+
+
+
+
+.my-2 {
+  margin-top: 15px;
+}
+
+.btn-lg {
+  font-size: 16px;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 3%;
+  margin-bottom: 10%;
+  height: 50px;
+}
+
+.btn-edit {
+  background-color: #54a673;
+  color: white;
+  max-width: 150px;
+}
+
+.btn-edit:hover {
+  background-color: #4a8e5c;
+}
+
+.rounded-full {
+  border-radius: 50px !important;
+}
+
+.my-3 {
+  margin-top: 20px;
+}
+
+.marginplz {
+  margin-top: 180px;
+}
+
 
 .usergrass {
-  width: 40%;
+  width: 500px;
+  margin: 10px 0;
 }
+
+
+.next-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1500px;
+  gap: 100px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* 부모 요소에 flexbox 스타일을 추가 */
+.challenge-wrapper {
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  height: 100vh; /* 부모의 높이를 100%로 설정하여 중앙 배치가 잘 되도록 */
+  margin-top: 50px;
+}
+
+/* 기존 .challenge-box 스타일 */
+.challenge-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 이미지 크기 조정 */
+.challenge-img {
+  max-width: 500px;
+  height: auto;
+  margin-left: -60%;
+  margin-top: 50px;
+}
+
+
+
+/* 잔디가 이동하는 효과 */
+.usergrass {
+  flex:1;
+  transition: transform 0.7s ease-out;
+  width: 500px;
+  margin: 10px 0;
+}
+
+
 
 .logs-container {
-  width: 55%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex: 2;
+  margin-right: 20px;
+  animation: fadeIn 0.8s ease-out forwards; /* 투명도가 서서히 나타나는 애니메이션 */
 }
 
-/* 로그 카드 */
 .log-card {
+  background-color: #f9f9f9;
   padding: 20px;
-  margin: 15px 0;
-  border-radius: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-radius: 10px;  /* 모서리 둥글게 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  transition: box-shadow 0.3s ease;
+  max-width: 800px;
 }
 
-h3 {
-  font-size: 1.6rem;
+.log-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* 마우스 오버 시 그림자 효과 */
 }
 
-h4 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #333;
-}
 
-.workout-content,
-.diet-content {
-  font-size: 1.1rem;
-  color: #555;
+.workout-content, .diet-content {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+  margin-top: 10px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
 }
 
 .exc-content {
-  font-size: 0.9rem;
+  border: 1px solid #c7c7c7;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 20px;
+}
+
+.exc-content strong {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.meal-images {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 10px;
+  gap: 15px;
+}
+
+
+.meal-img {
+  width: 230px;
+  height: 230px;
+  object-fit: cover; /* 1:1 비율 유지 */
+  border-radius: 15%; 
+  box-shadow: 3px 2px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 호버 시 크기 및 그림자 효과 부드럽게 */
+}
+
+.meal-img:hover {
+  transform: scale(1.07); /* 5% 확대 */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 강도 증가 */
+}
+
+
+.workout-content {
+  font-size: 20px;
+}
+
+
+.diet-content {
+  font-size: 20px;
+}
+
+p {
+  font-family: 'Light';
+  font-size: 20px;
   color: #777;
 }
 
-.meal-img {
-  border-radius: 5px;
-  margin-right: 10px;
+
+.log-card p {
+  color: #000000;
+  margin-top: 20px;
 }
 
-/* 챌린지 박스 */
-.challenge-box {
-  margin-top: 40px;
-  width: 100%;
-  text-align: center;
+.slt-date {
+  margin-left: 10px;
+
 }
 
-.challenge-img {
-  width: 100%;
-  max-width: 900px;
-  height: auto;
-  border-radius: 10px;
+
+.card-title {
+  font-size: 1.7rem;
+  font-family: 'SemiBold';
 }
 
 /* 반응형 스타일 */
 @media (max-width: 1024px) {
-  .next-container {
-    flex-direction: column;
-  }
-
   .usergrass {
-    width: 100%;
+    width: 100%; /* 화면 크기에 맞춰 크기 조정 */
   }
-
   .logs-container {
     width: 100%;
   }
 }
+
 </style>

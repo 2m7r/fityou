@@ -14,11 +14,12 @@ CREATE TABLE users (
     email VARCHAR(255) UNIQUE NOT NULL, -- 이메일
     username VARCHAR(50) UNIQUE NOT NULL, -- 로그인 아이디
     password VARCHAR(255) NOT NULL, -- 로그인 PW
-    role ENUM('USER', 'TRAINER') NOT NULL, -- 일반유저 / 트레이너
+    role ENUM('USER', 'TRAINER'), -- 일반유저 / 트레이너
     gym_name VARCHAR(255), -- 트레이너만 사용
     is_private_account BOOLEAN DEFAULT FALSE, -- 공개 / 비공개 계정
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     profileImage VARCHAR(255), -- 프로필 이미지 경로
+    userDescription TEXT,
     security_question VARCHAR(255) NOT NULL, -- 본인 확인 질문
     security_answer VARCHAR(255) NOT NULL -- 본인 확인 답변
 );
@@ -51,7 +52,35 @@ CREATE TABLE preferred_exercises (
     CONSTRAINT unique_user_exercise UNIQUE (user_id, exercise_name)  -- 유니크 제약
 );
 
--- select * from preferred_exercises;
+-- 선호 운동 더미 데이터 삽입 (유저들 간에 겹치는 운동)
+INSERT INTO preferred_exercises (user_id, exercise_name)
+VALUES
+(1, '헬스'), -- 지피티 (트레이너)
+(1, '크로스핏'),
+(2, '헬스'), -- 김싸피 (일반 유저)
+(2, '러닝'),
+(3, '요가'), -- 임가현 (일반 유저)
+(3, '수영'),
+(4, '방송댄스'), -- 홍길동 (일반 유저)
+(4, '스쿼시'),
+(5, '배드민턴'), -- 박지현 (일반 유저)
+(5, '테니스'),
+(6, '헬스'), -- 김민수 (일반 유저)
+(6, '배구'),
+(7, '클라이밍'), -- 이하늘 (트레이너)
+(7, '에어로빅'),
+(8, '스피닝'), -- 정우성 (일반 유저)
+(8, '수영'),
+(9, '복싱'), -- 소지섭 (트레이너)
+(9, '축구'),
+(10, '골프'), -- 유진 (일반 유저)
+(10, '요가'),
+(11, '태권도'), -- 이태웃씌 (일반 유저)
+(11, '농구'),
+(11, '헬스');  -- 이태웃씌가 헬스를 선택하여 다른 유저와 겹치게 만듦
+
+
+select * from preferred_exercises;
 
 -- ------------------------- 식단일기 -----------------------------------
 DROP TABLE IF EXISTS diet;
@@ -113,7 +142,7 @@ VALUES
 (6, 1),  -- '김민수'가 '지피티'를 팔로우
 (1, 11), (2, 11), (3, 11), (4, 11), (5, 11), (6, 11), (7, 11), (8, 11), (9, 11);
 
--- SELECT * FROM follows;
+SELECT * FROM follows;
 
 
 -- --------------------------- 챌린지 -----------------------------------
@@ -123,6 +152,7 @@ CREATE TABLE challenges (
     challenge_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유 식별 ID
     name VARCHAR(255) NOT NULL, -- 챌린지 이름
     creator_user_id BIGINT NOT NULL, -- 챌린지 등록 유저ID
+    creator_user_name VARCHAR(100),
     description TEXT, -- 설명
     participant_count INT DEFAULT 1, -- 챌린지 현재 참여자 수
     duration_start DATE NOT NULL, -- 시작날짜
@@ -159,11 +189,12 @@ values
 
 drop table if exists challenge_people;
 -- 5. 챌린지별 참여하고 있는 참여자 목록 저장
-create table challenge_people (
+CREATE TABLE challenge_people (
     user_id BIGINT NOT NULL, -- 참여한 유저ID
     challenge_id BIGINT NOT NULL, -- 참여한 챌린지ID
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE
+    FOREIGN KEY (challenge_id) REFERENCES challenges(challenge_id) ON DELETE CASCADE,
+    UNIQUE(user_id, challenge_id) -- 한 사람이 동일한 챌린지에 한 번만 참여하도록 제한
 );
 
 INSERT INTO challenge_people (user_id, challenge_id) VALUES
@@ -196,7 +227,7 @@ DROP TABLE IF EXISTS workouts;
 CREATE TABLE workouts (
     workout_id BIGINT AUTO_INCREMENT PRIMARY KEY, -- 고유ID
     user_id BIGINT NOT NULL, -- 유저ID
-    name VARCHAR(100) NOT NULL, -- 이름
+    name VARCHAR(100) NOT NULL,
     description TEXT, -- 설명
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -234,7 +265,7 @@ CREATE TABLE comments (
 -- insert into comments (target_id, target_type, user_id, content)
 -- values (4, 'workout', 1, '트레이너임?');
 
--- SELECT * from comments;
+SELECT * from comments;
 
 
 -- ------------------------- 트레이너-회원관계 -----------------------------------

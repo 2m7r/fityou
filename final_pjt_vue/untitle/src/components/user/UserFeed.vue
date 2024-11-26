@@ -59,7 +59,7 @@
   
   <input type="radio" id="workout-tab" v-model="currentTab" value="workout" class="tab-toggle" />
   <label for="workout-tab" class="tab-label">
-    <i class="bi tab-icon">🏃‍➡️</i>
+    <i class="bi tab-icon">🏃</i>
   </label>
 </div>
 
@@ -106,7 +106,7 @@
           <p class="diet-content">{{ myDietLogs[0].content }}</p>
 
 
-          <button @click="openDietLogModal(myDietLogs[0])" class="edit-btn">수정</button>
+          <!-- <button @click="openDietLogModal(myDietLogs[0])" class="edit-btn">수정</button> -->
         </div>
       </div>
       <hr>
@@ -144,10 +144,15 @@
 
     <!-- 운동일기 탭 -->
     <div v-if="currentTab === 'workout'" class="workout-tab">
+      <!-- 나의 최근 운동일기 하나만 출력 -->
       <div v-if="myWorkoutLogs.length > 0" class="log-card">
-        <h3>나의 최근 운동</h3>
+        <h3>{{ myWorkoutLogs[0].name }}의 최근 운동일기</h3>
+
+        <!-- 날짜 -->
         <p><strong>{{ myWorkoutLogs[0].recordDate }}</strong></p>
+    
         <p>{{ myWorkoutLogs[0].description }}</p>
+
         <div v-for="exercise in myWorkoutLogs[0].exercises" :key="exercise.id">
           <strong>{{ exercise.exerciseName }}</strong>
           {{ exercise.weight }} kg
@@ -155,7 +160,29 @@
           {{ exercise.sets }} 세트
         </div>
       </div>
+      <div v-else>
+        <hr>
+        <h3>최근 운동일기가 없습니다.... 운동 안하셨나요..?</h3>
+      </div>
       <hr>
+      <!-- 팔로우한 유저들의 운동일기 -->
+      <div v-for="log in workoutLogs" :key="log.workout_id" class="log-card">
+        <!-- 이름 -->
+        <h3>{{ log.name }}</h3>
+
+        <!-- 날짜 -->
+        <p><strong>{{ log.recordDate }}</strong></p>
+
+        <!-- 내용 -->
+        <p>{{ log.description }}</p>
+        
+        <div v-for="exercise in log.exercises" :key="exercise.id">
+          <strong>{{ exercise.exerciseName }}</strong>
+          {{ exercise.weight }} kg
+          {{ exercise.reps }} 회
+          {{ exercise.sets }} 세트
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -360,7 +387,7 @@ onMounted(() => {
   background-color: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 15px; /* 모서리 둥글게 */
-  max-width: 1000px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
@@ -487,6 +514,7 @@ button.active {
     text-align: center;
     line-height: 1; /* 이모지 세로 정렬 */
     transition: all 0.3s ease; /* 호버 효과 부드럽게 */
+    font-style: normal;
   }
 
   /* 추가 스타일 (선택적) */
@@ -545,7 +573,7 @@ button.active {
 
 .meal-img {
   width: 100%; /* 부모 너비를 100%로 채우기 */
-  height: auto;
+  height: 1000px;
   max-width: 100%; /* 최대 너비를 부모에 맞춤 */
   max-height: 100%;
   object-fit: cover; /* 이미지가 부모 컨테이너를 꽉 채우되 비율 유지 */

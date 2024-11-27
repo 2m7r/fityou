@@ -125,7 +125,7 @@ export default {
 
 <style scoped>
 .marginplz {
-  margin-top: 15%;
+  margin-top: 10%;
 }
 
 

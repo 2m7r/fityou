@@ -73,19 +73,19 @@
               <h4 class="card-title">식단일기</h4>
               <div class="meal-images">
                 <img
-                  :src="'http://localhost:8080/' + dietLogsForSelectedDate.breakfastImagePath"
+                  :src="breakfastImg || 'https://via.placeholder.com/150'"
                   alt="Breakfast Image"
                   class="meal-img"
                   width="50px"
                 />
                 <img
-                  :src="'http://localhost:8080/' + dietLogsForSelectedDate.lunchImagePath"
+                  :src="lunchImg || 'https://via.placeholder.com/150'"
                   alt="Lunch Image"
                   class="meal-img"
                   width="50px"
                 />
                 <img
-                  :src="'http://localhost:8080/' + dietLogsForSelectedDate.dinnerImagePath"
+                  :src="dinnerImg || 'https://via.placeholder.com/150'"
                   alt="Dinner Image"
                   class="meal-img"
                   width="50px"
@@ -245,6 +245,10 @@ const fetchLogsForSelectedDate = (date) => {
   fetchWorkoutLogs(date);
   fetchDietLogs(date);
 };
+
+const breakfastImg = dietLogsForSelectedDate.breakfastImagePath?  'http://localhost:8080/' + dietLogsForSelectedDate.breakfastImagePath : null
+const lunchImg = dietLogsForSelectedDate.lunchImagePath?  'http://localhost:8080/' + dietLogsForSelectedDate.lunchImagePath : null
+const dinnerImg = dietLogsForSelectedDate.dinnerImagePath? 'http://localhost:8080/' + dietLogsForSelectedDate.dinnerImagePath : null
 
 // 컴포넌트가 마운트될 때 팔로워, 팔로잉 데이터 가져오기
 onMounted(() => {

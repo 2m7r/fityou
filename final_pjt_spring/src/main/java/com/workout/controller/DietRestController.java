@@ -199,6 +199,7 @@ public class DietRestController {
     @DeleteMapping("/{dietId}")
     @Operation(summary = "식단일기 삭제", description = "특정 식단일기를 삭제합니다.")
     public ResponseEntity<?> removeDiet(@PathVariable Long dietId) {
+    	System.out.println("다이어트 삭제 들어옴");
         int result = dietService.removeDiet(dietId);
         if (result > 0) {
             return ResponseEntity.ok("식단일기 삭제 성공");

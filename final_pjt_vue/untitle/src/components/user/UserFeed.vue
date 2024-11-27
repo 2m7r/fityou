@@ -120,6 +120,13 @@
         <div class="log-card">
           <h3>{{ myDietLogs[0].name }}님의 최근 식단일기</h3>
           <p class="diet-date">{{ myDietLogs[0].recordDate }}</p>
+          <button 
+            class="delete-btn" 
+            @click="deleteDietLog(myDietLogs[0].dietId)"
+          >
+            ❌
+          </button>
+
 
           <!-- 식사 이미지 탭 -->
           <div class="meal-tabs">
@@ -382,10 +389,15 @@
         <!-- 나의 최근 운동일기 하나만 출력 -->
         <div v-if="myWorkoutLogs.length > 0" class="log-card">
           <h3>{{ myWorkoutLogs[0].name }}의 최근 운동일기</h3>
-
+          
           <!-- 날짜 -->
           <p class="diet-date">{{ myWorkoutLogs[0].recordDate }}</p>
-
+          <button 
+            class="delete-btn" 
+            @click="deleteDietLog(myDietLogs[0].dietId)"
+          >
+            ❌
+          </button>
           <p class="workout-content">{{ myWorkoutLogs[0].description }}</p>
 
           <div
@@ -755,6 +767,40 @@ const selectUser = async (user) => {
   searchedUsers.value = [];
 };
 
+// 다이어트 삭제
+const deleteDietLog = async (dietId) => {
+  // 삭제 확인 창 띄우기
+  const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
+
+  if (isConfirmed) {
+    // 사용자가 확인을 클릭하면 삭제 요청을 보냄
+    const response = await apiClient.delete(`/api-diet/${dietId}`);
+    
+    // 삭제 후 로그 갱신
+    fetchLogs(currentTab.value);
+  } else {
+    // 사용자가 취소를 클릭하면 아무 일도 하지 않음
+    console.log("삭제 취소됨");
+  }
+};
+
+// 운동일기 삭제
+const deleteWorkoutLog = async (workoutId) => {
+  // 삭제 확인 창 띄우기
+  const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
+
+  if (isConfirmed) {
+    // 사용자가 확인을 클릭하면 삭제 요청을 보냄
+    const response = await apiClient.delete(`/api-workout/${workoutId}`);
+    
+    // 삭제 후 로그 갱신
+    fetchLogs(currentTab.value);
+  } else {
+    // 사용자가 취소를 클릭하면 아무 일도 하지 않음
+    console.log("삭제 취소됨");
+  }
+};
+
 // 로그 데이터 불러오기
 const fetchLogs = async (tab) => {
   try {
@@ -804,6 +850,7 @@ const resetSearch = () => {
   fetchLogs(currentTab.value);
 };
 
+
 // 식단일기 수정 모달 열기
 const openDietLogModal = (dietLog) => {
   selectedDietLog.value = dietLog;
@@ -828,6 +875,7 @@ onMounted(() => {
 
 
 <style scoped>
+
 /* 댓글 아이콘 버튼 가운데 정렬 */
 .comment-btn {
   display: block;
@@ -1003,13 +1051,30 @@ button.active {
 
 .log-card {
   padding: 20px;
-  margin: 20px 0; /* 카드 바깥쪽에 여백 추가 */
+  margin: 20px 0;
   border-radius: 8px;
   background-color: #f9f9f9;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative; /* 절대 위치를 위한 relative 설정 */
+}
+
+.delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 2em; /* 크기 키움 */
+  cursor: pointer;
+  color: #ff4d4d; /* 빨간색 */
+  z-index: 10; /* 다른 요소보다 위에 오도록 설정 */
+}
+
+.delete-btn:hover {
+  color: #e60000; /* 호버 시 색상 변경 */
 }
 
 
@@ -1243,4 +1308,6 @@ button.active {
   border: 1px solid white;
   border-radius: 50px;
 }
+
+
 </style>

@@ -127,6 +127,7 @@ const submitDietLog = async () => {
     closeModal();
     window.location.reload();
   } catch (error) {
+    alert("해당 날짜의 식단일기가 이미 존재합니다");
     console.error("식단일기 제출 실패", error);
   }
 };

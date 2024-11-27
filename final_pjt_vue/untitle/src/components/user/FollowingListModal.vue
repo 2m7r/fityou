@@ -4,7 +4,7 @@
         <span class="close-btn" @click="close">×</span>
         <h2>팔로잉 목록</h2>
         <ul>
-          <li v-for="follow in following" :key="follow.userId">{{ follow.name }}</li>
+          <li v-for="follow in following" :key="follow.userId">{{ follow.name }} ( {{ follow.username }} )</li>
         </ul>
       </div>
     </div>

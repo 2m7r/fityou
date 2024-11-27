@@ -466,7 +466,8 @@ CREATE TABLE workouts (
     name VARCHAR(100) NOT NULL,
     description TEXT, -- 설명
     record_date DATE NOT NULL,  -- 기록 날짜 (YYYY-MM-DD)
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT unique_record_date UNIQUE (user_id, record_date) -- user_id와 record_date가 복합적으로 유니크
 );
 
 INSERT INTO workouts (user_id, name, description, record_date) VALUES
@@ -481,7 +482,7 @@ INSERT INTO workouts (user_id, name, description, record_date) VALUES
 (9, '장혜진', '벤치프레스와 덤벨프레스를 통해 가슴을 집중적으로 운동했어요. 조금 힘들었지만 효과적인 느낌!', '2024-11-09'),
 (10, '이수진', '오늘은 풀업과 로우를 많이 했습니다. 등 근육이 많이 단련된 느낌입니다.', '2024-11-10');
 
--- select * from workouts;
+select * from workouts;
 
 -- 운동 루틴 테이블 (운동 종류와 카테고리 추가)
 DROP TABLE IF EXISTS workout_exercises;
@@ -533,7 +534,22 @@ CREATE TABLE comments (
     name VARCHAR(100) NOT NULL, -- 이름
     content TEXT NOT NULL, -- 댓글 내용
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    
+    -- 각 유형에 맞는 외래키 제약 설정
+    diet_id BIGINT, -- diet 외래키
+    workout_id BIGINT, -- workout 외래키
+    
+    -- 외래키 정의 (조건에 맞게 설정)
+    FOREIGN KEY (diet_id) REFERENCES diet(diet_id) ON DELETE CASCADE,
+    FOREIGN KEY (workout_id) REFERENCES workouts(workout_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    
+    -- target_type에 따라 유효한 외래키 설정을 위한 제약 조건
+    CHECK (
+        (target_type = 'diet' AND target_id = diet_id) OR
+        (target_type = 'workout' AND target_id = workout_id)
+    )
 );
 
--- SELECT * from comments;
+
+SELECT * from comments;

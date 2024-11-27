@@ -192,7 +192,7 @@ const submitWorkoutLog = async () => {
     window.location.reload();
     console.log("운동일기 제출 성공", response.data);
   } catch (error) {
-    alert("운동일기 등록실패..");
+    alert("해당 날짜의 운동일기가 이미 존재합니다");
     console.error("운동일기 제출 실패", error);
   }
 };

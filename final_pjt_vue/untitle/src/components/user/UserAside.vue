@@ -194,6 +194,7 @@ onMounted(async () => {
   const currentDate = new Date();
   const baseDate = currentDate.toISOString().slice(0, 10).replace(/-/g, ""); // YYYYMMDD
   const baseTime = "0600"; // 기상청에서 6시간 간격으로 제공하는 기준시간 사용
+  console.log(baseDate)
 
   // 기상청 API 호출
   const data = await fetchWeather(nx, ny, baseDate, baseTime);
